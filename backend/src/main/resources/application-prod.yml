@@ -1,0 +1,44 @@
+# ============================================================================
+# 生产环境配置（profile=prod）
+# ----------------------------------------------------------------------------
+# 启动方式：SPRING_PROFILES_ACTIVE=prod
+# 必须通过环境变量提供数据库连接（无默认值，未配置将启动失败以暴露配置缺失）：
+#   DB_URL / DB_USERNAME / DB_PASSWORD / CORS_ORIGINS
+# ============================================================================
+
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 20000
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+management:
+  endpoint:
+    health:
+      # 生产环境默认隐藏详情（除非授权）
+      show-details: when-authorized
+
+panzipool:
+  cors:
+    # 生产环境仅允许主站域名
+    allowed-origins: ${CORS_ORIGINS:https://www.panzipool.com}
+
+logging:
+  level:
+    com.panzipool.api: INFO
+    org.hibernate.SQL: WARN

@@ -1,0 +1,18 @@
+# Nuxt 生成目录
+.nuxt
+.output
+.data
+.nitro
+.cache
+dist
+
+# 依赖
+node_modules
+
+# 锁文件
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# 静态资源
+public

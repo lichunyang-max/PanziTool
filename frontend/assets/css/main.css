@@ -1,0 +1,1134 @@
+/* ==========================================================================
+   PanziPool Tool Hub — Brand CSS (Modern Minimal / Indigo)
+   Free-explore mode: single primary hue (indigo), no secondary/accent brand colors
+   ========================================================================== */
+
+@import 'tailwindcss';
+
+/* === Brand Primary: Indigo === */
+:root {
+  --pz-color-primary: #4f46e5;
+  --pz-color-primary-hover: #4338ca;
+  --pz-color-primary-active: #3730a3;
+  --pz-color-primary-light: #eef2ff;
+  --pz-color-primary-lighter: #e0e7ff;
+  --pz-color-primary-lightest: #f5f3ff;
+  --pz-color-primary-border: #c7d2fe;
+
+  /* === Neutral Palette === */
+  --pz-color-bg: #ffffff;
+  --pz-color-bg-secondary: #f8fafc;
+  --pz-color-bg-tertiary: #f1f5f9;
+  --pz-color-bg-hover: #f8fafc;
+  --pz-color-surface: #ffffff;
+  --pz-color-surface-raised: #ffffff;
+
+  --pz-color-text-primary: #1e293b;
+  --pz-color-text-secondary: #64748b;
+  --pz-color-text-tertiary: #94a3b8;
+  --pz-color-text-inverse: #ffffff;
+
+  --pz-color-border: #e2e8f0;
+  --pz-color-border-light: #f1f5f9;
+  --pz-color-border-strong: #cbd5e1;
+
+  /* === State Colors (semantic only, not identity/category) === */
+  --pz-state-success: #16a34a;
+  --pz-state-success-bg: #f0fdf4;
+  --pz-state-success-border: #bbf7d0;
+  --pz-state-warning: #d97706;
+  --pz-state-warning-bg: #fffbeb;
+  --pz-state-warning-border: #fde68a;
+  --pz-state-error: #dc2626;
+  --pz-state-error-bg: #fef2f2;
+  --pz-state-error-border: #fecaca;
+  --pz-state-info: #0ea5e9;
+  --pz-state-info-bg: #f0f9ff;
+  --pz-state-info-border: #bae6fd;
+
+  /* === Typography === */
+  --pz-font-sans: 'Inter', 'Noto Sans SC', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --pz-font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+  --pz-font-display: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
+
+  /* === Type Scale === */
+  --pz-text-xs: 0.75rem;
+  --pz-text-sm: 0.875rem;
+  --pz-text-base: 1rem;
+  --pz-text-lg: 1.125rem;
+  --pz-text-xl: 1.25rem;
+  --pz-text-2xl: 1.5rem;
+  --pz-text-3xl: 1.875rem;
+  --pz-text-4xl: 2.25rem;
+  --pz-text-5xl: 3rem;
+
+  --pz-leading-tight: 1.25;
+  --pz-leading-normal: 1.5;
+  --pz-leading-relaxed: 1.625;
+
+  --pz-weight-normal: 400;
+  --pz-weight-medium: 500;
+  --pz-weight-semibold: 600;
+  --pz-weight-bold: 700;
+
+  /* === Tailwind v4 Semantic Bridge Aliases === */
+  --pz-background: #ffffff;
+  --pz-foreground: #1e293b;
+  --pz-card: #ffffff;
+  --pz-primary: #4f46e5;
+  --pz-primary-foreground: #ffffff;
+  --pz-muted: #f1f5f9;
+  --pz-muted-foreground: #94a3b8;
+  --pz-destructive: #dc2626;
+  --pz-destructive-foreground: #ffffff;
+  --pz-border: #e2e8f0;
+  --pz-input: #e2e8f0;
+  --pz-ring: #4f46e5;
+  --pz-radius-small: 4px;
+  --pz-radius-medium: 8px;
+  --pz-radius-large: 12px;
+
+  /* === Radius Scale (restrained) === */
+  --pz-radius-sm: 4px;
+  --pz-radius-md: 8px;
+  --pz-radius-lg: 12px;
+  --pz-radius-full: 9999px;
+
+  /* === Shadows (restrained for static surfaces) === */
+  --pz-shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  --pz-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
+  --pz-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+  --pz-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
+  --pz-shadow-floating: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+
+  /* === Spacing === */
+  --pz-spacing-xs: 0.25rem;
+  --pz-spacing-sm: 0.5rem;
+  --pz-spacing-md: 1rem;
+  --pz-spacing-lg: 1.5rem;
+  --pz-spacing-xl: 2rem;
+  --pz-spacing-2xl: 3rem;
+  --pz-spacing-3xl: 4rem;
+}
+
+/* === Dark Mode (future-ready) === */
+.dark {
+  --pz-color-bg: #0f172a;
+  --pz-color-bg-secondary: #1e293b;
+  --pz-color-bg-tertiary: #334155;
+  --pz-color-bg-hover: #1e293b;
+  --pz-color-surface: #1e293b;
+  --pz-color-surface-raised: #334155;
+
+  --pz-color-text-primary: #f1f5f9;
+  --pz-color-text-secondary: #94a3b8;
+  --pz-color-text-tertiary: #64748b;
+
+  --pz-color-border: #334155;
+  --pz-color-border-light: #1e293b;
+  --pz-color-border-strong: #475569;
+
+  --pz-color-primary-light: #1e1b4b;
+  --pz-color-primary-lighter: #312e81;
+  --pz-color-primary-lightest: #1e1b4b;
+  --pz-color-primary-border: #4338ca;
+
+  --pz-background: #0f172a;
+  --pz-foreground: #f1f5f9;
+  --pz-card: #1e293b;
+  --pz-muted: #334155;
+  --pz-muted-foreground: #64748b;
+  --pz-border: #334155;
+  --pz-input: #334155;
+}
+
+/* === Tailwind v4 Semantic Token Mapping === */
+@theme inline {
+  --color-background: var(--pz-background);
+  --color-foreground: var(--pz-foreground);
+  --color-card: var(--pz-card);
+  --color-primary: var(--pz-primary);
+  --color-primary-foreground: var(--pz-primary-foreground);
+  --color-muted: var(--pz-muted);
+  --color-muted-foreground: var(--pz-muted-foreground);
+  --color-destructive: var(--pz-destructive);
+  --color-destructive-foreground: var(--pz-destructive-foreground);
+  --color-border: var(--pz-border);
+  --color-input: var(--pz-input);
+  --color-ring: var(--pz-ring);
+  --radius-sm: var(--pz-radius-small);
+  --radius-md: var(--pz-radius-medium);
+  --radius-lg: var(--pz-radius-large);
+  --font-sans: var(--pz-font-sans);
+  --font-mono: var(--pz-font-mono);
+}
+
+/* === Base Layer === */
+@layer base {
+  body {
+    background: var(--pz-background);
+    color: var(--pz-foreground);
+  }
+  td,
+  th {
+    @apply break-words;
+    word-break: break-all;
+    word-break: auto-phrase;
+  }
+  th {
+    @apply whitespace-nowrap;
+  }
+}
+
+/* ==========================================================================
+   Base Layout: full-width header/footer, sidebar + main between
+   ========================================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--pz-color-bg);
+  color: var(--pz-color-text-primary);
+  font-family: var(--pz-font-sans);
+}
+
+/* ==========================================================================
+   Typography Classes
+   ========================================================================== */
+
+.pz-h1 {
+  font-family: var(--pz-font-display);
+  font-size: var(--pz-text-4xl);
+  font-weight: var(--pz-weight-bold);
+  line-height: var(--pz-leading-tight);
+  letter-spacing: -0.02em;
+  color: var(--pz-color-text-primary);
+}
+
+.pz-h2 {
+  font-family: var(--pz-font-display);
+  font-size: var(--pz-text-3xl);
+  font-weight: var(--pz-weight-semibold);
+  line-height: var(--pz-leading-tight);
+  letter-spacing: -0.01em;
+  color: var(--pz-color-text-primary);
+}
+
+.pz-h3 {
+  font-family: var(--pz-font-display);
+  font-size: var(--pz-text-xl);
+  font-weight: var(--pz-weight-semibold);
+  line-height: var(--pz-leading-tight);
+  color: var(--pz-color-text-primary);
+}
+
+.pz-h4 {
+  font-family: var(--pz-font-display);
+  font-size: var(--pz-text-lg);
+  font-weight: var(--pz-weight-semibold);
+  line-height: var(--pz-leading-normal);
+  color: var(--pz-color-text-primary);
+}
+
+.pz-body {
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-base);
+  font-weight: var(--pz-weight-normal);
+  line-height: var(--pz-leading-relaxed);
+  color: var(--pz-color-text-primary);
+}
+
+.pz-body-sm {
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  font-weight: var(--pz-weight-normal);
+  line-height: var(--pz-leading-normal);
+  color: var(--pz-color-text-secondary);
+}
+
+.pz-caption {
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-xs);
+  font-weight: var(--pz-weight-normal);
+  line-height: var(--pz-leading-normal);
+  color: var(--pz-color-text-tertiary);
+}
+
+.pz-mono {
+  font-family: var(--pz-font-mono);
+  font-size: var(--pz-text-sm);
+  line-height: var(--pz-leading-normal);
+}
+
+.pz-mono-lg {
+  font-family: var(--pz-font-mono);
+  font-size: var(--pz-text-base);
+  line-height: var(--pz-leading-relaxed);
+}
+
+/* ==========================================================================
+   Button Styles
+   ========================================================================== */
+
+.pz-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  font-weight: var(--pz-weight-medium);
+  color: var(--pz-color-text-inverse);
+  background-color: var(--pz-color-primary);
+  border: 1px solid var(--pz-color-primary);
+  border-radius: var(--pz-radius-md);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.pz-btn-primary:hover {
+  background-color: var(--pz-color-primary-hover);
+  border-color: var(--pz-color-primary-hover);
+}
+
+.pz-btn-primary:active {
+  background-color: var(--pz-color-primary-active);
+}
+
+.pz-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  font-weight: var(--pz-weight-medium);
+  color: var(--pz-color-text-primary);
+  background-color: var(--pz-color-surface);
+  border: 1px solid var(--pz-color-border);
+  border-radius: var(--pz-radius-md);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.pz-btn-secondary:hover {
+  border-color: var(--pz-color-border-strong);
+  background-color: var(--pz-color-bg-secondary);
+}
+
+/* ==========================================================================
+   Card Surface
+   ========================================================================== */
+
+.pz-card {
+  background-color: var(--pz-color-surface);
+  border: 1px solid var(--pz-color-border);
+  border-radius: var(--pz-radius-lg);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.pz-card-hover:hover {
+  border-color: var(--pz-color-primary-border);
+  box-shadow: var(--pz-shadow-md);
+}
+
+/* ==========================================================================
+   Input Surface
+   ========================================================================== */
+
+.pz-input {
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  color: var(--pz-color-text-primary);
+  background-color: var(--pz-color-surface);
+  border: 1px solid var(--pz-color-border);
+  border-radius: var(--pz-radius-md);
+  padding: 0.5rem 0.75rem;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+  outline: none;
+}
+
+.pz-input:focus {
+  border-color: var(--pz-color-primary);
+  box-shadow: 0 0 0 3px var(--pz-color-primary-lighter);
+}
+
+/* === Textarea (tool pages) === */
+.pz-textarea {
+  font-family: var(--pz-font-mono);
+  font-size: var(--pz-text-sm);
+  line-height: var(--pz-leading-relaxed);
+  color: var(--pz-color-text-primary);
+  background-color: var(--pz-color-bg-secondary);
+  border: 1px solid var(--pz-color-border);
+  border-radius: var(--pz-radius-md);
+  padding: 0.75rem;
+  outline: none;
+  resize: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.pz-textarea:focus {
+  border-color: var(--pz-color-primary);
+  box-shadow: 0 0 0 3px var(--pz-color-primary-lighter);
+}
+
+/* === Output code block === */
+.pz-code {
+  font-family: var(--pz-font-mono);
+  font-size: var(--pz-text-sm);
+  line-height: var(--pz-leading-relaxed);
+  color: var(--pz-color-text-primary);
+  background-color: var(--pz-color-bg-secondary);
+  border: 1px solid var(--pz-color-border);
+  border-radius: var(--pz-radius-md);
+  padding: 0.75rem;
+  overflow: auto;
+  white-space: pre;
+  margin: 0;
+}
+
+/* === Syntax highlighting tokens (output code only) === */
+.tok-key {
+  color: var(--pz-color-primary);
+}
+.tok-str {
+  color: #15803d;
+}
+.tok-num {
+  color: #b45309;
+}
+.tok-bool {
+  color: #6d28d9;
+}
+.tok-punc {
+  color: var(--pz-color-text-secondary);
+}
+
+/* ==========================================================================
+   Mode Toggle Pills (工具页编码/解码等模式切换)
+   ========================================================================== */
+
+.pz-mode-toggle {
+  display: inline-flex;
+  background-color: var(--pz-color-bg-tertiary);
+  border-radius: var(--pz-radius-full);
+  padding: 0.25rem;
+  gap: 0.25rem;
+}
+
+.pz-mode-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 1rem;
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  font-weight: var(--pz-weight-medium);
+  color: var(--pz-color-text-secondary);
+  border-radius: var(--pz-radius-full);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: none;
+  background: transparent;
+  white-space: nowrap;
+}
+
+.pz-mode-btn:hover {
+  color: var(--pz-color-text-primary);
+}
+
+.pz-mode-btn[data-active='true'] {
+  background-color: var(--pz-color-primary);
+  color: var(--pz-color-text-inverse);
+}
+
+/* === URL / mono Textarea (可调整高度) === */
+.pz-url-textarea {
+  font-family: var(--pz-font-mono);
+  font-size: var(--pz-text-sm);
+  line-height: var(--pz-leading-relaxed);
+  color: var(--pz-color-text-primary);
+  background-color: var(--pz-color-bg-secondary);
+  border: 1px solid var(--pz-color-border);
+  border-radius: var(--pz-radius-md);
+  padding: 0.75rem;
+  outline: none;
+  resize: vertical;
+  width: 100%;
+  min-height: 120px;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.pz-url-textarea:focus {
+  border-color: var(--pz-color-primary);
+  box-shadow: 0 0 0 3px var(--pz-color-primary-lighter);
+}
+
+.pz-url-textarea[readonly] {
+  background-color: var(--pz-color-bg-tertiary);
+  color: var(--pz-color-text-secondary);
+}
+
+/* === Encoding Option Radio Row === */
+.pz-option-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--pz-radius-md);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.pz-option-row:hover {
+  background-color: var(--pz-color-bg-secondary);
+}
+
+.pz-option-radio {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--pz-color-primary);
+  cursor: pointer;
+}
+
+.pz-option-label {
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  color: var(--pz-color-text-primary);
+}
+
+/* === Reference Table === */
+.pz-encode-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.pz-encode-table th {
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  font-weight: var(--pz-weight-semibold);
+  color: var(--pz-color-text-secondary);
+  text-align: left;
+  padding: 0.625rem 0.875rem;
+  border-bottom: 1px solid var(--pz-color-border);
+  white-space: nowrap;
+}
+
+.pz-encode-table td {
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  color: var(--pz-color-text-primary);
+  padding: 0.625rem 0.875rem;
+  border-bottom: 1px solid var(--pz-color-border-light);
+}
+
+.pz-encode-table td.pz-mono-cell {
+  font-family: var(--pz-font-mono);
+  color: var(--pz-color-text-secondary);
+}
+
+/* === Batch Output (带行号的等宽预览) === */
+.pz-batch-output {
+  font-family: var(--pz-font-mono);
+  font-size: var(--pz-text-sm);
+  line-height: var(--pz-leading-relaxed);
+  color: var(--pz-color-text-primary);
+  background-color: var(--pz-color-bg-secondary);
+  border: 1px solid var(--pz-color-border);
+  border-radius: var(--pz-radius-md);
+  padding: 0.75rem;
+  overflow-x: auto;
+  white-space: pre;
+  margin: 0;
+  min-height: 120px;
+}
+
+/* === Code Block (FAQ 代码示例) === */
+.pz-code-block {
+  font-family: var(--pz-font-mono);
+  font-size: var(--pz-text-sm);
+  line-height: var(--pz-leading-relaxed);
+  color: var(--pz-color-text-primary);
+  background-color: var(--pz-color-bg-secondary);
+  border: 1px solid var(--pz-color-border);
+  border-radius: var(--pz-radius-md);
+  padding: 0.75rem;
+  overflow-x: auto;
+  white-space: pre;
+  margin: 0;
+}
+
+/* === Error Text (工具页错误提示) === */
+.pz-error-text {
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  color: var(--pz-state-error);
+  background-color: var(--pz-state-error-bg);
+  border: 1px solid var(--pz-state-error-border);
+  border-radius: var(--pz-radius-md);
+  padding: 0.5rem 0.75rem;
+}
+
+/* ==========================================================================
+   Badge / Tag
+   ========================================================================== */
+
+.pz-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-xs);
+  font-weight: var(--pz-weight-medium);
+  border-radius: var(--pz-radius-full);
+}
+
+.pz-badge-primary {
+  background-color: var(--pz-color-primary-light);
+  color: var(--pz-color-primary);
+}
+
+.pz-badge-neutral {
+  background-color: var(--pz-color-bg-tertiary);
+  color: var(--pz-color-text-secondary);
+}
+
+/* ==========================================================================
+   Nav Link Styles (header navigation)
+   ========================================================================== */
+
+.pz-nav-link {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  font-weight: var(--pz-weight-medium);
+  color: var(--pz-color-text-secondary);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--pz-radius-md);
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.pz-nav-link:hover {
+  color: var(--pz-color-text-primary);
+  background-color: var(--pz-color-bg-secondary);
+}
+
+.pz-nav-link:focus-visible {
+  outline: 2px solid var(--pz-color-primary);
+  outline-offset: 2px;
+}
+
+.pz-nav-link[data-active='true'] {
+  color: var(--pz-color-primary);
+  background-color: var(--pz-color-primary-light);
+}
+
+/* ==========================================================================
+   Footer Link Styles
+   ========================================================================== */
+
+.pz-footer-link {
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  color: var(--pz-color-text-secondary);
+  transition: color 0.15s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.pz-footer-link:hover {
+  color: var(--pz-color-primary);
+}
+
+.pz-footer-link:focus-visible {
+  outline: 2px solid var(--pz-color-primary);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Section Heading Link (首页"查看全部"等)
+   ========================================================================== */
+
+.pz-section-link {
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  font-weight: var(--pz-weight-medium);
+  color: var(--pz-color-text-secondary);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+.pz-section-link:hover {
+  color: var(--pz-color-primary);
+}
+
+.pz-section-link:focus-visible {
+  outline: 2px solid var(--pz-color-primary);
+  outline-offset: 2px;
+  border-radius: var(--pz-radius-sm);
+}
+
+/* ==========================================================================
+   Sidebar Styles (flex child, not fixed)
+   ========================================================================== */
+
+.pz-sidebar-wrapper {
+  position: relative;
+  width: 240px;
+  flex-shrink: 0;
+  z-index: 40;
+  transition: width 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.pz-sidebar-wrapper[data-collapsed='true'] {
+  width: 36px;
+}
+
+.pz-sidebar {
+  background-color: var(--pz-color-bg);
+  border-right: 1px solid var(--pz-color-border);
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0.75rem 0.5rem;
+  transition: opacity 0.15s ease;
+}
+
+.pz-sidebar-wrapper[data-collapsed='true'] .pz-sidebar {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pz-sidebar-toggle {
+  position: absolute;
+  right: -12px;
+  top: 20px;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--pz-radius-full);
+  background-color: var(--pz-color-bg);
+  border: 1px solid var(--pz-color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--pz-color-text-secondary);
+  transition: all 0.15s ease;
+  z-index: 45;
+}
+
+.pz-sidebar-toggle:hover {
+  color: var(--pz-color-primary);
+  border-color: var(--pz-color-primary-border);
+}
+
+.pz-sidebar-toggle svg {
+  transition: transform 0.2s ease;
+}
+
+.pz-sidebar-wrapper[data-collapsed='true'] .pz-sidebar-toggle svg {
+  transform: rotate(180deg);
+}
+
+/* === Accordion menu styles === */
+.pz-sidebar-section {
+  margin-bottom: 0.25rem;
+}
+
+.pz-sidebar-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  font-weight: var(--pz-weight-semibold);
+  color: var(--pz-color-text-primary);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--pz-radius-md);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s ease;
+}
+
+.pz-sidebar-title:hover {
+  background-color: var(--pz-color-bg-secondary);
+}
+
+.pz-sidebar-title .pz-chevron {
+  margin-left: auto;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.pz-sidebar-section[data-expanded='false'] .pz-chevron {
+  transform: rotate(-90deg);
+}
+
+.pz-sidebar-children {
+  overflow: hidden;
+  max-height: 500px;
+  transition: max-height 0.25s ease;
+}
+
+.pz-sidebar-section[data-expanded='false'] .pz-sidebar-children {
+  max-height: 0;
+}
+
+.pz-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  font-weight: var(--pz-weight-normal);
+  color: var(--pz-color-text-secondary);
+  padding: 0.375rem 0.75rem 0.375rem 2rem;
+  border-radius: var(--pz-radius-md);
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.pz-sidebar-link:hover {
+  color: var(--pz-color-text-primary);
+  background-color: var(--pz-color-bg-secondary);
+}
+
+.pz-sidebar-link:focus-visible {
+  outline: 2px solid var(--pz-color-primary);
+  outline-offset: 2px;
+}
+
+.pz-sidebar-link[data-active='true'] {
+  color: var(--pz-color-primary);
+  background-color: var(--pz-color-primary-light);
+  font-weight: var(--pz-weight-medium);
+}
+
+/* ==========================================================================
+   Main Content Area: scrollable, flex child next to sidebar
+   ========================================================================== */
+
+.pz-app {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.pz-main-area {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.pz-main-content {
+  flex: 1;
+  padding: 1.5rem 2rem;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ==========================================================================
+   Tool Card (micro-interaction: hover lift)
+   ========================================================================== */
+
+.pz-tool-card {
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.pz-tool-card:hover {
+  border-color: var(--pz-color-primary-border);
+  box-shadow: var(--pz-shadow-md);
+  transform: translateY(-2px);
+}
+
+.pz-tool-card:focus-within {
+  border-color: var(--pz-color-primary-border);
+  box-shadow: var(--pz-shadow-md);
+}
+
+.pz-tool-link:focus-visible {
+  outline: 2px solid var(--pz-color-primary);
+  outline-offset: 2px;
+  border-radius: var(--pz-radius-lg);
+}
+
+/* ==========================================================================
+   Tab (分类页标签按钮)
+   ========================================================================== */
+
+.pz-tab {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  font-weight: var(--pz-weight-medium);
+  color: var(--pz-color-text-secondary);
+  background-color: var(--pz-color-surface);
+  border: 1px solid var(--pz-color-border);
+  border-radius: var(--pz-radius-md);
+  padding: 0.4375rem 0.875rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.pz-tab:hover {
+  color: var(--pz-color-text-primary);
+  border-color: var(--pz-color-border-strong);
+  background-color: var(--pz-color-bg-secondary);
+}
+
+.pz-tab:focus-visible {
+  outline: 2px solid var(--pz-color-primary);
+  outline-offset: 2px;
+}
+
+.pz-tab[data-active='true'] {
+  color: var(--pz-color-text-inverse);
+  background-color: var(--pz-color-primary);
+  border-color: var(--pz-color-primary);
+}
+
+.pz-tab[data-active='true']:hover {
+  color: var(--pz-color-text-inverse);
+  background-color: var(--pz-color-primary-hover);
+  border-color: var(--pz-color-primary-hover);
+}
+
+/* ==========================================================================
+   Breadcrumb Link (分类页面包屑)
+   ========================================================================== */
+
+.pz-crumb-link {
+  color: var(--pz-color-text-secondary);
+  transition: color 0.15s ease;
+  text-decoration: none;
+}
+
+.pz-crumb-link:hover {
+  color: var(--pz-color-primary);
+}
+
+.pz-crumb-link:focus-visible {
+  outline: 2px solid var(--pz-color-primary);
+  outline-offset: 2px;
+  border-radius: var(--pz-radius-sm);
+}
+
+/* ==========================================================================
+   FAQ Accordion (native <details>, no JS)
+   ========================================================================== */
+
+.pz-faq > summary {
+  list-style: none;
+}
+
+.pz-faq > summary::-webkit-details-marker {
+  display: none;
+}
+
+.pz-faq .pz-faq-chevron {
+  transition: transform 0.2s ease;
+}
+
+.pz-faq[open] .pz-faq-chevron {
+  transform: rotate(180deg);
+}
+
+/* ==========================================================================
+   Regex Tool: Flag Toggle Button
+   ========================================================================== */
+
+.pz-flag-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  padding: 0.1875rem 0.5625rem;
+  font-family: var(--pz-font-mono);
+  font-size: var(--pz-text-xs);
+  font-weight: var(--pz-weight-medium);
+  border-radius: var(--pz-radius-full);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.pz-flag-toggle[aria-pressed='true'] {
+  background-color: var(--pz-color-primary);
+  color: var(--pz-color-text-inverse);
+}
+
+.pz-flag-toggle[aria-pressed='false'] {
+  background-color: var(--pz-color-bg-tertiary);
+  color: var(--pz-color-text-secondary);
+}
+
+.pz-flag-toggle[aria-pressed='false']:hover {
+  color: var(--pz-color-primary);
+  border-color: var(--pz-color-primary-border);
+}
+
+.pz-flag-toggle:focus-visible {
+  outline: 2px solid var(--pz-color-primary);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Regex Tool: Match Highlight (used in v-html, must be global)
+   ========================================================================== */
+
+.pz-match-highlight {
+  background-color: var(--pz-color-primary);
+  color: var(--pz-color-text-inverse);
+  border-radius: var(--pz-radius-sm);
+  padding: 1px 3px;
+  font-weight: var(--pz-weight-medium);
+}
+
+/* ==========================================================================
+   Text Link (示例/清空 等行内文字链接)
+   ========================================================================== */
+
+.pz-text-link {
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  color: var(--pz-color-primary);
+}
+
+.pz-text-link:hover {
+  color: var(--pz-color-primary-hover);
+}
+
+.pz-text-link:focus-visible {
+  outline: 2px solid var(--pz-color-primary);
+  outline-offset: 2px;
+}
+
+.pz-text-link-secondary {
+  color: var(--pz-color-text-secondary);
+}
+
+.pz-text-link-secondary:hover {
+  color: var(--pz-color-primary);
+}
+
+/* ==========================================================================
+   Button Icon Slide (执行按钮图标微交互)
+   ========================================================================== */
+
+.pz-btn-icon-slide {
+  transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.pz-btn-primary:hover .pz-btn-icon-slide {
+  transform: translateX(1px);
+}
+
+/* ==========================================================================
+   Utility Classes
+   ========================================================================== */
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+[data-icon] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  background-color: currentColor;
+}
+
+/* ==========================================================================
+   Reduced Motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .pz-nav-link,
+  .pz-footer-link,
+  .pz-sidebar-link,
+  .pz-sidebar-wrapper,
+  .pz-main-area,
+  .pz-sidebar-children,
+  .pz-sidebar-title .pz-chevron,
+  .pz-tab,
+  .pz-crumb-link,
+  .pz-tool-card,
+  .pz-card,
+  .pz-textarea,
+  .pz-url-textarea,
+  .pz-mode-btn,
+  .pz-option-row,
+  .pz-flag-toggle,
+  .pz-text-link,
+  .pz-btn-icon-slide,
+  .pz-faq-chevron {
+    transition: none;
+  }
+  .pz-tool-card:hover {
+    transform: none;
+  }
+}

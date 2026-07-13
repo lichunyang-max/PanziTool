@@ -1,0 +1,303 @@
+/* PanziPool Tool Hub — Brand CSS (Modern Minimal / Indigo) */
+/* Free-explore mode: single primary hue (indigo), no secondary/accent brand colors */
+
+:root {
+  /* === Brand Primary: Indigo === */
+  --pz-color-primary: #4F46E5;
+  --pz-color-primary-hover: #4338CA;
+  --pz-color-primary-active: #3730A3;
+  --pz-color-primary-light: #EEF2FF;
+  --pz-color-primary-lighter: #E0E7FF;
+  --pz-color-primary-lightest: #F5F3FF;
+  --pz-color-primary-border: #C7D2FE;
+
+  /* === Neutral Palette === */
+  --pz-color-bg: #FFFFFF;
+  --pz-color-bg-secondary: #F8FAFC;
+  --pz-color-bg-tertiary: #F1F5F9;
+  --pz-color-bg-hover: #F8FAFC;
+  --pz-color-surface: #FFFFFF;
+  --pz-color-surface-raised: #FFFFFF;
+
+  --pz-color-text-primary: #1E293B;
+  --pz-color-text-secondary: #64748B;
+  --pz-color-text-tertiary: #94A3B8;
+  --pz-color-text-inverse: #FFFFFF;
+
+  --pz-color-border: #E2E8F0;
+  --pz-color-border-light: #F1F5F9;
+  --pz-color-border-strong: #CBD5E1;
+
+  /* === State Colors (semantic only, not identity/category) === */
+  --pz-state-success: #16A34A;
+  --pz-state-success-bg: #F0FDF4;
+  --pz-state-success-border: #BBF7D0;
+  --pz-state-warning: #D97706;
+  --pz-state-warning-bg: #FFFBEB;
+  --pz-state-warning-border: #FDE68A;
+  --pz-state-error: #DC2626;
+  --pz-state-error-bg: #FEF2F2;
+  --pz-state-error-border: #FECACA;
+  --pz-state-info: #0EA5E9;
+  --pz-state-info-bg: #F0F9FF;
+  --pz-state-info-border: #BAE6FD;
+
+  /* === Typography === */
+  --pz-font-sans: 'Inter', 'Noto Sans SC', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --pz-font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+  --pz-font-display: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
+
+  /* === Type Scale === */
+  --pz-text-xs: 0.75rem;
+  --pz-text-sm: 0.875rem;
+  --pz-text-base: 1rem;
+  --pz-text-lg: 1.125rem;
+  --pz-text-xl: 1.25rem;
+  --pz-text-2xl: 1.5rem;
+  --pz-text-3xl: 1.875rem;
+  --pz-text-4xl: 2.25rem;
+  --pz-text-5xl: 3rem;
+
+  --pz-leading-tight: 1.25;
+  --pz-leading-normal: 1.5;
+  --pz-leading-relaxed: 1.625;
+
+  --pz-weight-normal: 400;
+  --pz-weight-medium: 500;
+  --pz-weight-semibold: 600;
+  --pz-weight-bold: 700;
+
+  /* === Tailwind v4 Semantic Bridge Aliases === */
+  /* These aliases map brand variables to Tailwind v4 semantic tokens */
+  --pz-background: #FFFFFF;
+  --pz-foreground: #1E293B;
+  --pz-card: #FFFFFF;
+  --pz-primary: #4F46E5;
+  --pz-primary-foreground: #FFFFFF;
+  --pz-muted: #F1F5F9;
+  --pz-muted-foreground: #94A3B8;
+  --pz-destructive: #DC2626;
+  --pz-destructive-foreground: #FFFFFF;
+  --pz-border: #E2E8F0;
+  --pz-input: #E2E8F0;
+  --pz-ring: #4F46E5;
+  --pz-radius-small: 4px;
+  --pz-radius-medium: 8px;
+  --pz-radius-large: 12px;
+
+  /* === Radius Scale (restrained) === */
+  --pz-radius-sm: 4px;
+  --pz-radius-md: 8px;
+  --pz-radius-lg: 12px;
+  --pz-radius-full: 9999px;
+
+  /* === Shadows (restrained for static surfaces) === */
+  --pz-shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  --pz-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
+  --pz-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+  --pz-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
+  --pz-shadow-floating: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+
+  /* === Spacing === */
+  --pz-spacing-xs: 0.25rem;
+  --pz-spacing-sm: 0.5rem;
+  --pz-spacing-md: 1rem;
+  --pz-spacing-lg: 1.5rem;
+  --pz-spacing-xl: 2rem;
+  --pz-spacing-2xl: 3rem;
+  --pz-spacing-3xl: 4rem;
+}
+
+/* === Dark Mode (future-ready) === */
+.dark {
+  --pz-color-bg: #0F172A;
+  --pz-color-bg-secondary: #1E293B;
+  --pz-color-bg-tertiary: #334155;
+  --pz-color-bg-hover: #1E293B;
+  --pz-color-surface: #1E293B;
+  --pz-color-surface-raised: #334155;
+
+  --pz-color-text-primary: #F1F5F9;
+  --pz-color-text-secondary: #94A3B8;
+  --pz-color-text-tertiary: #64748B;
+
+  --pz-color-border: #334155;
+  --pz-color-border-light: #1E293B;
+  --pz-color-border-strong: #475569;
+
+  --pz-color-primary-light: #1E1B4B;
+  --pz-color-primary-lighter: #312E81;
+  --pz-color-primary-lightest: #1E1B4B;
+  --pz-color-primary-border: #4338CA;
+}
+
+/* === Typography Classes === */
+.pz-h1 {
+  font-family: var(--pz-font-display);
+  font-size: var(--pz-text-4xl);
+  font-weight: var(--pz-weight-bold);
+  line-height: var(--pz-leading-tight);
+  letter-spacing: -0.02em;
+  color: var(--pz-color-text-primary);
+}
+
+.pz-h2 {
+  font-family: var(--pz-font-display);
+  font-size: var(--pz-text-3xl);
+  font-weight: var(--pz-weight-semibold);
+  line-height: var(--pz-leading-tight);
+  letter-spacing: -0.01em;
+  color: var(--pz-color-text-primary);
+}
+
+.pz-h3 {
+  font-family: var(--pz-font-display);
+  font-size: var(--pz-text-xl);
+  font-weight: var(--pz-weight-semibold);
+  line-height: var(--pz-leading-tight);
+  color: var(--pz-color-text-primary);
+}
+
+.pz-h4 {
+  font-family: var(--pz-font-display);
+  font-size: var(--pz-text-lg);
+  font-weight: var(--pz-weight-semibold);
+  line-height: var(--pz-leading-normal);
+  color: var(--pz-color-text-primary);
+}
+
+.pz-body {
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-base);
+  font-weight: var(--pz-weight-normal);
+  line-height: var(--pz-leading-relaxed);
+  color: var(--pz-color-text-primary);
+}
+
+.pz-body-sm {
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  font-weight: var(--pz-weight-normal);
+  line-height: var(--pz-leading-normal);
+  color: var(--pz-color-text-secondary);
+}
+
+.pz-caption {
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-xs);
+  font-weight: var(--pz-weight-normal);
+  line-height: var(--pz-leading-normal);
+  color: var(--pz-color-text-tertiary);
+}
+
+.pz-mono {
+  font-family: var(--pz-font-mono);
+  font-size: var(--pz-text-sm);
+  line-height: var(--pz-leading-normal);
+}
+
+.pz-mono-lg {
+  font-family: var(--pz-font-mono);
+  font-size: var(--pz-text-base);
+  line-height: var(--pz-leading-relaxed);
+}
+
+/* === Button Styles === */
+.pz-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  font-weight: var(--pz-weight-medium);
+  color: var(--pz-color-text-inverse);
+  background-color: var(--pz-color-primary);
+  border: 1px solid var(--pz-color-primary);
+  border-radius: var(--pz-radius-md);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.pz-btn-primary:hover {
+  background-color: var(--pz-color-primary-hover);
+  border-color: var(--pz-color-primary-hover);
+}
+
+.pz-btn-primary:active {
+  background-color: var(--pz-color-primary-active);
+}
+
+.pz-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  font-weight: var(--pz-weight-medium);
+  color: var(--pz-color-text-primary);
+  background-color: var(--pz-color-surface);
+  border: 1px solid var(--pz-color-border);
+  border-radius: var(--pz-radius-md);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.pz-btn-secondary:hover {
+  border-color: var(--pz-color-border-strong);
+  background-color: var(--pz-color-bg-secondary);
+}
+
+/* === Card Surface === */
+.pz-card {
+  background-color: var(--pz-color-surface);
+  border: 1px solid var(--pz-color-border);
+  border-radius: var(--pz-radius-lg);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pz-card-hover:hover {
+  border-color: var(--pz-color-primary-border);
+  box-shadow: var(--pz-shadow-md);
+}
+
+/* === Input Surface === */
+.pz-input {
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  color: var(--pz-color-text-primary);
+  background-color: var(--pz-color-surface);
+  border: 1px solid var(--pz-color-border);
+  border-radius: var(--pz-radius-md);
+  padding: 0.5rem 0.75rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+}
+
+.pz-input:focus {
+  border-color: var(--pz-color-primary);
+  box-shadow: 0 0 0 3px var(--pz-color-primary-lighter);
+}
+
+/* === Badge / Tag === */
+.pz-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-xs);
+  font-weight: var(--pz-weight-medium);
+  border-radius: var(--pz-radius-full);
+}
+
+.pz-badge-primary {
+  background-color: var(--pz-color-primary-light);
+  color: var(--pz-color-primary);
+}
+
+.pz-badge-neutral {
+  background-color: var(--pz-color-bg-tertiary);
+  color: var(--pz-color-text-secondary);
+}

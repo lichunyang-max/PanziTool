@@ -1,0 +1,4 @@
+com\panzipool\api\PanziPoolApplicationTests.class
+com\panzipool\api\controller\ToolControllerLikeTest.class
+com\panzipool\api\controller\ToolControllerTest.class
+com\panzipool\api\controller\PingControllerTest.class

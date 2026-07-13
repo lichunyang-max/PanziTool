@@ -1,0 +1,123 @@
+# ============================================================================
+# PanziPool Docker Compose 编排文件
+# ----------------------------------------------------------------------------
+# 服务架构：
+#   nginx (80/443) → nuxt (3000) + java-api (8080) → postgres (5432)
+#
+# 使用方法：
+#   1. 复制 .env.example 为 .env 并填写实际配置
+#   2. 将 SSL 证书放置到 nginx/certs/ 目录（fullchain.pem 和 privkey.pem）
+#   3. docker-compose up -d
+# ============================================================================
+
+services:
+  # ==========================================================================
+  # PostgreSQL 数据库
+  # ==========================================================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: panzipool-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-panzipool}
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?错误：请在 .env 文件中设置 DB_PASSWORD}
+    volumes:
+      - panzipool-db-data:/var/lib/postgresql/data
+    networks:
+      - panzipool-net
+    healthcheck:
+      # pg_isready 检查 PostgreSQL 是否就绪
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d ${DB_NAME:-panzipool}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ==========================================================================
+  # Spring Boot 后端 API
+  # ==========================================================================
+  java-api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: panzipool-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # 数据库连接（容器内通信，通过 Docker 网络访问 postgres 容器）
+      DB_URL: jdbc:postgresql://postgres:5432/${DB_NAME:-panzipool}
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:?错误：请在 .env 文件中设置 DB_PASSWORD}
+      # 生产环境 profile
+      SPRING_PROFILES_ACTIVE: prod
+      # CORS 允许的源
+      CORS_ORIGINS: ${CORS_ORIGINS:-https://www.panzipool.com}
+    networks:
+      - panzipool-net
+    healthcheck:
+      # 使用 Spring Boot Actuator 健康检查端点（含数据库连接状态检查）
+      # context-path=/api/v1，actuator base-path=/actuator，完整路径=/api/v1/actuator/health
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:8080/api/v1/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+
+  # ==========================================================================
+  # Nuxt3 前端 SSR
+  # ==========================================================================
+  nuxt:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: panzipool-frontend
+    restart: unless-stopped
+    depends_on:
+      - java-api
+    environment:
+      # SSR 阶段使用内网地址（容器间通信，直接访问后端容器）
+      NUXT_API_BASE: http://java-api:8080
+      # 客户端浏览器使用公网域名（通过 nginx 反代访问后端 API）
+      NUXT_PUBLIC_API_BASE: ${PUBLIC_API_BASE:-https://www.panzipool.com}
+    networks:
+      - panzipool-net
+
+  # ==========================================================================
+  # nginx 反向代理（HTTPS 终止 + 路由分发）
+  # ==========================================================================
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: panzipool-nginx
+    restart: unless-stopped
+    depends_on:
+      - nuxt
+      - java-api
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # SSL 证书目录（只读挂载，证书文件放置在 nginx/certs/ 下）
+      - ./nginx/certs:/etc/nginx/certs:ro
+      # 日志目录（便于宿主机查看 nginx 访问和错误日志）
+      - ./nginx/logs:/var/log/nginx
+    networks:
+      - panzipool-net
+
+# ============================================================================
+# 自定义网络（容器间通信通过服务名解析）
+# ============================================================================
+networks:
+  panzipool-net:
+    driver: bridge
+
+# ============================================================================
+# 持久化数据卷
+# ============================================================================
+volumes:
+  panzipool-db-data:
+    driver: local

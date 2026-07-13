@@ -1,0 +1,2046 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片格式转换 - PanziPool 工具聚合站</title>
+    <style id="theme-vars">
+/* PanziPool Tool Hub — Brand CSS (Modern Minimal / Indigo) */
+/* Free-explore mode: single primary hue (indigo), no secondary/accent brand colors */
+
+:root {
+  /* === Brand Primary: Indigo === */
+  --pz-color-primary: #4F46E5;
+  --pz-color-primary-hover: #4338CA;
+  --pz-color-primary-active: #3730A3;
+  --pz-color-primary-light: #EEF2FF;
+  --pz-color-primary-lighter: #E0E7FF;
+  --pz-color-primary-lightest: #F5F3FF;
+  --pz-color-primary-border: #C7D2FE;
+
+  /* === Neutral Palette === */
+  --pz-color-bg: #FFFFFF;
+  --pz-color-bg-secondary: #F8FAFC;
+  --pz-color-bg-tertiary: #F1F5F9;
+  --pz-color-bg-hover: #F8FAFC;
+  --pz-color-surface: #FFFFFF;
+  --pz-color-surface-raised: #FFFFFF;
+
+  --pz-color-text-primary: #1E293B;
+  --pz-color-text-secondary: #64748B;
+  --pz-color-text-tertiary: #94A3B8;
+  --pz-color-text-inverse: #FFFFFF;
+
+  --pz-color-border: #E2E8F0;
+  --pz-color-border-light: #F1F5F9;
+  --pz-color-border-strong: #CBD5E1;
+
+  /* === State Colors (semantic only, not identity/category) === */
+  --pz-state-success: #16A34A;
+  --pz-state-success-bg: #F0FDF4;
+  --pz-state-success-border: #BBF7D0;
+  --pz-state-warning: #D97706;
+  --pz-state-warning-bg: #FFFBEB;
+  --pz-state-warning-border: #FDE68A;
+  --pz-state-error: #DC2626;
+  --pz-state-error-bg: #FEF2F2;
+  --pz-state-error-border: #FECACA;
+  --pz-state-info: #0EA5E9;
+  --pz-state-info-bg: #F0F9FF;
+  --pz-state-info-border: #BAE6FD;
+
+  /* === Typography === */
+  --pz-font-sans: 'Inter', 'Noto Sans SC', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --pz-font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+  --pz-font-display: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
+
+  /* === Type Scale === */
+  --pz-text-xs: 0.75rem;
+  --pz-text-sm: 0.875rem;
+  --pz-text-base: 1rem;
+  --pz-text-lg: 1.125rem;
+  --pz-text-xl: 1.25rem;
+  --pz-text-2xl: 1.5rem;
+  --pz-text-3xl: 1.875rem;
+  --pz-text-4xl: 2.25rem;
+  --pz-text-5xl: 3rem;
+
+  --pz-leading-tight: 1.25;
+  --pz-leading-normal: 1.5;
+  --pz-leading-relaxed: 1.625;
+
+  --pz-weight-normal: 400;
+  --pz-weight-medium: 500;
+  --pz-weight-semibold: 600;
+  --pz-weight-bold: 700;
+
+  /* === Tailwind v4 Semantic Bridge Aliases === */
+  /* These aliases map brand variables to Tailwind v4 semantic tokens */
+  --pz-background: #FFFFFF;
+  --pz-foreground: #1E293B;
+  --pz-card: #FFFFFF;
+  --pz-primary: #4F46E5;
+  --pz-primary-foreground: #FFFFFF;
+  --pz-muted: #F1F5F9;
+  --pz-muted-foreground: #94A3B8;
+  --pz-destructive: #DC2626;
+  --pz-destructive-foreground: #FFFFFF;
+  --pz-border: #E2E8F0;
+  --pz-input: #E2E8F0;
+  --pz-ring: #4F46E5;
+  --pz-radius-small: 4px;
+  --pz-radius-medium: 8px;
+  --pz-radius-large: 12px;
+
+  /* === Radius Scale (restrained) === */
+  --pz-radius-sm: 4px;
+  --pz-radius-md: 8px;
+  --pz-radius-lg: 12px;
+  --pz-radius-full: 9999px;
+
+  /* === Shadows (restrained for static surfaces) === */
+  --pz-shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  --pz-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
+  --pz-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+  --pz-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
+  --pz-shadow-floating: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+
+  /* === Spacing === */
+  --pz-spacing-xs: 0.25rem;
+  --pz-spacing-sm: 0.5rem;
+  --pz-spacing-md: 1rem;
+  --pz-spacing-lg: 1.5rem;
+  --pz-spacing-xl: 2rem;
+  --pz-spacing-2xl: 3rem;
+  --pz-spacing-3xl: 4rem;
+}
+
+/* === Dark Mode (future-ready) === */
+.dark {
+  --pz-color-bg: #0F172A;
+  --pz-color-bg-secondary: #1E293B;
+  --pz-color-bg-tertiary: #334155;
+  --pz-color-bg-hover: #1E293B;
+  --pz-color-surface: #1E293B;
+  --pz-color-surface-raised: #334155;
+
+  --pz-color-text-primary: #F1F5F9;
+  --pz-color-text-secondary: #94A3B8;
+  --pz-color-text-tertiary: #64748B;
+
+  --pz-color-border: #334155;
+  --pz-color-border-light: #1E293B;
+  --pz-color-border-strong: #475569;
+
+  --pz-color-primary-light: #1E1B4B;
+  --pz-color-primary-lighter: #312E81;
+  --pz-color-primary-lightest: #1E1B4B;
+  --pz-color-primary-border: #4338CA;
+}
+
+/* === Typography Classes === */
+.pz-h1 {
+  font-family: var(--pz-font-display);
+  font-size: var(--pz-text-4xl);
+  font-weight: var(--pz-weight-bold);
+  line-height: var(--pz-leading-tight);
+  letter-spacing: -0.02em;
+  color: var(--pz-color-text-primary);
+}
+
+.pz-h2 {
+  font-family: var(--pz-font-display);
+  font-size: var(--pz-text-3xl);
+  font-weight: var(--pz-weight-semibold);
+  line-height: var(--pz-leading-tight);
+  letter-spacing: -0.01em;
+  color: var(--pz-color-text-primary);
+}
+
+.pz-h3 {
+  font-family: var(--pz-font-display);
+  font-size: var(--pz-text-xl);
+  font-weight: var(--pz-weight-semibold);
+  line-height: var(--pz-leading-tight);
+  color: var(--pz-color-text-primary);
+}
+
+.pz-h4 {
+  font-family: var(--pz-font-display);
+  font-size: var(--pz-text-lg);
+  font-weight: var(--pz-weight-semibold);
+  line-height: var(--pz-leading-normal);
+  color: var(--pz-color-text-primary);
+}
+
+.pz-body {
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-base);
+  font-weight: var(--pz-weight-normal);
+  line-height: var(--pz-leading-relaxed);
+  color: var(--pz-color-text-primary);
+}
+
+.pz-body-sm {
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  font-weight: var(--pz-weight-normal);
+  line-height: var(--pz-leading-normal);
+  color: var(--pz-color-text-secondary);
+}
+
+.pz-caption {
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-xs);
+  font-weight: var(--pz-weight-normal);
+  line-height: var(--pz-leading-normal);
+  color: var(--pz-color-text-tertiary);
+}
+
+.pz-mono {
+  font-family: var(--pz-font-mono);
+  font-size: var(--pz-text-sm);
+  line-height: var(--pz-leading-normal);
+}
+
+.pz-mono-lg {
+  font-family: var(--pz-font-mono);
+  font-size: var(--pz-text-base);
+  line-height: var(--pz-leading-relaxed);
+}
+
+/* === Button Styles === */
+.pz-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  font-weight: var(--pz-weight-medium);
+  color: var(--pz-color-text-inverse);
+  background-color: var(--pz-color-primary);
+  border: 1px solid var(--pz-color-primary);
+  border-radius: var(--pz-radius-md);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.pz-btn-primary:hover {
+  background-color: var(--pz-color-primary-hover);
+  border-color: var(--pz-color-primary-hover);
+}
+
+.pz-btn-primary:active {
+  background-color: var(--pz-color-primary-active);
+}
+
+.pz-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  font-weight: var(--pz-weight-medium);
+  color: var(--pz-color-text-primary);
+  background-color: var(--pz-color-surface);
+  border: 1px solid var(--pz-color-border);
+  border-radius: var(--pz-radius-md);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.pz-btn-secondary:hover {
+  border-color: var(--pz-color-border-strong);
+  background-color: var(--pz-color-bg-secondary);
+}
+
+/* === Card Surface === */
+.pz-card {
+  background-color: var(--pz-color-surface);
+  border: 1px solid var(--pz-color-border);
+  border-radius: var(--pz-radius-lg);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pz-card-hover:hover {
+  border-color: var(--pz-color-primary-border);
+  box-shadow: var(--pz-shadow-md);
+}
+
+/* === Input Surface === */
+.pz-input {
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  color: var(--pz-color-text-primary);
+  background-color: var(--pz-color-surface);
+  border: 1px solid var(--pz-color-border);
+  border-radius: var(--pz-radius-md);
+  padding: 0.5rem 0.75rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+}
+
+.pz-input:focus {
+  border-color: var(--pz-color-primary);
+  box-shadow: 0 0 0 3px var(--pz-color-primary-lighter);
+}
+
+/* === Badge / Tag === */
+.pz-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-xs);
+  font-weight: var(--pz-weight-medium);
+  border-radius: var(--pz-radius-full);
+}
+
+.pz-badge-primary {
+  background-color: var(--pz-color-primary-light);
+  color: var(--pz-color-primary);
+}
+
+.pz-badge-neutral {
+  background-color: var(--pz-color-bg-tertiary);
+  color: var(--pz-color-text-secondary);
+}
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--pz-background);
+    --color-foreground: var(--pz-foreground);
+    --color-card: var(--pz-card);
+    --color-primary: var(--pz-primary);
+    --color-primary-foreground: var(--pz-primary-foreground);
+    --color-muted: var(--pz-muted);
+    --color-muted-foreground: var(--pz-muted-foreground);
+    --color-destructive: var(--pz-destructive);
+    --color-destructive-foreground: var(--pz-destructive-foreground);
+    --color-border: var(--pz-border);
+    --color-input: var(--pz-input);
+    --color-ring: var(--pz-ring);
+    --radius-sm: var(--pz-radius-small);
+    --radius-md: var(--pz-radius-medium);
+    --radius-lg: var(--pz-radius-large);
+  }
+  @layer base {
+    body { background: var(--pz-background); color: var(--pz-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="font-sans antialiased">
+    <!-- ==================== APP BODY (sidebar + scrollable main) ==================== -->
+    <style>
+
+  /* === Base layout: full-width header/footer, sidebar+main between === */
+  * { box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--pz-color-bg);
+    color: var(--pz-color-text-primary);
+    font-family: var(--pz-font-sans);
+  }
+
+  /* === Nav link styles === */
+  .pz-nav-link {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--pz-font-sans);
+    font-size: var(--pz-text-sm);
+    font-weight: var(--pz-weight-medium);
+    color: var(--pz-color-text-secondary);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--pz-radius-md);
+    transition: color 0.15s ease, background-color 0.15s ease;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  .pz-nav-link:hover {
+    color: var(--pz-color-text-primary);
+    background-color: var(--pz-color-bg-secondary);
+  }
+  .pz-nav-link:focus-visible {
+    outline: 2px solid var(--pz-color-primary);
+    outline-offset: 2px;
+  }
+  .pz-nav-link[data-active="true"] {
+    color: var(--pz-color-primary);
+    background-color: var(--pz-color-primary-light);
+  }
+
+  /* === Footer link styles === */
+  .pz-footer-link {
+    font-family: var(--pz-font-sans);
+    font-size: var(--pz-text-sm);
+    color: var(--pz-color-text-secondary);
+    transition: color 0.15s ease;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .pz-footer-link:hover { color: var(--pz-color-primary); }
+  .pz-footer-link:focus-visible {
+    outline: 2px solid var(--pz-color-primary);
+    outline-offset: 2px;
+  }
+
+  /* === Sidebar styles (flex child, not fixed) === */
+  .pz-sidebar-wrapper {
+    position: relative;
+    width: 240px;
+    flex-shrink: 0;
+    z-index: 40;
+    transition: width 0.2s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  .pz-sidebar-wrapper[data-collapsed="true"] {
+    width: 36px;
+  }
+  .pz-sidebar {
+    background-color: var(--pz-color-bg);
+    border-right: 1px solid var(--pz-color-border);
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0.75rem 0.5rem;
+    transition: opacity 0.15s ease;
+  }
+  .pz-sidebar-wrapper[data-collapsed="true"] .pz-sidebar {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .pz-sidebar-toggle {
+    position: absolute;
+    right: -12px;
+    top: 20px;
+    width: 24px;
+    height: 24px;
+    border-radius: var(--pz-radius-full);
+    background-color: var(--pz-color-bg);
+    border: 1px solid var(--pz-color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--pz-color-text-secondary);
+    transition: all 0.15s ease;
+    z-index: 45;
+  }
+  .pz-sidebar-toggle:hover {
+    color: var(--pz-color-primary);
+    border-color: var(--pz-color-primary-border);
+  }
+  .pz-sidebar-toggle svg {
+    transition: transform 0.2s ease;
+  }
+  .pz-sidebar-wrapper[data-collapsed="true"] .pz-sidebar-toggle svg {
+    transform: rotate(180deg);
+  }
+
+  /* === Accordion menu styles === */
+  .pz-sidebar-section {
+    margin-bottom: 0.25rem;
+  }
+  .pz-sidebar-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--pz-font-sans);
+    font-size: var(--pz-text-sm);
+    font-weight: var(--pz-weight-semibold);
+    color: var(--pz-color-text-primary);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--pz-radius-md);
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.15s ease;
+  }
+  .pz-sidebar-title:hover {
+    background-color: var(--pz-color-bg-secondary);
+  }
+  .pz-sidebar-title .pz-chevron {
+    margin-left: auto;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+  .pz-sidebar-section[data-expanded="false"] .pz-chevron {
+    transform: rotate(-90deg);
+  }
+  .pz-sidebar-children {
+    overflow: hidden;
+    max-height: 500px;
+    transition: max-height 0.25s ease;
+  }
+  .pz-sidebar-section[data-expanded="false"] .pz-sidebar-children {
+    max-height: 0;
+  }
+  .pz-sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--pz-font-sans);
+    font-size: var(--pz-text-sm);
+    font-weight: var(--pz-weight-normal);
+    color: var(--pz-color-text-secondary);
+    padding: 0.375rem 0.75rem 0.375rem 2rem;
+    border-radius: var(--pz-radius-md);
+    transition: color 0.15s ease, background-color 0.15s ease;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .pz-sidebar-link:hover {
+    color: var(--pz-color-text-primary);
+    background-color: var(--pz-color-bg-secondary);
+  }
+  .pz-sidebar-link:focus-visible {
+    outline: 2px solid var(--pz-color-primary);
+    outline-offset: 2px;
+  }
+  .pz-sidebar-link[data-active="true"] {
+    color: var(--pz-color-primary);
+    background-color: var(--pz-color-primary-light);
+    font-weight: var(--pz-weight-medium);
+  }
+
+  /* === Main content area: scrollable, flex child next to sidebar === */
+  .pz-main-area {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .pz-main-content {
+    flex: 1;
+    padding: 1.5rem 2rem;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pz-nav-link, .pz-footer-link, .pz-sidebar-link,
+    .pz-sidebar-wrapper, .pz-main-area,
+    .pz-sidebar-children, .pz-sidebar-title .pz-chevron {
+      transition: none;
+    }
+  }
+
+
+      /* === Page-specific styles === */
+      /* Upload dropzone */
+      .pz-conv-upload {
+        width: 100%;
+      }
+      .pz-conv-upload-zone {
+        border: 2px dashed var(--pz-color-border-strong);
+        border-radius: var(--pz-radius-lg);
+        padding: 3rem 2rem;
+        text-align: center;
+        cursor: pointer;
+        transition: border-color 0.15s ease, background-color 0.15s ease;
+        background-color: var(--pz-color-bg-secondary);
+      }
+      .pz-conv-upload-zone:hover {
+        border-color: var(--pz-color-primary);
+        background-color: var(--pz-color-primary-lightest);
+      }
+      .pz-conv-upload-zone.pz-dragover {
+        border-color: var(--pz-color-primary);
+        background-color: var(--pz-color-primary-light);
+      }
+
+      /* Conversion settings panel */
+      .pz-conv-settings {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+      }
+      .pz-conv-settings-section {
+        padding-bottom: 1.25rem;
+        border-bottom: 1px solid var(--pz-color-border-light);
+      }
+      .pz-conv-settings-section:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+      .pz-conv-settings-label {
+        font-family: var(--pz-font-sans);
+        font-size: var(--pz-text-xs);
+        font-weight: var(--pz-weight-semibold);
+        color: var(--pz-color-text-secondary);
+        margin-bottom: 0.625rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      /* Target format grid */
+      .pz-conv-format-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .pz-conv-format-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 64px;
+        font-family: var(--pz-font-sans);
+        font-size: var(--pz-text-sm);
+        font-weight: var(--pz-weight-medium);
+        color: var(--pz-color-text-secondary);
+        background-color: var(--pz-color-bg-secondary);
+        border: 1px solid var(--pz-color-border);
+        border-radius: var(--pz-radius-md);
+        padding: 0.5rem 0.875rem;
+        cursor: pointer;
+        transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+        user-select: none;
+      }
+      .pz-conv-format-btn:hover {
+        border-color: var(--pz-color-primary-border);
+        color: var(--pz-color-primary);
+      }
+      .pz-conv-format-btn--active {
+        background-color: var(--pz-color-primary);
+        color: var(--pz-color-text-inverse);
+        border-color: var(--pz-color-primary);
+      }
+      .pz-conv-format-btn--active:hover {
+        background-color: var(--pz-color-primary-hover);
+        color: var(--pz-color-text-inverse);
+      }
+      .pz-conv-format-desc {
+        font-family: var(--pz-font-sans);
+        font-size: var(--pz-text-xs);
+        color: var(--pz-color-text-tertiary);
+        margin-top: 0.5rem;
+        line-height: var(--pz-leading-normal);
+      }
+
+      /* Quality slider */
+      .pz-conv-quality {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .pz-conv-quality-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .pz-conv-slider {
+        flex: 1;
+        max-width: 280px;
+        accent-color: var(--pz-color-primary);
+        cursor: pointer;
+      }
+      .pz-conv-quality-value {
+        font-family: var(--pz-font-mono);
+        font-size: var(--pz-text-sm);
+        font-weight: var(--pz-weight-medium);
+        color: var(--pz-color-primary);
+        min-width: 44px;
+        text-align: right;
+      }
+      .pz-conv-quality-hint {
+        font-family: var(--pz-font-sans);
+        font-size: var(--pz-text-xs);
+        color: var(--pz-color-text-tertiary);
+      }
+
+      /* Adjust options */
+      .pz-conv-options {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .pz-conv-option-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+      .pz-conv-option-label {
+        font-family: var(--pz-font-sans);
+        font-size: var(--pz-text-sm);
+        color: var(--pz-color-text-primary);
+        font-weight: var(--pz-weight-medium);
+      }
+      .pz-conv-color-picker {
+        width: 40px;
+        height: 32px;
+        padding: 2px;
+        border: 1px solid var(--pz-color-border);
+        border-radius: var(--pz-radius-md);
+        background-color: var(--pz-color-surface);
+        cursor: pointer;
+        outline: none;
+      }
+      .pz-conv-color-picker:focus {
+        border-color: var(--pz-color-primary);
+        box-shadow: 0 0 0 3px var(--pz-color-primary-lighter);
+      }
+      .pz-conv-resize {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+      .pz-conv-resize input[type="number"] {
+        width: 80px;
+        font-family: var(--pz-font-mono);
+        font-size: var(--pz-text-sm);
+        color: var(--pz-color-text-primary);
+        background-color: var(--pz-color-surface);
+        border: 1px solid var(--pz-color-border);
+        border-radius: var(--pz-radius-md);
+        padding: 0.375rem 0.5rem;
+        outline: none;
+        transition: border-color 0.15s ease;
+      }
+      .pz-conv-resize input[type="number"]:focus {
+        border-color: var(--pz-color-primary);
+        box-shadow: 0 0 0 3px var(--pz-color-primary-lighter);
+      }
+      .pz-conv-resize input[type="number"]:disabled {
+        background-color: var(--pz-color-bg-tertiary);
+        color: var(--pz-color-text-tertiary);
+        cursor: not-allowed;
+      }
+      .pz-conv-resize-x {
+        font-family: var(--pz-font-mono);
+        font-size: var(--pz-text-sm);
+        color: var(--pz-color-text-tertiary);
+      }
+      .pz-conv-checkbox-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-family: var(--pz-font-sans);
+        font-size: var(--pz-text-xs);
+        color: var(--pz-color-text-secondary);
+        cursor: pointer;
+        user-select: none;
+      }
+      .pz-conv-checkbox-label input {
+        accent-color: var(--pz-color-primary);
+        cursor: pointer;
+      }
+
+      /* Action buttons */
+      .pz-conv-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.625rem;
+      }
+
+      /* File list */
+      .pz-conv-file-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.625rem;
+      }
+      .pz-conv-file-item {
+        display: flex;
+        align-items: center;
+        gap: 0.875rem;
+        padding: 0.75rem;
+        background-color: var(--pz-color-bg-secondary);
+        border: 1px solid var(--pz-color-border);
+        border-radius: var(--pz-radius-md);
+        transition: border-color 0.15s ease;
+      }
+      .pz-conv-file-item:hover {
+        border-color: var(--pz-color-border-strong);
+      }
+      .pz-conv-thumb {
+        flex-shrink: 0;
+        width: 56px;
+        height: 56px;
+        border-radius: var(--pz-radius-md);
+        border: 1px solid var(--pz-color-border);
+        background-color: var(--pz-color-bg-tertiary);
+        object-fit: contain;
+        overflow: hidden;
+      }
+      .pz-conv-file-info {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+      .pz-conv-file-name {
+        font-family: var(--pz-font-sans);
+        font-size: var(--pz-text-sm);
+        font-weight: var(--pz-weight-medium);
+        color: var(--pz-color-text-primary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .pz-conv-file-meta {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+      .pz-conv-format-badge {
+        display: inline-flex;
+        align-items: center;
+        font-family: var(--pz-font-mono);
+        font-size: var(--pz-text-xs);
+        font-weight: var(--pz-weight-medium);
+        padding: 0.125rem 0.5rem;
+        border-radius: var(--pz-radius-full);
+        background-color: var(--pz-color-bg-tertiary);
+        color: var(--pz-color-text-secondary);
+        white-space: nowrap;
+      }
+      .pz-conv-format-badge--original {
+        background-color: var(--pz-color-bg-tertiary);
+        color: var(--pz-color-text-secondary);
+      }
+      .pz-conv-format-badge--converted {
+        background-color: var(--pz-color-primary-light);
+        color: var(--pz-color-primary);
+      }
+      .pz-conv-file-size {
+        font-family: var(--pz-font-mono);
+        font-size: var(--pz-text-xs);
+        color: var(--pz-color-text-tertiary);
+      }
+      .pz-conv-arrow {
+        flex-shrink: 0;
+        color: var(--pz-color-text-tertiary);
+        display: inline-flex;
+        align-items: center;
+      }
+      .pz-conv-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-family: var(--pz-font-sans);
+        font-size: var(--pz-text-xs);
+        font-weight: var(--pz-weight-medium);
+        padding: 0.125rem 0.5rem;
+        border-radius: var(--pz-radius-full);
+        white-space: nowrap;
+      }
+      .pz-conv-status--pending {
+        background-color: var(--pz-color-bg-tertiary);
+        color: var(--pz-color-text-secondary);
+      }
+      .pz-conv-status--converting {
+        background-color: var(--pz-state-info-bg);
+        color: var(--pz-state-info);
+      }
+      .pz-conv-status--success {
+        background-color: var(--pz-state-success-bg);
+        color: var(--pz-state-success);
+      }
+      .pz-conv-status--error {
+        background-color: var(--pz-state-error-bg);
+        color: var(--pz-state-error);
+      }
+      .pz-conv-file-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        flex-shrink: 0;
+      }
+      .pz-conv-download-btn, .pz-conv-remove-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: var(--pz-radius-md);
+        border: 1px solid var(--pz-color-border);
+        background-color: var(--pz-color-surface);
+        color: var(--pz-color-text-secondary);
+        cursor: pointer;
+        transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+      }
+      .pz-conv-download-btn:hover {
+        border-color: var(--pz-color-primary-border);
+        color: var(--pz-color-primary);
+        background-color: var(--pz-color-primary-lightest);
+      }
+      .pz-conv-remove-btn:hover {
+        border-color: var(--pz-state-error);
+        color: var(--pz-state-error);
+        background-color: var(--pz-state-error-bg);
+      }
+      .pz-conv-file-item-error {
+        font-family: var(--pz-font-sans);
+        font-size: var(--pz-text-xs);
+        color: var(--pz-state-error);
+        margin-top: 0.25rem;
+      }
+      .pz-conv-empty {
+        text-align: center;
+        padding: 2rem 1rem;
+        font-family: var(--pz-font-sans);
+        font-size: var(--pz-text-sm);
+        color: var(--pz-color-text-tertiary);
+      }
+
+      /* Privacy callout */
+      .pz-conv-privacy {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 1rem 1.25rem;
+        background-color: var(--pz-state-info-bg);
+        border: 1px solid var(--pz-state-info-border);
+        border-radius: var(--pz-radius-lg);
+      }
+      .pz-conv-privacy-icon {
+        flex-shrink: 0;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--pz-state-info);
+        color: var(--pz-color-text-inverse);
+        border-radius: var(--pz-radius-full);
+        font-size: 18px;
+      }
+      .pz-conv-privacy-title {
+        font-family: var(--pz-font-sans);
+        font-size: var(--pz-text-sm);
+        font-weight: var(--pz-weight-semibold);
+        color: var(--pz-color-text-primary);
+        margin-bottom: 0.25rem;
+      }
+      .pz-conv-privacy-text {
+        font-family: var(--pz-font-sans);
+        font-size: var(--pz-text-sm);
+        color: var(--pz-color-text-secondary);
+        line-height: var(--pz-leading-normal);
+      }
+
+      /* Reference table */
+      .pz-conv-ref-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-family: var(--pz-font-sans);
+        font-size: var(--pz-text-sm);
+      }
+      .pz-conv-ref-table thead th {
+        background-color: var(--pz-color-bg-tertiary);
+        color: var(--pz-color-text-primary);
+        font-weight: var(--pz-weight-semibold);
+        font-size: var(--pz-text-xs);
+        text-align: left;
+        padding: 0.625rem 0.75rem;
+        border-bottom: 1px solid var(--pz-color-border);
+        white-space: nowrap;
+      }
+      .pz-conv-ref-table thead th:first-child { border-top-left-radius: var(--pz-radius-md); }
+      .pz-conv-ref-table thead th:last-child { border-top-right-radius: var(--pz-radius-md); }
+      .pz-conv-ref-table tbody td {
+        padding: 0.625rem 0.75rem;
+        border-bottom: 1px solid var(--pz-color-border-light);
+        color: var(--pz-color-text-secondary);
+        vertical-align: middle;
+      }
+      .pz-conv-ref-table tbody tr:last-child td { border-bottom: none; }
+      .pz-conv-ref-table tbody tr:hover td { background-color: var(--pz-color-bg-secondary); }
+      .pz-conv-ref-table .pz-conv-ref-format {
+        font-family: var(--pz-font-mono);
+        font-weight: var(--pz-weight-semibold);
+        color: var(--pz-color-primary);
+      }
+
+      /* FAQ accordion (native details) */
+      .pz-faq > summary { list-style: none; }
+      .pz-faq > summary::-webkit-details-marker { display: none; }
+      .pz-faq .pz-faq-chevron { transition: transform 0.2s ease; }
+      .pz-faq[open] .pz-faq-chevron { transform: rotate(180deg); }
+
+      @media (prefers-reduced-motion: reduce) {
+        .pz-conv-upload-zone, .pz-conv-format-btn, .pz-conv-download-btn,
+        .pz-conv-remove-btn, .pz-faq-chevron { transition: none; }
+      }
+    </style>
+
+    <!-- ==================== FIXED HEADER (full width) ==================== -->
+    <header class="flex-shrink-0" style="background-color: var(--pz-color-bg); border-bottom: 1px solid var(--pz-color-border); height: 64px; position: relative; z-index: 50;">
+  <div class="h-16 flex items-center justify-between gap-8" style="padding-left: 2rem; padding-right: 2rem;">
+    <div class="flex items-center gap-8 min-w-0">
+      <a href="/" data-dom-id="logo-link" class="flex items-center gap-2 shrink-0" style="color: var(--pz-color-primary); font-family: var(--pz-font-display); font-weight: 700; font-size: var(--pz-text-xl); letter-spacing: -0.02em; text-decoration: none;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+        </svg>
+        <span>PanziPool</span>
+      </a>
+      <nav class="flex items-center gap-1" role="navigation" aria-label="主导航">
+        <a href="/" data-nav-key="home" data-dom-id="nav-home" class="pz-nav-link">首页</a>
+        <a href="/dev-tools" data-nav-key="dev-tools" data-dom-id="nav-dev-tools" class="pz-nav-link" data-active="true" aria-current="page">开发者工具</a>
+        <a href="/about" data-nav-key="about" data-dom-id="nav-about" class="pz-nav-link">关于我们</a>
+        <a href="/privacy" data-nav-key="privacy" data-dom-id="nav-privacy" class="pz-nav-link">隐私政策</a>
+      </nav>
+    </div>
+    <div class="relative shrink-0" style="max-width: 240px;">
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--pz-color-text-tertiary);" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"/>
+        <path d="m21 21-4.3-4.3"/>
+      </svg>
+      <input type="text" placeholder="搜索工具..." class="pz-input w-full pl-9" style="max-width: 240px;" aria-label="搜索工具">
+    </div>
+  </div>
+</header>
+
+    <!-- ==================== APP BODY (sidebar + scrollable main, between header and footer) ==================== -->
+    <div class="pz-app" style="flex:1; display:flex; overflow:hidden; min-height:0;">
+  <div class="pz-sidebar-wrapper" id="pz-sidebar-wrapper" data-collapsed="false">
+    <div class="pz-sidebar-toggle" id="pz-sidebar-toggle" role="button" tabindex="0" aria-label="折叠/展开侧边栏">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </div>
+    <aside class="pz-sidebar" aria-label="工具导航">
+      <div class="pz-sidebar-section" data-expanded="false" data-section-id="dev-tools">
+        <div class="pz-sidebar-title" data-toggle="dev-tools" role="button" tabindex="0">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--pz-color-primary);" aria-hidden="true">
+            <polyline points="16 18 22 12 16 6"/>
+            <polyline points="8 6 2 12 8 18"/>
+          </svg>
+          <span>开发者工具</span>
+          <svg class="pz-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--pz-color-text-tertiary);" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+        <div class="pz-sidebar-children">
+          <div class="flex flex-col gap-0.5 mt-1">
+            <a href="/json-formatter" data-dom-id="sidebar-json" class="pz-sidebar-link">JSON格式化</a>
+            <a href="/regex-tester" data-dom-id="sidebar-regex" class="pz-sidebar-link">正则测试</a>
+            <a href="/timestamp" data-dom-id="sidebar-timestamp" class="pz-sidebar-link">时间戳转换</a>
+            <a href="/url-encode" data-dom-id="sidebar-url" class="pz-sidebar-link">URL编码解码</a>
+            <a href="/jwt-decoder" data-dom-id="sidebar-jwt" class="pz-sidebar-link">JWT解析</a>
+            <a href="/base64" data-dom-id="sidebar-base64" class="pz-sidebar-link">Base64编码</a>
+            <a href="/hash" data-dom-id="sidebar-hash" class="pz-sidebar-link">哈希计算</a>
+          </div>
+        </div>
+      </div>
+      <div class="pz-sidebar-section" data-expanded="true" data-section-id="image-tools">
+        <div class="pz-sidebar-title" data-toggle="image-tools" role="button" tabindex="0">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--pz-color-primary);" aria-hidden="true">
+            <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+            <circle cx="9" cy="9" r="2"/>
+            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+          </svg>
+          <span>图片工具</span>
+          <svg class="pz-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--pz-color-text-tertiary);" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+        <div class="pz-sidebar-children">
+          <div class="flex flex-col gap-0.5 mt-1">
+            <a href="/image-compress" data-dom-id="sidebar-compress" class="pz-sidebar-link">图片压缩</a>
+            <a href="/image-crop" data-dom-id="sidebar-crop" class="pz-sidebar-link">图片裁剪</a>
+            <a href="/image-convert" data-dom-id="sidebar-convert" class="pz-sidebar-link" data-active="true">格式转换</a>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+      <!-- ===== SCROLLABLE MAIN CONTENT ===== -->
+      <div class="pz-main-area" id="pz-main-area">
+        <main class="pz-main-content">
+
+      <!-- 图片格式转换 -->
+
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm mb-6" aria-label="面包屑">
+        <a href="/" class="pz-footer-link">首页</a>
+        <span style="color: var(--pz-color-text-tertiary);">/</span>
+        <a href="/dev-tools" class="pz-footer-link">开发者工具</a>
+        <span style="color: var(--pz-color-text-tertiary);">/</span>
+        <span style="color: var(--pz-color-text-primary); font-weight: 500;">图片格式转换</span>
+      </nav>
+
+      <!-- Tool Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div class="min-w-0">
+          <h1 class="text-2xl font-bold" style="color: var(--pz-color-text-primary); font-family: var(--pz-font-display); text-wrap: balance; word-break: keep-all;">图片格式转换</h1>
+          <p class="text-sm mt-1" style="color: var(--pz-color-text-secondary);">在线图片格式转换工具，支持JPG、PNG、WebP、GIF、BMP互转，可调整质量，本地处理不上传服务器</p>
+        </div>
+        <div class="flex items-center gap-4 shrink-0">
+          <div class="flex items-center gap-3 text-sm" style="color: var(--pz-color-text-tertiary);">
+            <span class="flex items-center gap-1 tabular-nums whitespace-nowrap"><i data-lucide="eye" class="w-4 h-4"></i>4.2k 次使用</span>
+            <span class="flex items-center gap-1 tabular-nums whitespace-nowrap"><i data-lucide="heart" class="w-4 h-4"></i>208</span>
+          </div>
+          <button type="button" class="pz-btn-secondary whitespace-nowrap"><i data-lucide="heart" class="w-4 h-4"></i>点赞</button>
+        </div>
+      </div>
+
+      <!-- 1. Upload Dropzone -->
+      <div class="pz-card p-4 mb-6" id="pz-conv-upload-section">
+        <div class="flex items-center gap-2 mb-3">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--pz-color-primary);" aria-hidden="true">
+            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+          <h2 class="text-base font-semibold" style="color: var(--pz-color-text-primary);">上传图片</h2>
+        </div>
+        <input type="file" id="pz-conv-file-input" class="hidden" accept="image/jpeg,image/png,image/gif,image/webp,image/bmp" multiple aria-hidden="true">
+        <div id="pz-conv-upload-zone" class="pz-conv-upload-zone pz-conv-upload" role="button" tabindex="0" aria-label="上传图片">
+          <div class="flex flex-col items-center gap-3">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--pz-color-text-tertiary);" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <div class="text-sm font-medium" style="color: var(--pz-color-text-primary);">拖拽图片到此处或点击上传</div>
+            <div class="text-xs" style="color: var(--pz-color-text-tertiary);">支持 JPG、PNG、WebP、GIF、BMP 格式，可批量上传</div>
+          </div>
+        </div>
+        <p class="text-xs mt-3" style="color: var(--pz-color-text-tertiary);">图片不会上传到服务器，所有转换在浏览器本地完成。</p>
+      </div>
+
+      <!-- 2. Conversion Settings Panel (hidden until files uploaded) -->
+      <div class="pz-card p-4 mb-6 hidden" id="pz-conv-settings-section">
+        <div class="flex items-center gap-2 mb-4">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--pz-color-primary);" aria-hidden="true">
+            <path d="M20 7h-9"/>
+            <path d="M14 17H5"/>
+            <circle cx="17" cy="17" r="3"/>
+            <circle cx="7" cy="7" r="3"/>
+          </svg>
+          <h2 class="text-base font-semibold" style="color: var(--pz-color-text-primary);">转换设置</h2>
+        </div>
+        <div class="pz-conv-settings">
+          <!-- Target Format -->
+          <div class="pz-conv-settings-section">
+            <div class="pz-conv-settings-label">目标格式</div>
+            <div class="pz-conv-format-grid" id="pz-conv-format-grid">
+              <button type="button" class="pz-conv-format-btn pz-conv-format-btn--active" data-format="jpeg" data-ext="jpg">JPG</button>
+              <button type="button" class="pz-conv-format-btn" data-format="png" data-ext="png">PNG</button>
+              <button type="button" class="pz-conv-format-btn" data-format="webp" data-ext="webp">WebP</button>
+              <button type="button" class="pz-conv-format-btn" data-format="gif" data-ext="gif">GIF</button>
+              <button type="button" class="pz-conv-format-btn" data-format="bmp" data-ext="bmp">BMP</button>
+            </div>
+            <div class="pz-conv-format-desc" id="pz-conv-format-desc">JPG: 有损压缩，适合照片</div>
+          </div>
+
+          <!-- Quality Settings -->
+          <div class="pz-conv-settings-section" id="pz-conv-quality-section">
+            <div class="pz-conv-settings-label">质量设置</div>
+            <div class="pz-conv-quality">
+              <div class="pz-conv-quality-row">
+                <input type="range" id="pz-conv-quality-slider" class="pz-conv-slider" min="1" max="100" value="90">
+                <span class="pz-conv-quality-value" id="pz-conv-quality-value">90%</span>
+              </div>
+              <div class="pz-conv-quality-hint">质量越高文件越大，推荐 80%-95%</div>
+            </div>
+          </div>
+
+          <!-- Adjust Options -->
+          <div class="pz-conv-settings-section">
+            <div class="pz-conv-settings-label">调整选项</div>
+            <div class="pz-conv-options">
+              <div class="pz-conv-option-row" id="pz-conv-bg-row">
+                <span class="pz-conv-option-label">背景色</span>
+                <input type="color" id="pz-conv-bg-color" class="pz-conv-color-picker" value="#ffffff" aria-label="背景颜色">
+                <span class="text-xs" style="color: var(--pz-color-text-tertiary);">透明区域将填充此颜色（JPG/BMP 不支持透明）</span>
+              </div>
+              <div class="pz-conv-option-row">
+                <label class="pz-conv-checkbox-label">
+                  <input type="checkbox" id="pz-conv-resize-enable">
+                  <span>调整尺寸</span>
+                </label>
+                <div class="pz-conv-resize" id="pz-conv-resize-inputs" style="display:none;">
+                  <input type="number" id="pz-conv-resize-w" placeholder="宽" min="1" disabled>
+                  <span class="pz-conv-resize-x">x</span>
+                  <input type="number" id="pz-conv-resize-h" placeholder="高" min="1" disabled>
+                  <label class="pz-conv-checkbox-label">
+                    <input type="checkbox" id="pz-conv-keep-ratio" checked>
+                    <span>保持比例</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="pz-conv-settings-section">
+            <div class="pz-conv-settings-label">操作</div>
+            <div class="pz-conv-actions">
+              <button type="button" id="pz-conv-start" class="pz-btn-primary whitespace-nowrap">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                开始转换
+              </button>
+              <button type="button" id="pz-conv-download-all" class="pz-btn-secondary whitespace-nowrap" style="display:none;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                全部下载
+              </button>
+              <button type="button" id="pz-conv-clear" class="pz-btn-secondary whitespace-nowrap">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                清空列表
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. File List & Conversion Results (hidden until files uploaded) -->
+      <div class="pz-card p-4 mb-6 hidden" id="pz-conv-list-section">
+        <div class="flex items-center gap-2 mb-4">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--pz-color-primary);" aria-hidden="true">
+            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+          <h2 class="text-base font-semibold" style="color: var(--pz-color-text-primary);">文件列表</h2>
+          <span class="pz-badge pz-badge-neutral" id="pz-conv-file-count">0 个文件</span>
+        </div>
+        <div class="pz-conv-file-list" id="pz-conv-file-list"></div>
+      </div>
+
+      <!-- 4. Privacy Callout -->
+      <div class="pz-conv-privacy mb-6">
+        <div class="pz-conv-privacy-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div>
+          <div class="pz-conv-privacy-title">🔒 本地处理保障</div>
+          <div class="pz-conv-privacy-text">所有图片格式转换在浏览器本地完成，图片不会上传到服务器，确保您的隐私安全。</div>
+        </div>
+      </div>
+
+      <!-- 5. Format Reference Table -->
+      <div class="pz-card p-4 mb-6">
+        <div class="flex items-center gap-2 mb-4">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--pz-color-primary);" aria-hidden="true">
+            <path d="M3 3v18h18"/>
+            <path d="m19 9-5 5-4-4-3 3"/>
+          </svg>
+          <h2 class="text-base font-semibold" style="color: var(--pz-color-text-primary);">格式参考表</h2>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="pz-conv-ref-table">
+            <thead>
+              <tr>
+                <th>格式</th>
+                <th>全称</th>
+                <th>压缩方式</th>
+                <th>透明支持</th>
+                <th>动画支持</th>
+                <th>适用场景</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="pz-conv-ref-format">JPG</td>
+                <td>JPEG</td>
+                <td>有损</td>
+                <td>❌</td>
+                <td>❌</td>
+                <td>照片、复杂色彩图像</td>
+              </tr>
+              <tr>
+                <td class="pz-conv-ref-format">PNG</td>
+                <td>Portable Network Graphics</td>
+                <td>无损</td>
+                <td>✅</td>
+                <td>❌</td>
+                <td>图标、截图、需要透明</td>
+              </tr>
+              <tr>
+                <td class="pz-conv-ref-format">WebP</td>
+                <td>Web Picture</td>
+                <td>有损/无损</td>
+                <td>✅</td>
+                <td>✅</td>
+                <td>网页图片、替代JPG/PNG</td>
+              </tr>
+              <tr>
+                <td class="pz-conv-ref-format">GIF</td>
+                <td>Graphics Interchange Format</td>
+                <td>无损</td>
+                <td>✅</td>
+                <td>✅</td>
+                <td>简单动画、表情图</td>
+              </tr>
+              <tr>
+                <td class="pz-conv-ref-format">BMP</td>
+                <td>Bitmap</td>
+                <td>无压缩</td>
+                <td>❌</td>
+                <td>❌</td>
+                <td>Windows原生位图</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 6. FAQ Section -->
+      <section class="py-8">
+        <h2 class="text-xl font-semibold mb-4" style="color: var(--pz-color-text-primary); font-family: var(--pz-font-display); text-wrap: balance;">常见问题</h2>
+        <div class="flex flex-col gap-3">
+          <details class="pz-faq pz-card pz-card-hover p-4" open>
+            <summary class="flex items-center justify-between cursor-pointer">
+              <span class="text-sm font-medium" style="color: var(--pz-color-text-primary);">支持哪些图片格式互转？</span>
+              <i data-lucide="chevron-down" class="w-4 h-4 pz-faq-chevron shrink-0" style="color: var(--pz-color-text-tertiary);"></i>
+            </summary>
+            <p class="text-sm mt-3" style="color: var(--pz-color-text-secondary); line-height: 1.6;">支持 JPG、PNG、WebP、GIF、BMP 五种常见格式之间的相互转换。您可以从任意一种格式转换为其他四种格式，例如将 PNG 转为 JPG 以减小文件体积，或将 JPG 转为 WebP 以获得更好的网页加载性能。所有转换均在浏览器本地通过 Canvas API 完成。</p>
+          </details>
+          <details class="pz-faq pz-card pz-card-hover p-4">
+            <summary class="flex items-center justify-between cursor-pointer">
+              <span class="text-sm font-medium" style="color: var(--pz-color-text-primary);">转换后图片质量会下降吗？</span>
+              <i data-lucide="chevron-down" class="w-4 h-4 pz-faq-chevron shrink-0" style="color: var(--pz-color-text-tertiary);"></i>
+            </summary>
+            <div class="text-sm mt-3 flex flex-col gap-2" style="color: var(--pz-color-text-secondary); line-height: 1.6;">
+              <p>取决于目标格式和压缩设置。JPG 和 WebP 为有损格式，可通过质量滑块控制压缩率（1% - 100%），推荐设置在 80%-95% 之间以平衡质量与体积。</p>
+              <p><strong style="color: var(--pz-color-text-primary);">PNG 和 GIF：</strong>无损格式，转换后不会损失画质，但文件体积可能较大。</p>
+              <p><strong style="color: var(--pz-color-text-primary);">BMP：</strong>无压缩位图，画质完全保留，但文件体积最大。</p>
+              <p><strong style="color: var(--pz-color-text-primary);">WebP：</strong>同时支持有损和无损压缩，是现代网页的最佳选择。</p>
+            </div>
+          </details>
+          <details class="pz-faq pz-card pz-card-hover p-4">
+            <summary class="flex items-center justify-between cursor-pointer">
+              <span class="text-sm font-medium" style="color: var(--pz-color-text-primary);">为什么转JPG后背景变白了？</span>
+              <i data-lucide="chevron-down" class="w-4 h-4 pz-faq-chevron shrink-0" style="color: var(--pz-color-text-tertiary);"></i>
+            </summary>
+            <div class="text-sm mt-3 flex flex-col gap-2" style="color: var(--pz-color-text-secondary); line-height: 1.6;">
+              <p>JPG 格式不支持透明通道（Alpha 通道），转换时透明区域会填充为背景色（默认白色）。</p>
+              <p>如果您希望保留透明背景，请将目标格式选择为 <strong style="color: var(--pz-color-primary);">PNG</strong>、<strong style="color: var(--pz-color-primary);">WebP</strong> 或 <strong style="color: var(--pz-color-primary);">GIF</strong>，这三种格式均支持透明通道。</p>
+              <p>如需自定义背景色，可在"调整选项"中通过颜色选择器设置任意颜色，透明区域将填充为您选择的颜色。</p>
+            </div>
+          </details>
+          <details class="pz-faq pz-card pz-card-hover p-4">
+            <summary class="flex items-center justify-between cursor-pointer">
+              <span class="text-sm font-medium" style="color: var(--pz-color-text-primary);">可以批量转换吗？</span>
+              <i data-lucide="chevron-down" class="w-4 h-4 pz-faq-chevron shrink-0" style="color: var(--pz-color-text-tertiary);"></i>
+            </summary>
+            <div class="text-sm mt-3 flex flex-col gap-2" style="color: var(--pz-color-text-secondary); line-height: 1.6;">
+              <p>可以。支持一次上传多张图片，统一设置目标格式和质量，批量转换并分别下载。</p>
+              <p>上传时可在文件选择对话框中按住 Ctrl（Windows）或 Cmd（Mac）多选文件，也可直接拖拽多个文件到上传区域。转换完成后，可点击"全部下载"依次下载所有转换后的图片，或点击每个文件右侧的下载按钮单独下载。</p>
+            </div>
+          </details>
+          <details class="pz-faq pz-card pz-card-hover p-4">
+            <summary class="flex items-center justify-between cursor-pointer">
+              <span class="text-sm font-medium" style="color: var(--pz-color-text-primary);">WebP格式有什么优势？</span>
+              <i data-lucide="chevron-down" class="w-4 h-4 pz-faq-chevron shrink-0" style="color: var(--pz-color-text-tertiary);"></i>
+            </summary>
+            <div class="text-sm mt-3 flex flex-col gap-2" style="color: var(--pz-color-text-secondary); line-height: 1.6;">
+              <p>WebP 是 Google 推出的现代图片格式，相比 JPG 体积更小，同时支持有损/无损压缩和透明通道，是目前网页图片的最优选择。</p>
+              <p><strong style="color: var(--pz-color-text-primary);">体积更小：</strong>同等画质下，WebP 比 JPG 小 25%-35%，能显著提升网页加载速度。</p>
+              <p><strong style="color: var(--pz-color-text-primary);">功能更全：</strong>支持透明通道（替代 PNG）和动画（替代 GIF），一种格式满足多种需求。</p>
+              <p><strong style="color: var(--pz-color-text-primary);">兼容性好：</strong>所有现代浏览器（Chrome、Firefox、Edge、Safari 14+）均已支持。</p>
+            </div>
+          </details>
+          <details class="pz-faq pz-card pz-card-hover p-4">
+            <summary class="flex items-center justify-between cursor-pointer">
+              <span class="text-sm font-medium" style="color: var(--pz-color-text-primary);">图片会上传到服务器吗？</span>
+              <i data-lucide="chevron-down" class="w-4 h-4 pz-faq-chevron shrink-0" style="color: var(--pz-color-text-tertiary);"></i>
+            </summary>
+            <div class="text-sm mt-3 flex flex-col gap-2" style="color: var(--pz-color-text-secondary); line-height: 1.6;">
+              <p><strong style="color: var(--pz-color-text-primary);">不会。</strong>所有格式转换完全在浏览器本地通过 Canvas API 完成，图片数据不会离开您的设备。</p>
+              <p>技术上，图片通过浏览器的 <code style="font-family: var(--pz-font-mono); color: var(--pz-color-primary);">File API</code> 读取为 <code style="font-family: var(--pz-font-mono); color: var(--pz-color-primary);">DataURL</code>，然后使用 <code style="font-family: var(--pz-font-mono); color: var(--pz-color-primary);">Canvas</code> 重新绘制并通过 <code style="font-family: var(--pz-font-mono); color: var(--pz-color-primary);">canvas.toBlob()</code> 以目标格式编码。整个过程中数据不会通过网络发送到任何服务器。</p>
+              <p>因此，即使是敏感图片，也可以放心使用本工具进行格式转换。</p>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- Ad Slot -->
+      <div class="h-24 flex items-center justify-center" style="background-color: var(--pz-color-bg-tertiary); border: 1px dashed var(--pz-color-border-strong); border-radius: var(--pz-radius-lg);">
+        <span class="text-sm" style="color: var(--pz-color-text-tertiary);">广告位</span>
+      </div>
+
+      <!-- Previous Tool Link -->
+      <div class="flex justify-start py-4">
+        <a href="/image-crop" data-dom-id="prev-crop" class="inline-flex items-center gap-1 text-sm font-medium hover:underline whitespace-nowrap" style="color: var(--pz-color-primary);"><i data-lucide="arrow-left" class="w-4 h-4"></i>上一个工具：图片裁剪</a>
+      </div>
+
+</main>
+      </div>
+    </div>
+
+    <!-- ==================== FIXED FOOTER (full width, outside .pz-app) ==================== -->
+    <footer class="flex-shrink-0" style="background-color: var(--pz-color-bg-secondary); border-top: 1px solid var(--pz-color-border);">
+  <div class="flex flex-col items-center justify-center gap-1 py-3" style="padding-left: 2rem; padding-right: 2rem;">
+    <div class="flex items-center gap-6">
+      <a href="/about" class="pz-footer-link">关于我们</a>
+      <a href="/privacy" class="pz-footer-link">隐私政策</a>
+    </div>
+    <div class="flex flex-wrap items-center justify-center gap-4 text-xs" style="color: var(--pz-color-text-tertiary); font-family: var(--pz-font-sans);">
+      <span>© 2026 PanziPool. All rights reserved.</span>
+      <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener" class="pz-footer-link" style="font-size: var(--pz-text-xs);">京ICP备2026XXXXXX号</a>
+      <a href="http://www.beian.gov.cn/" target="_blank" rel="noopener" class="pz-footer-link" style="font-size: var(--pz-text-xs);">京公网安备 110108020XXXXXX号</a>
+    </div>
+  </div>
+</footer>
+
+    <!-- ==================== SIDEBAR TOGGLE + ACCORDION SCRIPT ==================== -->
+    <script>
+  (function() {
+    var wrapper = document.getElementById("pz-sidebar-wrapper");
+    var toggle = document.getElementById("pz-sidebar-toggle");
+    if (!wrapper || !toggle) return;
+    function toggleSidebar() {
+      var collapsed = wrapper.getAttribute("data-collapsed") === "true";
+      wrapper.setAttribute("data-collapsed", collapsed ? "false" : "true");
+    }
+    toggle.addEventListener("click", toggleSidebar);
+    toggle.addEventListener("keydown", function(e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleSidebar(); }
+    });
+    var titles = document.querySelectorAll(".pz-sidebar-title[data-toggle]");
+    titles.forEach(function(title) {
+      title.addEventListener("click", function() {
+        var sectionId = title.getAttribute("data-toggle");
+        var section = document.querySelector(".pz-sidebar-section[data-section-id=\"" + sectionId + "\"]");
+        if (!section) return;
+        var isExpanded = section.getAttribute("data-expanded") === "true";
+        document.querySelectorAll(".pz-sidebar-section").forEach(function(s) {
+          s.setAttribute("data-expanded", "false");
+        });
+        if (!isExpanded) { section.setAttribute("data-expanded", "true"); }
+      });
+      title.addEventListener("keydown", function(e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); title.click(); }
+      });
+    });
+  })();
+</script>
+                <!-- ==================== IMAGE CONVERT SCRIPT ==================== -->
+    <script>
+  (function() {
+    'use strict';
+
+    // === Format metadata ===
+    var FORMAT_INFO = {
+      jpeg: { mime: 'image/jpeg', ext: 'jpg', label: 'JPG', desc: 'JPG: 有损压缩，适合照片', hasQuality: true, hasAlpha: false },
+      png:  { mime: 'image/png',  ext: 'png', label: 'PNG', desc: 'PNG: 无损压缩，支持透明', hasQuality: false, hasAlpha: true },
+      webp: { mime: 'image/webp', ext: 'webp', label: 'WebP', desc: 'WebP: 现代格式，体积更小', hasQuality: true, hasAlpha: true },
+      gif:  { mime: 'image/gif',  ext: 'gif', label: 'GIF', desc: 'GIF: 支持动画', hasQuality: false, hasAlpha: true },
+      bmp:  { mime: 'image/bmp',  ext: 'bmp', label: 'BMP', desc: 'BMP: 无压缩位图', hasQuality: false, hasAlpha: false }
+    };
+
+    // === State ===
+    var state = {
+      files: [],            // array of file objects
+      targetFormat: 'jpeg', // current target format key
+      quality: 90,          // 1-100
+      bgColor: '#ffffff',
+      resizeEnabled: false,
+      resizeW: 0,
+      resizeH: 0,
+      keepRatio: true,
+      converting: false
+    };
+    var nextId = 1;
+
+    // === DOM refs ===
+    var uploadSection = document.getElementById('pz-conv-upload-section');
+    var uploadZone = document.getElementById('pz-conv-upload-zone');
+    var fileInput = document.getElementById('pz-conv-file-input');
+    var settingsSection = document.getElementById('pz-conv-settings-section');
+    var listSection = document.getElementById('pz-conv-list-section');
+    var formatGrid = document.getElementById('pz-conv-format-grid');
+    var formatDesc = document.getElementById('pz-conv-format-desc');
+    var qualitySection = document.getElementById('pz-conv-quality-section');
+    var qualitySlider = document.getElementById('pz-conv-quality-slider');
+    var qualityValue = document.getElementById('pz-conv-quality-value');
+    var bgRow = document.getElementById('pz-conv-bg-row');
+    var bgColorInput = document.getElementById('pz-conv-bg-color');
+    var resizeEnable = document.getElementById('pz-conv-resize-enable');
+    var resizeInputs = document.getElementById('pz-conv-resize-inputs');
+    var resizeW = document.getElementById('pz-conv-resize-w');
+    var resizeH = document.getElementById('pz-conv-resize-h');
+    var keepRatio = document.getElementById('pz-conv-keep-ratio');
+    var startBtn = document.getElementById('pz-conv-start');
+    var downloadAllBtn = document.getElementById('pz-conv-download-all');
+    var clearBtn = document.getElementById('pz-conv-clear');
+    var fileListEl = document.getElementById('pz-conv-file-list');
+    var fileCountEl = document.getElementById('pz-conv-file-count');
+
+    // === Constants ===
+    var MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB per file
+    var ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'];
+
+    // === Utility ===
+    function formatBytes(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    function getExtFromName(name) {
+      var idx = name.lastIndexOf('.');
+      return idx >= 0 ? name.substring(idx + 1).toLowerCase() : '';
+    }
+
+    function stripExt(name) {
+      var idx = name.lastIndexOf('.');
+      return idx >= 0 ? name.substring(0, idx) : name;
+    }
+
+    function detectFormatKey(file) {
+      var ext = getExtFromName(file.name);
+      if (file.type === 'image/jpeg' || ext === 'jpg' || ext === 'jpeg') return 'jpeg';
+      if (file.type === 'image/png' || ext === 'png') return 'png';
+      if (file.type === 'image/webp' || ext === 'webp') return 'webp';
+      if (file.type === 'image/gif' || ext === 'gif') return 'gif';
+      if (file.type === 'image/bmp' || ext === 'bmp') return 'bmp';
+      return 'png';
+    }
+
+    // === Upload handling ===
+    uploadZone.addEventListener('click', function() { fileInput.click(); });
+    uploadZone.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
+    });
+
+    uploadZone.addEventListener('dragover', function(e) {
+      e.preventDefault(); e.stopPropagation();
+      uploadZone.classList.add('pz-dragover');
+    });
+    uploadZone.addEventListener('dragenter', function(e) {
+      e.preventDefault(); e.stopPropagation();
+      uploadZone.classList.add('pz-dragover');
+    });
+    uploadZone.addEventListener('dragleave', function(e) {
+      e.preventDefault(); e.stopPropagation();
+      uploadZone.classList.remove('pz-dragover');
+    });
+    uploadZone.addEventListener('drop', function(e) {
+      e.preventDefault(); e.stopPropagation();
+      uploadZone.classList.remove('pz-dragover');
+      var files = e.dataTransfer.files;
+      if (files && files.length > 0) { handleFiles(files); }
+    });
+
+    fileInput.addEventListener('change', function() {
+      if (fileInput.files && fileInput.files.length > 0) {
+        handleFiles(fileInput.files);
+        fileInput.value = '';
+      }
+    });
+
+    function handleFiles(fileList) {
+      var added = 0;
+      var rejected = 0;
+      var pending = [];
+      for (var i = 0; i < fileList.length; i++) {
+        var f = fileList[i];
+        if (ACCEPTED_TYPES.indexOf(f.type) === -1) {
+          rejected++;
+          continue;
+        }
+        if (f.size > MAX_FILE_SIZE) {
+          rejected++;
+          continue;
+        }
+        pending.push(f);
+        added++;
+      }
+      if (rejected > 0) {
+        alert('已跳过 ' + rejected + ' 个不支持的文件（格式不支持或超过 50MB）。');
+      }
+      if (added === 0) return;
+
+      var remaining = pending.length;
+      pending.forEach(function(f) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var fileObj = {
+            id: nextId++,
+            file: f,
+            name: f.name,
+            size: f.size,
+            type: f.type,
+            formatKey: detectFormatKey(f),
+            dataUrl: e.target.result,
+            thumbUrl: e.target.result,
+            imgWidth: 0,
+            imgHeight: 0,
+            status: 'pending', // pending, converting, success, error
+            errorMsg: '',
+            convertedBlob: null,
+            convertedUrl: null,
+            convertedSize: 0,
+            convertedExt: ''
+          };
+          // Preload image to get dimensions
+          var img = new Image();
+          img.onload = function() {
+            fileObj.imgWidth = img.naturalWidth;
+            fileObj.imgHeight = img.naturalHeight;
+          };
+          img.src = e.target.result;
+          state.files.push(fileObj);
+          remaining--;
+          if (remaining === 0) {
+            renderFileList();
+            showPanels();
+          }
+        };
+        reader.onerror = function() {
+          remaining--;
+          if (remaining === 0) {
+            renderFileList();
+            showPanels();
+          }
+        };
+        reader.readAsDataURL(f);
+      });
+    }
+
+    function showPanels() {
+      settingsSection.classList.remove('hidden');
+      listSection.classList.remove('hidden');
+    }
+
+    // === Format selection ===
+    formatGrid.addEventListener('click', function(e) {
+      var btn = e.target.closest('.pz-conv-format-btn');
+      if (!btn) return;
+      var fmt = btn.getAttribute('data-format');
+      setTargetFormat(fmt);
+    });
+
+    function setTargetFormat(fmt) {
+      state.targetFormat = fmt;
+      var btns = formatGrid.querySelectorAll('.pz-conv-format-btn');
+      btns.forEach(function(b) {
+        if (b.getAttribute('data-format') === fmt) {
+          b.classList.add('pz-conv-format-btn--active');
+        } else {
+          b.classList.remove('pz-conv-format-btn--active');
+        }
+      });
+      var info = FORMAT_INFO[fmt];
+      formatDesc.textContent = info.desc;
+      // Show/hide quality section
+      if (info.hasQuality) {
+        qualitySection.style.display = '';
+      } else {
+        qualitySection.style.display = 'none';
+      }
+      // Show/hide background color row
+      if (info.hasAlpha) {
+        bgRow.style.display = 'none';
+      } else {
+        bgRow.style.display = '';
+      }
+    }
+
+    // === Quality slider ===
+    qualitySlider.addEventListener('input', function() {
+      state.quality = parseInt(qualitySlider.value, 10);
+      qualityValue.textContent = state.quality + '%';
+    });
+
+    // === Background color ===
+    bgColorInput.addEventListener('input', function() {
+      state.bgColor = bgColorInput.value;
+    });
+
+    // === Resize option ===
+    resizeEnable.addEventListener('change', function() {
+      state.resizeEnabled = resizeEnable.checked;
+      if (state.resizeEnabled) {
+        resizeInputs.style.display = '';
+        resizeW.disabled = false;
+        resizeH.disabled = false;
+        // Pre-fill with first file dimensions if empty
+        if (state.files.length > 0 && !resizeW.value) {
+          var f = state.files[0];
+          if (f.imgWidth) {
+            resizeW.value = f.imgWidth;
+            state.resizeW = f.imgWidth;
+            resizeH.value = f.imgHeight;
+            state.resizeH = f.imgHeight;
+          }
+        }
+      } else {
+        resizeInputs.style.display = 'none';
+        resizeW.disabled = true;
+        resizeH.disabled = true;
+      }
+    });
+
+    resizeW.addEventListener('input', function() {
+      var v = parseInt(resizeW.value, 10);
+      if (isNaN(v) || v < 1) { state.resizeW = 0; return; }
+      state.resizeW = v;
+      if (state.keepRatio && state.files.length > 0) {
+        var f = state.files[0];
+        if (f.imgWidth && f.imgHeight) {
+          var ratio = f.imgWidth / f.imgHeight;
+          var newH = Math.round(v / ratio);
+          resizeH.value = newH;
+          state.resizeH = newH;
+        }
+      }
+    });
+
+    resizeH.addEventListener('input', function() {
+      var v = parseInt(resizeH.value, 10);
+      if (isNaN(v) || v < 1) { state.resizeH = 0; return; }
+      state.resizeH = v;
+      if (state.keepRatio && state.files.length > 0) {
+        var f = state.files[0];
+        if (f.imgWidth && f.imgHeight) {
+          var ratio = f.imgWidth / f.imgHeight;
+          var newW = Math.round(v * ratio);
+          resizeW.value = newW;
+          state.resizeW = newW;
+        }
+      }
+    });
+
+    keepRatio.addEventListener('change', function() {
+      state.keepRatio = keepRatio.checked;
+    });
+
+    // === Render file list ===
+    function renderFileList() {
+      fileCountEl.textContent = state.files.length + ' 个文件';
+      if (state.files.length === 0) {
+        fileListEl.innerHTML = '<div class="pz-conv-empty">暂无文件，请上传图片</div>';
+        downloadAllBtn.style.display = 'none';
+        return;
+      }
+      var html = '';
+      state.files.forEach(function(f) {
+        html += renderFileItem(f);
+      });
+      fileListEl.innerHTML = html;
+      bindFileItemEvents();
+    }
+
+    function renderFileItem(f) {
+      var info = FORMAT_INFO[f.formatKey];
+      var targetInfo = FORMAT_INFO[state.targetFormat];
+      var statusHtml = '';
+      if (f.status === 'pending') {
+        statusHtml = '<span class="pz-conv-status pz-conv-status--pending">等待中</span>';
+      } else if (f.status === 'converting') {
+        statusHtml = '<span class="pz-conv-status pz-conv-status--converting">转换中...</span>';
+      } else if (f.status === 'success') {
+        statusHtml = '<span class="pz-conv-status pz-conv-status--success"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>成功</span>';
+      } else if (f.status === 'error') {
+        statusHtml = '<span class="pz-conv-status pz-conv-status--error"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>失败</span>';
+      }
+
+      var convertedBadge = '';
+      var convertedSize = '';
+      if (f.status === 'success') {
+        convertedBadge = '<span class="pz-conv-format-badge pz-conv-format-badge--converted">' + targetInfo.label + '</span>';
+        convertedSize = '<span class="pz-conv-file-size">' + formatBytes(f.convertedSize) + '</span>';
+      } else {
+        convertedBadge = '<span class="pz-conv-format-badge pz-conv-format-badge--converted" style="opacity:0.4;">' + targetInfo.label + '</span>';
+        convertedSize = '<span class="pz-conv-file-size">-</span>';
+      }
+
+      var downloadBtn = '';
+      if (f.status === 'success') {
+        downloadBtn = '<button type="button" class="pz-conv-download-btn" data-action="download" data-id="' + f.id + '" title="下载" aria-label="下载转换后的图片"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>';
+      }
+
+      var errorHtml = '';
+      if (f.status === 'error' && f.errorMsg) {
+        errorHtml = '<div class="pz-conv-file-item-error">' + escapeHtml(f.errorMsg) + '</div>';
+      }
+
+      return '<div class="pz-conv-file-item" data-id="' + f.id + '">' +
+        '<img class="pz-conv-thumb" src="' + f.thumbUrl + '" alt="预览">' +
+        '<div class="pz-conv-file-info">' +
+          '<div class="pz-conv-file-name" title="' + escapeHtml(f.name) + '">' + escapeHtml(f.name) + '</div>' +
+          '<div class="pz-conv-file-meta">' +
+            '<span class="pz-conv-format-badge pz-conv-format-badge--original">' + info.label + '</span>' +
+            '<span class="pz-conv-file-size">' + formatBytes(f.size) + '</span>' +
+            '<span class="pz-conv-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>' +
+            convertedBadge +
+            convertedSize +
+          '</div>' +
+          errorHtml +
+        '</div>' +
+        '<div class="pz-conv-file-meta" style="gap:0.5rem;">' +
+          statusHtml +
+        '</div>' +
+        '<div class="pz-conv-file-actions">' +
+          downloadBtn +
+          '<button type="button" class="pz-conv-remove-btn" data-action="remove" data-id="' + f.id + '" title="移除" aria-label="移除文件"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>' +
+        '</div>' +
+      '</div>';
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, function(c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+
+    function bindFileItemEvents() {
+      var btns = fileListEl.querySelectorAll('[data-action]');
+      btns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var action = btn.getAttribute('data-action');
+          var id = parseInt(btn.getAttribute('data-id'), 10);
+          if (action === 'download') {
+            downloadFile(id);
+          } else if (action === 'remove') {
+            removeFile(id);
+          }
+        });
+      });
+    }
+
+    // === Find file by id ===
+    function findFile(id) {
+      for (var i = 0; i < state.files.length; i++) {
+        if (state.files[i].id === id) return state.files[i];
+      }
+      return null;
+    }
+
+    // === Remove file ===
+    function removeFile(id) {
+      var f = findFile(id);
+      if (f && f.convertedUrl) {
+        URL.revokeObjectURL(f.convertedUrl);
+      }
+      state.files = state.files.filter(function(x) { return x.id !== id; });
+      renderFileList();
+      if (state.files.length === 0) {
+        settingsSection.classList.add('hidden');
+        listSection.classList.add('hidden');
+        downloadAllBtn.style.display = 'none';
+      }
+    }
+
+    // === Clear all ===
+    clearBtn.addEventListener('click', function() {
+      if (state.converting) return;
+      state.files.forEach(function(f) {
+        if (f.convertedUrl) URL.revokeObjectURL(f.convertedUrl);
+      });
+      state.files = [];
+      renderFileList();
+      settingsSection.classList.add('hidden');
+      listSection.classList.add('hidden');
+      downloadAllBtn.style.display = 'none';
+    });
+
+    // === Conversion logic ===
+    startBtn.addEventListener('click', function() {
+      if (state.converting) return;
+      if (state.files.length === 0) return;
+      state.converting = true;
+      startBtn.disabled = true;
+      startBtn.style.opacity = '0.6';
+      downloadAllBtn.style.display = 'none';
+      convertNext(0);
+    });
+
+    function convertNext(index) {
+      if (index >= state.files.length) {
+        // Done
+        state.converting = false;
+        startBtn.disabled = false;
+        startBtn.style.opacity = '1';
+        var hasSuccess = state.files.some(function(f) { return f.status === 'success'; });
+        if (hasSuccess) {
+          downloadAllBtn.style.display = '';
+        }
+        return;
+      }
+      var f = state.files[index];
+      // Skip already converted successfully unless format changed
+      if (f.status === 'success' && f.convertedExt === FORMAT_INFO[state.targetFormat].ext) {
+        convertNext(index + 1);
+        return;
+      }
+      f.status = 'converting';
+      f.errorMsg = '';
+      renderFileList();
+      convertFile(f, function() {
+        convertNext(index + 1);
+      });
+    }
+
+    function convertFile(f, callback) {
+      var img = new Image();
+      img.onload = function() {
+        try {
+          var info = FORMAT_INFO[state.targetFormat];
+          var srcW = img.naturalWidth;
+          var srcH = img.naturalHeight;
+          var outW = srcW;
+          var outH = srcH;
+
+          // Handle resize
+          if (state.resizeEnabled && state.resizeW > 0 && state.resizeH > 0) {
+            outW = state.resizeW;
+            outH = state.resizeH;
+          }
+
+          var canvas = document.createElement('canvas');
+          canvas.width = outW;
+          canvas.height = outH;
+          var ctx = canvas.getContext('2d');
+
+          // Fill background for non-alpha formats
+          if (!info.hasAlpha) {
+            ctx.fillStyle = state.bgColor;
+            ctx.fillRect(0, 0, outW, outH);
+          }
+
+          // Draw image (resampled if resize enabled)
+          ctx.drawImage(img, 0, 0, srcW, srcH, 0, 0, outW, outH);
+
+          // Determine output mime and quality
+          var mime = info.mime;
+          var quality = info.hasQuality ? (state.quality / 100) : undefined;
+
+          // BMP fallback: not all browsers support image/bmp in toBlob
+          if (state.targetFormat === 'bmp') {
+            // Try image/bmp, fallback to image/png if not supported
+            canvas.toBlob(function(blob) {
+              if (blob && blob.type === 'image/bmp') {
+                onConvertSuccess(f, blob, info);
+              } else {
+                // Fallback: BMP not supported, use PNG with note
+                canvas.toBlob(function(pngBlob) {
+                  f.errorMsg = '当前浏览器不支持 BMP 编码，已降级为 PNG';
+                  onConvertSuccess(f, pngBlob, FORMAT_INFO.png);
+                }, 'image/png');
+              }
+              callback();
+            }, 'image/bmp');
+            return;
+          }
+
+          canvas.toBlob(function(blob) {
+            if (blob) {
+              onConvertSuccess(f, blob, info);
+            } else {
+              f.status = 'error';
+              f.errorMsg = '转换失败，浏览器可能不支持该格式编码';
+              renderFileList();
+            }
+            callback();
+          }, mime, quality);
+        } catch (err) {
+          f.status = 'error';
+          f.errorMsg = '转换异常: ' + (err.message || '未知错误');
+          renderFileList();
+          callback();
+        }
+      };
+      img.onerror = function() {
+        f.status = 'error';
+        f.errorMsg = '图片加载失败';
+        renderFileList();
+        callback();
+      };
+      img.src = f.dataUrl;
+    }
+
+    function onConvertSuccess(f, blob, info) {
+      // Revoke previous URL
+      if (f.convertedUrl) {
+        URL.revokeObjectURL(f.convertedUrl);
+      }
+      f.convertedBlob = blob;
+      f.convertedUrl = URL.createObjectURL(blob);
+      f.convertedSize = blob.size;
+      f.convertedExt = info.ext;
+      f.status = 'success';
+      renderFileList();
+    }
+
+    // === Download single file ===
+    function downloadFile(id) {
+      var f = findFile(id);
+      if (!f || !f.convertedUrl) return;
+      var info = FORMAT_INFO[state.targetFormat];
+      var actualExt = f.convertedExt || info.ext;
+      var baseName = stripExt(f.name);
+      var downloadName = baseName + '_converted.' + actualExt;
+      var a = document.createElement('a');
+      a.href = f.convertedUrl;
+      a.download = downloadName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    // === Download all ===
+    downloadAllBtn.addEventListener('click', function() {
+      var successFiles = state.files.filter(function(f) { return f.status === 'success' && f.convertedUrl; });
+      if (successFiles.length === 0) return;
+      var i = 0;
+      function downloadNext() {
+        if (i >= successFiles.length) return;
+        var f = successFiles[i];
+        var info = FORMAT_INFO[state.targetFormat];
+        var actualExt = f.convertedExt || info.ext;
+        var baseName = stripExt(f.name);
+        var downloadName = baseName + '_converted.' + actualExt;
+        var a = document.createElement('a');
+        a.href = f.convertedUrl;
+        a.download = downloadName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        i++;
+        if (i < successFiles.length) {
+          setTimeout(downloadNext, 300);
+        }
+      }
+      downloadNext();
+    });
+
+    // === Initialize ===
+    setTargetFormat('jpeg');
+    renderFileList();
+
+  })();
+</script>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

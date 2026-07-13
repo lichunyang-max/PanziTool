@@ -1,0 +1,91 @@
+{
+  "root": {
+    "nodeId": "gen-project-shell",
+    "kind": "project-shell",
+    "pageIds": ["page-index", "page-dev-tools", "page-json-formatter", "page-regex-tester", "page-image-compress", "page-about", "page-privacy"],
+    "output": "partials/project-shell.html",
+    "sharedRegions": ["header with logo + nav + search", "footer with copyright + links", "max-width content container", "breadcrumb base"],
+    "privateRegions": [],
+    "mutableSlots": ["activeNavItem", "pageTitle", "breadcrumbTrail"],
+    "status": "generated",
+    "children": [
+      {
+        "nodeId": "gen-page-index",
+        "kind": "page-leaf",
+        "pageIds": ["page-index"],
+        "output": "pages/index.html",
+        "sharedRegions": [],
+        "privateRegions": ["hero section with heading + search", "category cards (dev tools / image tools)", "popular tools grid", "latest tools section"],
+        "mutableSlots": ["activeNavItem", "pageTitle", "breadcrumbTrail"],
+        "status": "planned",
+        "children": []
+      },
+      {
+        "nodeId": "gen-page-dev-tools",
+        "kind": "page-leaf",
+        "pageIds": ["page-dev-tools"],
+        "output": "pages/dev-tools.html",
+        "sharedRegions": [],
+        "privateRegions": ["category tabs", "sort toolbar", "tool card grid with usage/like counts", "ad placement slot"],
+        "mutableSlots": ["activeNavItem", "pageTitle", "breadcrumbTrail"],
+        "status": "planned",
+        "children": []
+      },
+      {
+        "nodeId": "gen-page-json-formatter",
+        "kind": "page-leaf",
+        "pageIds": ["page-json-formatter"],
+        "output": "pages/json-formatter.html",
+        "sharedRegions": [],
+        "privateRegions": ["tool header with title + counts", "input textarea area", "action toolbar (format/compress/validate/clear/example)", "output area with syntax highlighting", "error display", "FAQ section", "ad placement slot"],
+        "mutableSlots": ["activeNavItem", "pageTitle", "breadcrumbTrail"],
+        "status": "planned",
+        "children": []
+      },
+      {
+        "nodeId": "gen-page-regex-tester",
+        "kind": "page-leaf",
+        "pageIds": ["page-regex-tester"],
+        "output": "pages/regex-tester.html",
+        "sharedRegions": [],
+        "privateRegions": ["tool header with title + counts", "regex input + flags selection (g/i/m/s/u)", "test text input", "match results with highlighting", "group capture display", "ad placement slot"],
+        "mutableSlots": ["activeNavItem", "pageTitle", "breadcrumbTrail"],
+        "status": "planned",
+        "children": []
+      },
+      {
+        "nodeId": "gen-page-image-compress",
+        "kind": "page-leaf",
+        "pageIds": ["page-image-compress"],
+        "output": "pages/image-compress.html",
+        "sharedRegions": [],
+        "privateRegions": ["tool header with title + counts", "upload/drag-drop area", "compression params (quality slider, max width/height)", "before/after preview", "file size comparison", "download button", "privacy note (local processing)", "ad placement slot"],
+        "mutableSlots": ["activeNavItem", "pageTitle", "breadcrumbTrail"],
+        "status": "planned",
+        "children": []
+      },
+      {
+        "nodeId": "gen-page-about",
+        "kind": "page-leaf",
+        "pageIds": ["page-about"],
+        "output": "pages/about.html",
+        "sharedRegions": [],
+        "privateRegions": ["site intro section", "feature highlights", "contact/feedback info", "mission statement"],
+        "mutableSlots": ["activeNavItem", "pageTitle", "breadcrumbTrail"],
+        "status": "planned",
+        "children": []
+      },
+      {
+        "nodeId": "gen-page-privacy",
+        "kind": "page-leaf",
+        "pageIds": ["page-privacy"],
+        "output": "pages/privacy.html",
+        "sharedRegions": [],
+        "privateRegions": ["privacy policy sections", "local image processing emphasis", "analytics/statistics disclosure", "cookie/localStorage usage"],
+        "mutableSlots": ["activeNavItem", "pageTitle", "breadcrumbTrail"],
+        "status": "planned",
+        "children": []
+      }
+    ]
+  }
+}

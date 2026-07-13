@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.panzipool.api.controller.PingControllerTest
+-------------------------------------------------------------------------------
+Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.013 s -- in com.panzipool.api.controller.PingControllerTest

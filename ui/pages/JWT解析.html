@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JWT解析 - PanziPool 工具聚合站</title>
+    <style id="theme-vars">
+/* PanziPool Tool Hub — Brand CSS (Modern Minimal / Indigo) */
+/* Free-explore mode: single primary hue (indigo), no secondary/accent brand colors */
+
+:root {
+  /* === Brand Primary: Indigo === */
+  --pz-color-primary: #4F46E5;
+  --pz-color-primary-hover: #4338CA;
+  --pz-color-primary-active: #3730A3;
+  --pz-color-primary-light: #EEF2FF;
+  --pz-color-primary-lighter: #E0E7FF;
+  --pz-color-primary-lightest: #F5F3FF;
+  --pz-color-primary-border: #C7D2FE;
+
+  /* === Neutral Palette === */
+  --pz-color-bg: #FFFFFF;
+  --pz-color-bg-secondary: #F8FAFC;
+  --pz-color-bg-tertiary: #F1F5F9;
+  --pz-color-bg-hover: #F8FAFC;
+  --pz-color-surface: #FFFFFF;
+  --pz-color-surface-raised: #FFFFFF;
+
+  --pz-color-text-primary: #1E293B;
+  --pz-color-text-secondary: #64748B;
+  --pz-color-text-tertiary: #94A3B8;
+  --pz-color-text-inverse: #FFFFFF;
+
+  --pz-color-border: #E2E8F0;
+  --pz-color-border-light: #F1F5F9;
+  --pz-color-border-strong: #CBD5E1;
+
+  /* === State Colors (semantic only, not identity/category) === */
+  --pz-state-success: #16A34A;
+  --pz-state-success-bg: #F0FDF4;
+  --pz-state-success-border: #BBF7D0;
+  --pz-state-warning: #D97706;
+  --pz-state-warning-bg: #FFFBEB;
+  --pz-state-warning-border: #FDE68A;
+  --pz-state-error: #DC2626;
+  --pz-state-error-bg: #FEF2F2;
+  --pz-state-error-border: #FECACA;
+  --pz-state-info: #0EA5E9;
+  --pz-state-info-bg: #F0F9FF;
+  --pz-state-info-border: #BAE6FD;
+
+  /* === Typography === */
+  --pz-font-sans: 'Inter', 'Noto Sans SC', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --pz-font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+  --pz-font-display: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
+
+  /* === Type Scale === */
+  --pz-text-xs: 0.75rem;
+  --pz-text-sm: 0.875rem;
+  --pz-text-base: 1rem;
+  --pz-text-lg: 1.125rem;
+  --pz-text-xl: 1.25rem;
+  --pz-text-2xl: 1.5rem;
+  --pz-text-3xl: 1.875rem;
+  --pz-text-4xl: 2.25rem;
+  --pz-text-5xl: 3rem;
+
+  --pz-leading-tight: 1.25;
+  --pz-leading-normal: 1.5;
+  --pz-leading-relaxed: 1.625;
+
+  --pz-weight-normal: 400;
+  --pz-weight-medium: 500;
+  --pz-weight-semibold: 600;
+  --pz-weight-bold: 700;
+
+  /* === Tailwind v4 Semantic Bridge Aliases === */
+  /* These aliases map brand variables to Tailwind v4 semantic tokens */
+  --pz-background: #FFFFFF;
+  --pz-foreground: #1E293B;
+  --pz-card: #FFFFFF;
+  --pz-primary: #4F46E5;
+  --pz-primary-foreground: #FFFFFF;
+  --pz-muted: #F1F5F9;
+  --pz-muted-foreground: #94A3B8;
+  --pz-destructive: #DC2626;
+  --pz-destructive-foreground: #FFFFFF;
+  --pz-border: #E2E8F0;
+  --pz-input: #E2E8F0;
+  --pz-ring: #4F46E5;
+  --pz-radius-small: 4px;
+  --pz-radius-medium: 8px;
+  --pz-radius-large: 12px;
+
+  /* === Radius Scale (restrained) === */
+  --pz-radius-sm: 4px;
+  --pz-radius-md: 8px;
+  --pz-radius-lg: 12px;
+  --pz-radius-full: 9999px;
+
+  /* === Shadows (restrained for static surfaces) === */
+  --pz-shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  --pz-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
+  --pz-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+  --pz-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
+  --pz-shadow-floating: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+
+  /* === Spacing === */
+  --pz-spacing-xs: 0.25rem;
+  --pz-spacing-sm: 0.5rem;
+  --pz-spacing-md: 1rem;
+  --pz-spacing-lg: 1.5rem;
+  --pz-spacing-xl: 2rem;
+  --pz-spacing-2xl: 3rem;
+  --pz-spacing-3xl: 4rem;
+
+  /* === JWT Part Accent Colors === */
+  --pz-jwt-header-color: #DC2626;
+  --pz-jwt-payload-color: #7C3AED;
+  --pz-jwt-signature-color: #0EA5E9;
+}
+
+/* === Dark Mode (future-ready) === */
+.dark {
+  --pz-color-bg: #0F172A;
+  --pz-color-bg-secondary: #1E293B;
+  --pz-color-bg-tertiary: #334155;
+  --pz-color-bg-hover: #1E293B;
+  --pz-color-surface: #1E293B;
+  --pz-color-surface-raised: #334155;
+
+  --pz-color-text-primary: #F1F5F9;
+  --pz-color-text-secondary: #94A3B8;
+  --pz-color-text-tertiary: #64748B;
+
+  --pz-color-border: #334155;
+  --pz-color-border-light: #1E293B;
+  --pz-color-border-strong: #475569;
+
+  --pz-color-primary-light: #1E1B4B;
+  --pz-color-primary-lighter: #312E81;
+  --pz-color-primary-lightest: #1E1B4B;
+  --pz-color-primary-border: #4338CA;
+}
+
+/* === Typography Classes === */
+.pz-h1 {
+  font-family: var(--pz-font-display);
+  font-size: var(--pz-text-4xl);
+  font-weight: var(--pz-weight-bold);
+  line-height: var(--pz-leading-tight);
+  letter-spacing: -0.02em;
+  color: var(--pz-color-text-primary);
+}
+
+.pz-h2 {
+  font-family: var(--pz-font-display);
+  font-size: var(--pz-text-3xl);
+  font-weight: var(--pz-weight-semibold);
+  line-height: var(--pz-leading-tight);
+  letter-spacing: -0.01em;
+  color: var(--pz-color-text-primary);
+}
+
+.pz-h3 {
+  font-family: var(--pz-font-display);
+  font-size: var(--pz-text-xl);
+  font-weight: var(--pz-weight-semibold);
+  line-height: var(--pz-leading-tight);
+  color: var(--pz-color-text-primary);
+}
+
+.pz-h4 {
+  font-family: var(--pz-font-display);
+  font-size: var(--pz-text-lg);
+  font-weight: var(--pz-weight-semibold);
+  line-height: var(--pz-leading-normal);
+  color: var(--pz-color-text-primary);
+}
+
+.pz-body {
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-base);
+  font-weight: var(--pz-weight-normal);
+  line-height: var(--pz-leading-relaxed);
+  color: var(--pz-color-text-primary);
+}
+
+.pz-body-sm {
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  font-weight: var(--pz-weight-normal);
+  line-height: var(--pz-leading-normal);
+  color: var(--pz-color-text-secondary);
+}
+
+.pz-caption {
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-xs);
+  font-weight: var(--pz-weight-normal);
+  line-height: var(--pz-leading-normal);
+  color: var(--pz-color-text-tertiary);
+}
+
+.pz-mono {
+  font-family: var(--pz-font-mono);
+  font-size: var(--pz-text-sm);
+  line-height: var(--pz-leading-normal);
+}
+
+.pz-mono-lg {
+  font-family: var(--pz-font-mono);
+  font-size: var(--pz-text-base);
+  line-height: var(--pz-leading-relaxed);
+}
+
+/* === Button Styles === */
+.pz-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  font-weight: var(--pz-weight-medium);
+  color: var(--pz-color-text-inverse);
+  background-color: var(--pz-color-primary);
+  border: 1px solid var(--pz-color-primary);
+  border-radius: var(--pz-radius-md);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.pz-btn-primary:hover {
+  background-color: var(--pz-color-primary-hover);
+  border-color: var(--pz-color-primary-hover);
+}
+
+.pz-btn-primary:active {
+  background-color: var(--pz-color-primary-active);
+}
+
+.pz-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  font-weight: var(--pz-weight-medium);
+  color: var(--pz-color-text-primary);
+  background-color: var(--pz-color-surface);
+  border: 1px solid var(--pz-color-border);
+  border-radius: var(--pz-radius-md);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.pz-btn-secondary:hover {
+  border-color: var(--pz-color-border-strong);
+  background-color: var(--pz-color-bg-secondary);
+}
+
+/* === Card Surface === */
+.pz-card {
+  background-color: var(--pz-color-surface);
+  border: 1px solid var(--pz-color-border);
+  border-radius: var(--pz-radius-lg);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pz-card-hover:hover {
+  border-color: var(--pz-color-primary-border);
+  box-shadow: var(--pz-shadow-md);
+}
+
+/* === Input Surface === */
+.pz-input {
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  color: var(--pz-color-text-primary);
+  background-color: var(--pz-color-surface);
+  border: 1px solid var(--pz-color-border);
+  border-radius: var(--pz-radius-md);
+  padding: 0.5rem 0.75rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+}
+
+.pz-input:focus {
+  border-color: var(--pz-color-primary);
+  box-shadow: 0 0 0 3px var(--pz-color-primary-lighter);
+}
+
+/* === Badge / Tag === */
+.pz-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-xs);
+  font-weight: var(--pz-weight-medium);
+  border-radius: var(--pz-radius-full);
+}
+
+.pz-badge-primary {
+  background-color: var(--pz-color-primary-light);
+  color: var(--pz-color-primary);
+}
+
+.pz-badge-neutral {
+  background-color: var(--pz-color-bg-tertiary);
+  color: var(--pz-color-text-secondary);
+}
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--pz-background);
+    --color-foreground: var(--pz-foreground);
+    --color-card: var(--pz-card);
+    --color-primary: var(--pz-primary);
+    --color-primary-foreground: var(--pz-primary-foreground);
+    --color-muted: var(--pz-muted);
+    --color-muted-foreground: var(--pz-muted-foreground);
+    --color-destructive: var(--pz-destructive);
+    --color-destructive-foreground: var(--pz-destructive-foreground);
+    --color-border: var(--pz-border);
+    --color-input: var(--pz-input);
+    --color-ring: var(--pz-ring);
+    --radius-sm: var(--pz-radius-small);
+    --radius-md: var(--pz-radius-medium);
+    --radius-lg: var(--pz-radius-large);
+  }
+  @layer base {
+    body { background: var(--pz-background); color: var(--pz-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+</head>
+<body class="font-sans antialiased">
+    <!-- ==================== APP BODY (sidebar + scrollable main) ==================== -->
+    <style>
+
+  /* === Base layout: full-width header/footer, sidebar+main between === */
+  * { box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--pz-color-bg);
+    color: var(--pz-color-text-primary);
+    font-family: var(--pz-font-sans);
+  }
+
+  /* === Nav link styles === */
+  .pz-nav-link {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--pz-font-sans);
+    font-size: var(--pz-text-sm);
+    font-weight: var(--pz-weight-medium);
+    color: var(--pz-color-text-secondary);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--pz-radius-md);
+    transition: color 0.15s ease, background-color 0.15s ease;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  .pz-nav-link:hover {
+    color: var(--pz-color-text-primary);
+    background-color: var(--pz-color-bg-secondary);
+  }
+  .pz-nav-link:focus-visible {
+    outline: 2px solid var(--pz-color-primary);
+    outline-offset: 2px;
+  }
+  .pz-nav-link[data-active="true"] {
+    color: var(--pz-color-primary);
+    background-color: var(--pz-color-primary-light);
+  }
+
+  /* === Footer link styles === */
+  .pz-footer-link {
+    font-family: var(--pz-font-sans);
+    font-size: var(--pz-text-sm);
+    color: var(--pz-color-text-secondary);
+    transition: color 0.15s ease;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .pz-footer-link:hover { color: var(--pz-color-primary); }
+  .pz-footer-link:focus-visible {
+    outline: 2px solid var(--pz-color-primary);
+    outline-offset: 2px;
+  }
+
+  /* === Sidebar styles (flex child, not fixed) === */
+  .pz-sidebar-wrapper {
+    position: relative;
+    width: 240px;
+    flex-shrink: 0;
+    z-index: 40;
+    transition: width 0.2s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  .pz-sidebar-wrapper[data-collapsed="true"] {
+    width: 36px;
+  }
+  .pz-sidebar {
+    background-color: var(--pz-color-bg);
+    border-right: 1px solid var(--pz-color-border);
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0.75rem 0.5rem;
+    transition: opacity 0.15s ease;
+  }
+  .pz-sidebar-wrapper[data-collapsed="true"] .pz-sidebar {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .pz-sidebar-toggle {
+    position: absolute;
+    right: -12px;
+    top: 20px;
+    width: 24px;
+    height: 24px;
+    border-radius: var(--pz-radius-full);
+    background-color: var(--pz-color-bg);
+    border: 1px solid var(--pz-color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--pz-color-text-secondary);
+    transition: all 0.15s ease;
+    z-index: 45;
+  }
+  .pz-sidebar-toggle:hover {
+    color: var(--pz-color-primary);
+    border-color: var(--pz-color-primary-border);
+  }
+  .pz-sidebar-toggle svg {
+    transition: transform 0.2s ease;
+  }
+  .pz-sidebar-wrapper[data-collapsed="true"] .pz-sidebar-toggle svg {
+    transform: rotate(180deg);
+  }
+
+  /* === Accordion menu styles === */
+  .pz-sidebar-section {
+    margin-bottom: 0.25rem;
+  }
+  .pz-sidebar-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--pz-font-sans);
+    font-size: var(--pz-text-sm);
+    font-weight: var(--pz-weight-semibold);
+    color: var(--pz-color-text-primary);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--pz-radius-md);
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.15s ease;
+  }
+  .pz-sidebar-title:hover {
+    background-color: var(--pz-color-bg-secondary);
+  }
+  .pz-sidebar-title .pz-chevron {
+    margin-left: auto;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+  .pz-sidebar-section[data-expanded="false"] .pz-chevron {
+    transform: rotate(-90deg);
+  }
+  .pz-sidebar-children {
+    overflow: hidden;
+    max-height: 500px;
+    transition: max-height 0.25s ease;
+  }
+  .pz-sidebar-section[data-expanded="false"] .pz-sidebar-children {
+    max-height: 0;
+  }
+  .pz-sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--pz-font-sans);
+    font-size: var(--pz-text-sm);
+    font-weight: var(--pz-weight-normal);
+    color: var(--pz-color-text-secondary);
+    padding: 0.375rem 0.75rem 0.375rem 2rem;
+    border-radius: var(--pz-radius-md);
+    transition: color 0.15s ease, background-color 0.15s ease;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .pz-sidebar-link:hover {
+    color: var(--pz-color-text-primary);
+    background-color: var(--pz-color-bg-secondary);
+  }
+  .pz-sidebar-link:focus-visible {
+    outline: 2px solid var(--pz-color-primary);
+    outline-offset: 2px;
+  }
+  .pz-sidebar-link[data-active="true"] {
+    color: var(--pz-color-primary);
+    background-color: var(--pz-color-primary-light);
+    font-weight: var(--pz-weight-medium);
+  }
+
+  /* === Main content area: scrollable, flex child next to sidebar === */
+  .pz-main-area {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .pz-main-content {
+    flex: 1;
+    padding: 1.5rem 2rem;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pz-nav-link, .pz-footer-link, .pz-sidebar-link,
+    .pz-sidebar-wrapper, .pz-main-area,
+    .pz-sidebar-children, .pz-sidebar-title .pz-chevron {
+      transition: none;
+    }
+  }
+
+
+      /* === Page-specific styles === */
+      /* JWT textarea */
+      .pz-jwt-textarea {
+        font-family: var(--pz-font-mono);
+        font-size: var(--pz-text-sm);
+        line-height: var(--pz-leading-relaxed);
+        color: var(--pz-color-text-primary);
+        background-color: var(--pz-color-bg-secondary);
+        border: 1px solid var(--pz-color-border);
+        border-radius: var(--pz-radius-md);
+        padding: 0.75rem;
+        outline: none;
+        resize: vertical;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        width: 100%;
+        min-height: 120px;
+        word-break: break-all;
+      }
+      .pz-jwt-textarea:focus {
+        border-color: var(--pz-color-primary);
+        box-shadow: 0 0 0 3px var(--pz-color-primary-lighter);
+      }
+
+      /* Action toolbar */
+      .pz-jwt-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      /* Three-part decoded display grid */
+      .pz-jwt-parts {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+      }
+      @media (max-width: 900px) {
+        .pz-jwt-parts {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Individual part card — border-led surface with left accent */
+      .pz-jwt-part {
+        background-color: var(--pz-color-surface);
+        border: 1px solid var(--pz-color-border);
+        border-left-width: 4px;
+        border-radius: var(--pz-radius-lg);
+        padding: 1rem 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      }
+      .pz-jwt-part:hover {
+        box-shadow: var(--pz-shadow-md);
+      }
+
+      /* Header card variant — red/coral accent */
+      .pz-jwt-part--header {
+        border-left-color: var(--pz-jwt-header-color);
+      }
+
+      /* Payload card variant — purple/violet accent */
+      .pz-jwt-part--payload {
+        border-left-color: var(--pz-jwt-payload-color);
+      }
+
+      /* Signature card variant — blue accent */
+      .pz-jwt-part--signature {
+        border-left-color: var(--pz-jwt-signature-color);
+      }
+
+      /* Part label */
+      .pz-jwt-part-label {
+        font-family: var(--pz-font-display);
+        font-size: var(--pz-text-base);
+        font-weight: var(--pz-weight-semibold);
+        color: var(--pz-color-text-primary);
+      }
+
+      /* Decoded content area */
+      .pz-jwt-part-content {
+        font-family: var(--pz-font-mono);
+        font-size: var(--pz-text-sm);
+        line-height: var(--pz-leading-relaxed);
+        color: var(--pz-color-text-primary);
+        background-color: var(--pz-color-bg-tertiary);
+        border: 1px solid var(--pz-color-border-light);
+        border-radius: var(--pz-radius-md);
+        padding: 0.75rem;
+        overflow-x: auto;
+        white-space: pre;
+        margin: 0;
+        word-break: break-all;
+      }
+
+      /* Token info bar */
+      .pz-jwt-info-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .pz-jwt-info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.125rem;
+        padding: 0.5rem 0.875rem;
+        background-color: var(--pz-color-bg-secondary);
+        border: 1px solid var(--pz-color-border);
+        border-radius: var(--pz-radius-md);
+        min-width: 100px;
+      }
+      .pz-jwt-info-item .pz-jwt-info-label {
+        font-family: var(--pz-font-sans);
+        font-size: var(--pz-text-xs);
+        font-weight: var(--pz-weight-normal);
+        color: var(--pz-color-text-tertiary);
+        white-space: nowrap;
+      }
+      .pz-jwt-info-item .pz-jwt-info-value {
+        font-family: var(--pz-font-mono);
+        font-size: var(--pz-text-sm);
+        font-weight: var(--pz-weight-medium);
+        color: var(--pz-color-text-primary);
+      }
+
+      /* Algorithm reference table */
+      .pz-jwt-algo-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .pz-jwt-algo-table th {
+        font-family: var(--pz-font-sans);
+        font-size: var(--pz-text-sm);
+        font-weight: var(--pz-weight-semibold);
+        color: var(--pz-color-text-secondary);
+        text-align: left;
+        padding: 0.625rem 0.875rem;
+        border-bottom: 1px solid var(--pz-color-border);
+        white-space: nowrap;
+      }
+      .pz-jwt-algo-table td {
+        font-family: var(--pz-font-sans);
+        font-size: var(--pz-text-sm);
+        color: var(--pz-color-text-primary);
+        padding: 0.625rem 0.875rem;
+        border-bottom: 1px solid var(--pz-color-border-light);
+      }
+      .pz-jwt-algo-table td.pz-mono-cell {
+        font-family: var(--pz-font-mono);
+        color: var(--pz-color-text-secondary);
+      }
+      .pz-jwt-algo-table .pz-security-low {
+        color: var(--pz-state-warning);
+        font-weight: var(--pz-weight-medium);
+      }
+      .pz-jwt-algo-table .pz-security-high {
+        color: var(--pz-state-success);
+        font-weight: var(--pz-weight-medium);
+      }
+
+      /* Badges */
+      .pz-jwt-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.125rem 0.5rem;
+        font-family: var(--pz-font-sans);
+        font-size: var(--pz-text-xs);
+        font-weight: var(--pz-weight-medium);
+        border-radius: var(--pz-radius-full);
+        white-space: nowrap;
+      }
+      .pz-jwt-badge--algo {
+        background-color: var(--pz-color-bg-tertiary);
+        color: var(--pz-color-text-secondary);
+      }
+      .pz-jwt-badge--valid {
+        background-color: var(--pz-state-success-bg);
+        color: var(--pz-state-success);
+        border: 1px solid var(--pz-state-success-border);
+      }
+      .pz-jwt-badge--expired {
+        background-color: var(--pz-state-error-bg);
+        color: var(--pz-state-error);
+        border: 1px solid var(--pz-state-error-border);
+      }
+      .pz-jwt-badge--warning {
+        background-color: var(--pz-state-warning-bg);
+        color: var(--pz-state-warning);
+        border: 1px solid var(--pz-state-warning-border);
+      }
+
+      /* Error message area */
+      .pz-jwt-error-msg {
+        font-family: var(--pz-font-sans);
+        font-size: var(--pz-text-sm);
+        color: var(--pz-state-error);
+        background-color: var(--pz-state-error-bg);
+        border: 1px solid var(--pz-state-error-border);
+        border-radius: var(--pz-radius-md);
+        padding: 0.625rem 0.875rem;
+      }
+
+      /* Code block (for FAQ code samples) */
+      .pz-code-block {
+        font-family: var(--pz-font-mono);
+        font-size: var(--pz-text-sm);
+        line-height: var(--pz-leading-relaxed);
+        color: var(--pz-color-text-primary);
+        background-color: var(--pz-color-bg-secondary);
+        border: 1px solid var(--pz-color-border);
+        border-radius: var(--pz-radius-md);
+        padding: 0.75rem;
+        overflow-x: auto;
+        white-space: pre;
+        margin: 0;
+      }
+
+      /* FAQ accordion (native details) */
+      .pz-faq > summary { list-style: none; }
+      .pz-faq > summary::-webkit-details-marker { display: none; }
+      .pz-faq .pz-faq-chevron { transition: transform 0.2s ease; }
+      .pz-faq[open] .pz-faq-chevron { transform: rotate(180deg); }
+
+      /* Field annotation in payload */
+      .pz-jwt-field-note {
+        font-family: var(--pz-font-sans);
+        font-size: var(--pz-text-xs);
+        color: var(--pz-color-text-tertiary);
+        margin-top: 0.25rem;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .pz-jwt-part, .pz-faq-chevron { transition: none; }
+      }
+    </style>
+
+    <!-- ==================== FIXED HEADER (full width) ==================== -->
+    <header class="flex-shrink-0" style="background-color: var(--pz-color-bg); border-bottom: 1px solid var(--pz-color-border); height: 64px; position: relative; z-index: 50;">
+  <div class="h-16 flex items-center justify-between gap-8" style="padding-left: 2rem; padding-right: 2rem;">
+    <div class="flex items-center gap-8 min-w-0">
+      <a href="/" data-dom-id="logo-link" class="flex items-center gap-2 shrink-0" style="color: var(--pz-color-primary); font-family: var(--pz-font-display); font-weight: 700; font-size: var(--pz-text-xl); letter-spacing: -0.02em; text-decoration: none;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+        </svg>
+        <span>PanziPool</span>
+      </a>
+      <nav class="flex items-center gap-1" role="navigation" aria-label="主导航">
+        <a href="/" data-nav-key="home" data-dom-id="nav-home" class="pz-nav-link">首页</a>
+        <a href="/dev-tools" data-nav-key="dev-tools" data-dom-id="nav-dev-tools" class="pz-nav-link" data-active="true" aria-current="page">开发者工具</a>
+        <a href="/about" data-nav-key="about" data-dom-id="nav-about" class="pz-nav-link">关于我们</a>
+        <a href="/privacy" data-nav-key="privacy" data-dom-id="nav-privacy" class="pz-nav-link">隐私政策</a>
+      </nav>
+    </div>
+    <div class="relative shrink-0" style="max-width: 240px;">
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--pz-color-text-tertiary);" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"/>
+        <path d="m21 21-4.3-4.3"/>
+      </svg>
+      <input type="text" placeholder="搜索工具..." class="pz-input w-full pl-9" style="max-width: 240px;" aria-label="搜索工具">
+    </div>
+  </div>
+</header>
+
+    <!-- ==================== APP BODY (sidebar + scrollable main, between header and footer) ==================== -->
+    <div class="pz-app" style="flex:1; display:flex; overflow:hidden; min-height:0;">
+  <div class="pz-sidebar-wrapper" id="pz-sidebar-wrapper" data-collapsed="false">
+    <div class="pz-sidebar-toggle" id="pz-sidebar-toggle" role="button" tabindex="0" aria-label="折叠/展开侧边栏">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </div>
+    <aside class="pz-sidebar" aria-label="工具导航">
+      <div class="pz-sidebar-section" data-expanded="true" data-section-id="dev-tools">
+        <div class="pz-sidebar-title" data-toggle="dev-tools" role="button" tabindex="0">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--pz-color-primary);" aria-hidden="true">
+            <polyline points="16 18 22 12 16 6"/>
+            <polyline points="8 6 2 12 8 18"/>
+          </svg>
+          <span>开发者工具</span>
+          <svg class="pz-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--pz-color-text-tertiary);" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+        <div class="pz-sidebar-children">
+          <div class="flex flex-col gap-0.5 mt-1">
+            <a href="/json-formatter" data-dom-id="sidebar-json" class="pz-sidebar-link">JSON格式化</a>
+            <a href="/regex-tester" data-dom-id="sidebar-regex" class="pz-sidebar-link">正则测试</a>
+            <a href="/timestamp" data-dom-id="sidebar-timestamp" class="pz-sidebar-link">时间戳转换</a>
+            <a href="/url-encode" data-dom-id="sidebar-url" class="pz-sidebar-link">URL编码解码</a>
+            <a href="/jwt-decoder" data-dom-id="sidebar-jwt" class="pz-sidebar-link" data-active="true">JWT解析</a>
+            <a href="/base64" data-dom-id="sidebar-base64" class="pz-sidebar-link">Base64编码</a>
+            <a href="/hash" data-dom-id="sidebar-hash" class="pz-sidebar-link">哈希计算</a>
+          </div>
+        </div>
+      </div>
+      <div class="pz-sidebar-section" data-expanded="false" data-section-id="image-tools">
+        <div class="pz-sidebar-title" data-toggle="image-tools" role="button" tabindex="0">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--pz-color-primary);" aria-hidden="true">
+            <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+            <circle cx="9" cy="9" r="2"/>
+            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+          </svg>
+          <span>图片工具</span>
+          <svg class="pz-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--pz-color-text-tertiary);" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+        <div class="pz-sidebar-children">
+          <div class="flex flex-col gap-0.5 mt-1">
+            <a href="/image-compress" data-dom-id="sidebar-compress" class="pz-sidebar-link">图片压缩</a>
+            <a href="/image-crop" data-dom-id="sidebar-crop" class="pz-sidebar-link">图片裁剪</a>
+            <a href="/image-convert" data-dom-id="sidebar-convert" class="pz-sidebar-link">格式转换</a>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+      <!-- ===== SCROLLABLE MAIN CONTENT ===== -->
+      <div class="pz-main-area" id="pz-main-area">
+        <main class="pz-main-content">
+
+      <!-- JWT解析 -->
+
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm mb-6" aria-label="面包屑">
+        <a href="/" class="pz-footer-link">首页</a>
+        <span style="color: var(--pz-color-text-tertiary);">/</span>
+        <a href="/dev-tools" class="pz-footer-link">开发者工具</a>
+        <span style="color: var(--pz-color-text-tertiary);">/</span>
+        <span style="color: var(--pz-color-text-primary); font-weight: 500;">JWT解析</span>
+      </nav>
+
+      <!-- Tool Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div class="min-w-0">
+          <h1 class="text-2xl font-bold" style="color: var(--pz-color-text-primary); font-family: var(--pz-font-display); text-wrap: balance; word-break: keep-all;">JWT解析</h1>
+          <p class="text-sm mt-1" style="color: var(--pz-color-text-secondary);">在线JWT令牌解码工具，支持查看Header、Payload、Signature三段内容，本地解码不上传服务器</p>
+        </div>
+        <div class="flex items-center gap-4 shrink-0">
+          <div class="flex items-center gap-3 text-sm" style="color: var(--pz-color-text-tertiary);">
+            <span class="flex items-center gap-1 tabular-nums whitespace-nowrap"><i data-lucide="eye" class="w-4 h-4"></i>3.8k 次使用</span>
+            <span class="flex items-center gap-1 tabular-nums whitespace-nowrap"><i data-lucide="heart" class="w-4 h-4"></i>198</span>
+          </div>
+          <button type="button" class="pz-btn-secondary whitespace-nowrap"><i data-lucide="heart" class="w-4 h-4"></i>点赞</button>
+        </div>
+      </div>
+
+      <!-- 1. JWT Token Input Zone -->
+      <div class="pz-card p-4 mb-6 flex flex-col gap-4">
+        <div class="flex items-center gap-2">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--pz-color-primary);" aria-hidden="true">
+            <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+          </svg>
+          <h2 class="text-base font-semibold" style="color: var(--pz-color-text-primary);">JWT令牌输入</h2>
+        </div>
+
+        <!-- Input -->
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-semibold" style="color: var(--pz-color-text-secondary);" for="pz-jwt-input">粘贴JWT令牌</label>
+            <span class="text-xs" style="color: var(--pz-color-text-tertiary);" id="pz-jwt-input-count">0 字符</span>
+          </div>
+          <textarea id="pz-jwt-input" class="pz-jwt-textarea" rows="5" placeholder="粘贴JWT令牌 (xxxxx.yyyyy.zzzzz)..."></textarea>
+          <p class="text-xs" style="color: var(--pz-color-text-tertiary);">JWT令牌格式为 xxxxx.yyyyy.zzzzz（三段Base64URL用点分隔）</p>
+        </div>
+
+        <!-- Action toolbar -->
+        <div class="pz-jwt-toolbar">
+          <button type="button" id="pz-jwt-decode" class="pz-btn-primary whitespace-nowrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 11l3 3L22 4"/>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            </svg>
+            解码
+          </button>
+          <button type="button" id="pz-jwt-clear" class="pz-btn-secondary whitespace-nowrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+            清空
+          </button>
+          <button type="button" id="pz-jwt-sample" class="pz-btn-secondary whitespace-nowrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            粘贴示例
+          </button>
+        </div>
+
+        <!-- Error message area -->
+        <div id="pz-jwt-error" class="hidden"></div>
+      </div>
+
+      <!-- 2. Three-Part Decoded Display -->
+      <div id="pz-jwt-parts-container" class="hidden mb-6">
+        <div class="pz-jwt-parts">
+          <!-- Header card (red accent) -->
+          <div class="pz-jwt-part pz-jwt-part--header">
+            <div class="flex items-center justify-between">
+              <span class="pz-jwt-part-label">Header</span>
+              <span class="pz-jwt-badge pz-jwt-badge--algo" id="pz-jwt-algo-badge">-</span>
+            </div>
+            <pre class="pz-jwt-part-content" id="pz-jwt-header-content"></pre>
+            <p class="pz-jwt-field-note" id="pz-jwt-header-note"></p>
+          </div>
+
+          <!-- Payload card (purple accent) -->
+          <div class="pz-jwt-part pz-jwt-part--payload">
+            <div class="flex items-center justify-between">
+              <span class="pz-jwt-part-label">Payload</span>
+              <span id="pz-jwt-exp-badge-wrapper"></span>
+            </div>
+            <pre class="pz-jwt-part-content" id="pz-jwt-payload-content"></pre>
+            <p class="pz-jwt-field-note" id="pz-jwt-payload-note"></p>
+          </div>
+
+          <!-- Signature card (blue accent) -->
+          <div class="pz-jwt-part pz-jwt-part--signature">
+            <div class="flex items-center justify-between">
+              <span class="pz-jwt-part-label">Signature</span>
+              <span id="pz-jwt-sig-badge-wrapper"></span>
+            </div>
+            <pre class="pz-jwt-part-content" id="pz-jwt-signature-content"></pre>
+            <p class="pz-jwt-field-note">签名验证需要密钥，本工具仅解码不验证签名</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Token Info Bar -->
+      <div id="pz-jwt-info-container" class="hidden mb-6">
+        <div class="pz-jwt-info-bar">
+          <div class="pz-jwt-info-item">
+            <span class="pz-jwt-info-label">Header长度</span>
+            <span class="pz-jwt-info-value" id="pz-jwt-header-len">-</span>
+          </div>
+          <div class="pz-jwt-info-item">
+            <span class="pz-jwt-info-label">Payload长度</span>
+            <span class="pz-jwt-info-value" id="pz-jwt-payload-len">-</span>
+          </div>
+          <div class="pz-jwt-info-item">
+            <span class="pz-jwt-info-label">Signature长度</span>
+            <span class="pz-jwt-info-value" id="pz-jwt-signature-len">-</span>
+          </div>
+          <div class="pz-jwt-info-item">
+            <span class="pz-jwt-info-label">总长度</span>
+            <span class="pz-jwt-info-value" id="pz-jwt-total-len">-</span>
+          </div>
+          <div class="pz-jwt-info-item">
+            <span class="pz-jwt-info-label">签名算法</span>
+            <span class="pz-jwt-info-value" id="pz-jwt-algo-info">-</span>
+          </div>
+          <div class="pz-jwt-info-item">
+            <span class="pz-jwt-info-label">令牌类型</span>
+            <span class="pz-jwt-info-value" id="pz-jwt-type-info">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Algorithm Reference Table -->
+      <div class="pz-card p-4 mb-6">
+        <div class="flex items-center gap-2 mb-3">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--pz-color-primary);" aria-hidden="true">
+            <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+            <line x1="3" y1="9" x2="21" y2="9"/>
+            <line x1="9" y1="21" x2="9" y2="9"/>
+          </svg>
+          <h2 class="text-base font-semibold" style="color: var(--pz-color-text-primary);">JWT算法参考</h2>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="pz-jwt-algo-table">
+            <thead>
+              <tr>
+                <th>算法</th>
+                <th>类型</th>
+                <th>说明</th>
+                <th>安全性</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="pz-mono-cell">HS256</td>
+                <td>HMAC</td>
+                <td>HMAC with SHA-256</td>
+                <td><span class="pz-security-high">推荐</span></td>
+              </tr>
+              <tr>
+                <td class="pz-mono-cell">HS384</td>
+                <td>HMAC</td>
+                <td>HMAC with SHA-384</td>
+                <td><span class="pz-security-high">推荐</span></td>
+              </tr>
+              <tr>
+                <td class="pz-mono-cell">HS512</td>
+                <td>HMAC</td>
+                <td>HMAC with SHA-512</td>
+                <td><span class="pz-security-high">推荐</span></td>
+              </tr>
+              <tr>
+                <td class="pz-mono-cell">RS256</td>
+                <td>RSA</td>
+                <td>RSASSA-PKCS1-v1.5 with SHA-256</td>
+                <td><span class="pz-security-high">推荐</span></td>
+              </tr>
+              <tr>
+                <td class="pz-mono-cell">RS384</td>
+                <td>RSA</td>
+                <td>RSASSA-PKCS1-v1.5 with SHA-384</td>
+                <td><span class="pz-security-high">推荐</span></td>
+              </tr>
+              <tr>
+                <td class="pz-mono-cell">RS512</td>
+                <td>RSA</td>
+                <td>RSASSA-PKCS1-v1.5 with SHA-512</td>
+                <td><span class="pz-security-high">推荐</span></td>
+              </tr>
+              <tr>
+                <td class="pz-mono-cell">ES256</td>
+                <td>ECDSA</td>
+                <td>ECDSA with P-256 curve</td>
+                <td><span class="pz-security-high">推荐</span></td>
+              </tr>
+              <tr>
+                <td class="pz-mono-cell">ES384</td>
+                <td>ECDSA</td>
+                <td>ECDSA with P-384 curve</td>
+                <td><span class="pz-security-high">推荐</span></td>
+              </tr>
+              <tr>
+                <td class="pz-mono-cell">ES512</td>
+                <td>ECDSA</td>
+                <td>ECDSA with P-521 curve</td>
+                <td><span class="pz-security-high">推荐</span></td>
+              </tr>
+              <tr>
+                <td class="pz-mono-cell">none</td>
+                <td>None</td>
+                <td>无签名</td>
+                <td><span class="pz-security-low">&#9888; 不安全</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 5. FAQ Section -->
+      <section class="py-8">
+        <h2 class="text-xl font-semibold mb-4" style="color: var(--pz-color-text-primary); font-family: var(--pz-font-display); text-wrap: balance;">常见问题</h2>
+        <div class="flex flex-col gap-3">
+          <details class="pz-faq pz-card pz-card-hover p-4" open>
+            <summary class="flex items-center justify-between cursor-pointer">
+              <span class="text-sm font-medium" style="color: var(--pz-color-text-primary);">JWT是什么？</span>
+              <i data-lucide="chevron-down" class="w-4 h-4 pz-faq-chevron shrink-0" style="color: var(--pz-color-text-tertiary);"></i>
+            </summary>
+            <p class="text-sm mt-3" style="color: var(--pz-color-text-secondary); line-height: 1.6;">JWT (JSON Web Token) 是一种开放标准(RFC 7519)，用于在各方之间安全传输信息。它以紧凑、URL安全的方式表示声明(claims)，通常用于身份认证和信息交换。JWT由三部分组成：Header（头部）、Payload（载荷）和Signature（签名），用点号(.)分隔。JWT被广泛用于API认证、单点登录(SSO)、OAuth 2.0等场景，因其自包含、无状态的特性而备受青睐。</p>
+          </details>
+          <details class="pz-faq pz-card pz-card-hover p-4">
+            <summary class="flex items-center justify-between cursor-pointer">
+              <span class="text-sm font-medium" style="color: var(--pz-color-text-primary);">JWT的三段分别是什么？</span>
+              <i data-lucide="chevron-down" class="w-4 h-4 pz-faq-chevron shrink-0" style="color: var(--pz-color-text-tertiary);"></i>
+            </summary>
+            <div class="text-sm mt-3 flex flex-col gap-2" style="color: var(--pz-color-text-secondary); line-height: 1.6;">
+              <p>JWT由三部分组成：Header（头部）、Payload（载荷）和Signature（签名），格式为 <code style="font-family: var(--pz-font-mono); color: var(--pz-color-primary);">header.payload.signature</code>。</p>
+              <p><strong style="color: var(--pz-color-text-primary);">Header（头部）：</strong>通常包含令牌类型(typ)和签名算法(alg)，例如 <code style="font-family: var(--pz-font-mono); color: var(--pz-color-primary);">{"alg":"HS256","typ":"JWT"}</code>。Header经Base64URL编码后成为JWT的第一段。</p>
+              <p><strong style="color: var(--pz-color-text-primary);">Payload（载荷）：</strong>包含声明(claims)，即关于实体（通常是用户）和其他数据的声明。声明分为三类：注册声明（如iss、sub、aud、exp、iat、nbf）、私有声明和公共声明。Payload经Base64URL编码后成为JWT的第二段。</p>
+              <p><strong style="color: var(--pz-color-text-primary);">Signature（签名）：</strong>使用Header中指定的算法，对编码后的Header、编码后的Payload和一个密钥进行签名，用于验证消息在传输过程中没有被篡改。签名是JWT的第三段。</p>
+            </div>
+          </details>
+          <details class="pz-faq pz-card pz-card-hover p-4">
+            <summary class="flex items-center justify-between cursor-pointer">
+              <span class="text-sm font-medium" style="color: var(--pz-color-text-primary);">这个工具会保存我的JWT令牌吗？</span>
+              <i data-lucide="chevron-down" class="w-4 h-4 pz-faq-chevron shrink-0" style="color: var(--pz-color-text-tertiary);"></i>
+            </summary>
+            <div class="text-sm mt-3 flex flex-col gap-2" style="color: var(--pz-color-text-secondary); line-height: 1.6;">
+              <p><strong style="color: var(--pz-color-text-primary);">不会。</strong>所有解码操作在浏览器本地完成，令牌不会发送到服务器，也不会被保存或记录。</p>
+              <p>本工具使用 JavaScript 的 <code style="font-family: var(--pz-font-mono); color: var(--pz-color-primary);">atob()</code> 函数在浏览器端直接进行Base64URL解码，不涉及任何网络请求。您可以在断网状态下使用本工具，它依然能正常工作。</p>
+              <p>不过请注意：JWT的Payload部分是Base64URL编码而非加密的，任何人都可以解码查看其内容。因此，请勿在JWT中存放密码、密钥等敏感信息。</p>
+            </div>
+          </details>
+          <details class="pz-faq pz-card pz-card-hover p-4">
+            <summary class="flex items-center justify-between cursor-pointer">
+              <span class="text-sm font-medium" style="color: var(--pz-color-text-primary);">为什么签名不验证？</span>
+              <i data-lucide="chevron-down" class="w-4 h-4 pz-faq-chevron shrink-0" style="color: var(--pz-color-text-tertiary);"></i>
+            </summary>
+            <div class="text-sm mt-3 flex flex-col gap-2" style="color: var(--pz-color-text-secondary); line-height: 1.6;">
+              <p>签名验证需要密钥（HMAC的共享密钥或RSA的公钥），本工具专注于解码展示，不进行签名验证。</p>
+              <p>具体来说，不同算法需要不同的验证方式：</p>
+              <p><strong style="color: var(--pz-color-text-primary);">HMAC算法（HS256/HS384/HS512）：</strong>需要共享密钥，使用密钥对 <code style="font-family: var(--pz-font-mono); color: var(--pz-color-primary);">header.payload</code> 重新计算HMAC，与Signature对比。</p>
+              <p><strong style="color: var(--pz-color-text-primary);">RSA算法（RS256/RS384/RS512）：</strong>需要公钥，使用公钥验证签名。</p>
+              <p><strong style="color: var(--pz-color-text-primary);">ECDSA算法（ES256/ES384/ES512）：</strong>需要EC公钥进行验证。</p>
+              <p>如果您需要验证签名，可以使用 jwt.io 等在线工具或各编程语言的JWT库（如Node.js的jsonwebtoken、Python的PyJWT）。</p>
+            </div>
+          </details>
+          <details class="pz-faq pz-card pz-card-hover p-4">
+            <summary class="flex items-center justify-between cursor-pointer">
+              <span class="text-sm font-medium" style="color: var(--pz-color-text-primary);">JWT中常见的Payload字段有哪些？</span>
+              <i data-lucide="chevron-down" class="w-4 h-4 pz-faq-chevron shrink-0" style="color: var(--pz-color-text-tertiary);"></i>
+            </summary>
+            <div class="text-sm mt-3 flex flex-col gap-2" style="color: var(--pz-color-text-secondary); line-height: 1.6;">
+              <p>JWT的Payload中包含声明(claims)，以下是RFC 7519定义的注册声明（Registered Claims）：</p>
+              <p><strong style="color: var(--pz-color-text-primary);">iss (Issuer)：</strong>签发者，标识发行JWT的主体。</p>
+              <p><strong style="color: var(--pz-color-text-primary);">sub (Subject)：</strong>主体，JWT所面向的用户或实体标识。</p>
+              <p><strong style="color: var(--pz-color-text-primary);">aud (Audience)：</strong>受众，JWT的接收方标识。</p>
+              <p><strong style="color: var(--pz-color-text-primary);">exp (Expiration Time)：</strong>过期时间，JWT在此时间之后不应被接受处理。必须是一个将来的时间戳。</p>
+              <p><strong style="color: var(--pz-color-text-primary);">nbf (Not Before)：</strong>生效时间，JWT在此时间之前不应被接受处理。</p>
+              <p><strong style="color: var(--pz-color-text-primary);">iat (Issued At)：</strong>签发时间，JWT的签发时间戳。</p>
+              <p><strong style="color: var(--pz-color-text-primary);">jti (JWT ID)：</strong>JWT的唯一标识符，用于防止重放攻击。</p>
+              <p>此外，开发者还可以在Payload中添加自定义的私有声明（Private Claims），如用户角色、权限等业务相关数据。</p>
+            </div>
+          </details>
+          <details class="pz-faq pz-card pz-card-hover p-4">
+            <summary class="flex items-center justify-between cursor-pointer">
+              <span class="text-sm font-medium" style="color: var(--pz-color-text-primary);">如何安全使用JWT？</span>
+              <i data-lucide="chevron-down" class="w-4 h-4 pz-faq-chevron shrink-0" style="color: var(--pz-color-text-tertiary);"></i>
+            </summary>
+            <div class="text-sm mt-3 flex flex-col gap-2" style="color: var(--pz-color-text-secondary); line-height: 1.6;">
+              <p>安全使用JWT需要注意以下几点：</p>
+              <p><strong style="color: var(--pz-color-text-primary);">使用强签名算法：</strong>推荐使用HS256、RS256或ES256等安全算法，绝不使用 <code style="font-family: var(--pz-font-mono); color: var(--pz-state-error);">alg: "none"</code>。</p>
+              <p><strong style="color: var(--pz-color-text-primary);">设置合理过期时间：</strong>通过 <code style="font-family: var(--pz-font-mono); color: var(--pz-color-primary);">exp</code> 声明设置较短的过期时间（如1-2小时），配合Refresh Token机制刷新令牌。</p>
+              <p><strong style="color: var(--pz-color-text-primary);">不在Payload存放敏感信息：</strong>Payload仅Base64URL编码，任何人都能解码。切勿存放密码、信用卡号等敏感数据。</p>
+              <p><strong style="color: var(--pz-color-text-primary);">使用HTTPS传输：</strong>JWT在传输过程中应使用HTTPS加密通道，防止中间人攻击窃取令牌。</p>
+              <p><strong style="color: var(--pz-color-text-primary);">妥善保管密钥：</strong>HMAC的密钥和RSA的私钥必须严格保密，泄露密钥等于泄露整个系统的安全性。</p>
+              <p><strong style="color: var(--pz-color-text-primary);">验证算法一致性：</strong>服务端应强制使用预期的算法验证签名，防止算法混淆攻击（如将RS256降级为HS256）。</p>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- Ad Slot -->
+      <div class="h-24 flex items-center justify-center" style="background-color: var(--pz-color-bg-tertiary); border: 1px dashed var(--pz-color-border-strong); border-radius: var(--pz-radius-lg);">
+        <span class="text-sm" style="color: var(--pz-color-text-tertiary);">广告位</span>
+      </div>
+
+      <!-- Next Tool Link -->
+      <div class="flex justify-end py-4">
+        <a href="/base64" data-dom-id="next-base64" class="inline-flex items-center gap-1 text-sm font-medium hover:underline whitespace-nowrap" style="color: var(--pz-color-primary);">下一个工具：Base64编码<i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+      </div>
+
+</main>
+      </div>
+    </div>
+
+    <!-- ==================== FIXED FOOTER (full width, outside .pz-app) ==================== -->
+    <footer class="flex-shrink-0" style="background-color: var(--pz-color-bg-secondary); border-top: 1px solid var(--pz-color-border);">
+  <div class="flex flex-col items-center justify-center gap-1 py-3" style="padding-left: 2rem; padding-right: 2rem;">
+    <div class="flex items-center gap-6">
+      <a href="/about" class="pz-footer-link">关于我们</a>
+      <a href="/privacy" class="pz-footer-link">隐私政策</a>
+    </div>
+    <div class="flex flex-wrap items-center justify-center gap-4 text-xs" style="color: var(--pz-color-text-tertiary); font-family: var(--pz-font-sans);">
+      <span>© 2026 PanziPool. All rights reserved.</span>
+      <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener" class="pz-footer-link" style="font-size: var(--pz-text-xs);">京ICP备2026XXXXXX号</a>
+      <a href="http://www.beian.gov.cn/" target="_blank" rel="noopener" class="pz-footer-link" style="font-size: var(--pz-text-xs);">京公网安备 110108020XXXXXX号</a>
+    </div>
+  </div>
+</footer>
+
+    <!-- ==================== SIDEBAR TOGGLE + ACCORDION SCRIPT ==================== -->
+    <script>
+  (function() {
+    var wrapper = document.getElementById("pz-sidebar-wrapper");
+    var toggle = document.getElementById("pz-sidebar-toggle");
+    if (!wrapper || !toggle) return;
+    function toggleSidebar() {
+      var collapsed = wrapper.getAttribute("data-collapsed") === "true";
+      wrapper.setAttribute("data-collapsed", collapsed ? "false" : "true");
+    }
+    toggle.addEventListener("click", toggleSidebar);
+    toggle.addEventListener("keydown", function(e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleSidebar(); }
+    });
+    var titles = document.querySelectorAll(".pz-sidebar-title[data-toggle]");
+    titles.forEach(function(title) {
+      title.addEventListener("click", function() {
+        var sectionId = title.getAttribute("data-toggle");
+        var section = document.querySelector(".pz-sidebar-section[data-section-id=\"" + sectionId + "\"]");
+        if (!section) return;
+        var isExpanded = section.getAttribute("data-expanded") === "true";
+        document.querySelectorAll(".pz-sidebar-section").forEach(function(s) {
+          s.setAttribute("data-expanded", "false");
+        });
+        if (!isExpanded) { section.setAttribute("data-expanded", "true"); }
+      });
+      title.addEventListener("keydown", function(e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); title.click(); }
+      });
+    });
+  })();
+</script>
+                <!-- ==================== JWT DECODER SCRIPT ==================== -->
+    <script>
+  (function() {
+    'use strict';
+
+    // === Sample JWT token (HS256, exp far in the future) ===
+    var SAMPLE_JWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjk3NTIzNDU2Nzh9.jND5T1q3GFlvRDXm3V6KNqg8Zq5jvBmCZ_iIqjB4HMI';
+
+    // === DOM elements ===
+    var inputEl = document.getElementById('pz-jwt-input');
+    var inputCount = document.getElementById('pz-jwt-input-count');
+    var decodeBtn = document.getElementById('pz-jwt-decode');
+    var clearBtn = document.getElementById('pz-jwt-clear');
+    var sampleBtn = document.getElementById('pz-jwt-sample');
+    var errorEl = document.getElementById('pz-jwt-error');
+    var partsContainer = document.getElementById('pz-jwt-parts-container');
+    var infoContainer = document.getElementById('pz-jwt-info-container');
+
+    var headerContent = document.getElementById('pz-jwt-header-content');
+    var payloadContent = document.getElementById('pz-jwt-payload-content');
+    var signatureContent = document.getElementById('pz-jwt-signature-content');
+    var algoBadge = document.getElementById('pz-jwt-algo-badge');
+    var expBadgeWrapper = document.getElementById('pz-jwt-exp-badge-wrapper');
+    var sigBadgeWrapper = document.getElementById('pz-jwt-sig-badge-wrapper');
+    var headerNote = document.getElementById('pz-jwt-header-note');
+    var payloadNote = document.getElementById('pz-jwt-payload-note');
+
+    var headerLen = document.getElementById('pz-jwt-header-len');
+    var payloadLen = document.getElementById('pz-jwt-payload-len');
+    var signatureLen = document.getElementById('pz-jwt-signature-len');
+    var totalLen = document.getElementById('pz-jwt-total-len');
+    var algoInfo = document.getElementById('pz-jwt-algo-info');
+    var typeInfo = document.getElementById('pz-jwt-type-info');
+
+    var debounceTimer = null;
+
+    // === Base64URL decode function ===
+    // Replaces URL-safe chars and adds padding, then decodes as UTF-8
+    function base64UrlDecode(str) {
+      // Replace URL-safe characters
+      var base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+      // Add padding if needed
+      var pad = base64.length % 4;
+      if (pad) {
+        base64 += '='.repeat(4 - pad);
+      }
+      // Decode Base64 to binary string, then handle UTF-8
+      var binaryString = atob(base64);
+      // Use decodeURIComponent(escape(...)) for UTF-8 support
+      return decodeURIComponent(escape(binaryString));
+    }
+
+    // === JWT decode function ===
+    function decodeJWT(token) {
+      var parts = token.trim().split('.');
+      if (parts.length !== 3) {
+        throw new Error('JWT格式错误：令牌必须由三段用点(.)分隔的Base64URL字符串组成');
+      }
+      var headerRaw = parts[0];
+      var payloadRaw = parts[1];
+      var signatureRaw = parts[2];
+
+      if (!headerRaw || !payloadRaw || !signatureRaw) {
+        throw new Error('JWT格式错误：三段内容不能为空');
+      }
+
+      var header, payload;
+      try {
+        var headerStr = base64UrlDecode(headerRaw);
+        header = JSON.parse(headerStr);
+      } catch (e) {
+        throw new Error('Header解码失败：无效的Base64URL或JSON格式');
+      }
+      try {
+        var payloadStr = base64UrlDecode(payloadRaw);
+        payload = JSON.parse(payloadStr);
+      } catch (e) {
+        throw new Error('Payload解码失败：无效的Base64URL或JSON格式');
+      }
+
+      return {
+        header: header,
+        payload: payload,
+        signature: signatureRaw,
+        raw: {
+          header: headerRaw,
+          payload: payloadRaw,
+          signature: signatureRaw
+        }
+      };
+    }
+
+    // === Escape HTML to prevent XSS in displayed content ===
+    function escapeHtml(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // === Format Unix timestamp to human-readable date string ===
+    function formatTimestamp(ts) {
+      var date = new Date(ts * 1000);
+      var year = date.getFullYear();
+      var month = String(date.getMonth() + 1).padStart(2, '0');
+      var day = String(date.getDate()).padStart(2, '0');
+      var hours = String(date.getHours()).padStart(2, '0');
+      var minutes = String(date.getMinutes()).padStart(2, '0');
+      var seconds = String(date.getSeconds()).padStart(2, '0');
+      return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+    }
+
+    // === Render decoded result ===
+    function renderResult(decoded) {
+      var header = decoded.header;
+      var payload = decoded.payload;
+      var signature = decoded.signature;
+
+      // Header content
+      headerContent.textContent = JSON.stringify(header, null, 2);
+
+      // Algorithm badge
+      var alg = header.alg || '未知';
+      algoBadge.textContent = alg;
+
+      // Header note: show typ if present
+      var headerNoteText = '';
+      if (header.typ) {
+        headerNoteText += '类型: ' + header.typ;
+      }
+      if (header.kid) {
+        headerNoteText += (headerNoteText ? '  |  ' : '') + '密钥ID: ' + header.kid;
+      }
+      headerNote.textContent = headerNoteText;
+
+      // Payload content
+      payloadContent.textContent = JSON.stringify(payload, null, 2);
+
+      // Expiration check
+      var expNoteText = '';
+      expBadgeWrapper.innerHTML = '';
+      if (payload.exp !== undefined) {
+        var expDate = formatTimestamp(payload.exp);
+        var now = Math.floor(Date.now() / 1000);
+        if (payload.exp < now) {
+          // Expired
+          expBadgeWrapper.innerHTML = '<span class="pz-jwt-badge pz-jwt-badge--expired">已过期</span>';
+          expNoteText = '过期时间: ' + expDate;
+        } else {
+          // Valid
+          expBadgeWrapper.innerHTML = '<span class="pz-jwt-badge pz-jwt-badge--valid">有效</span>';
+          expNoteText = '过期时间: ' + expDate;
+        }
+      }
+
+      // Show iat / nbf human-readable time
+      if (payload.iat !== undefined) {
+        expNoteText += (expNoteText ? '  |  ' : '') + '签发时间: ' + formatTimestamp(payload.iat);
+      }
+      if (payload.nbf !== undefined) {
+        expNoteText += (expNoteText ? '  |  ' : '') + '生效时间: ' + formatTimestamp(payload.nbf);
+      }
+      payloadNote.textContent = expNoteText;
+
+      // Signature content
+      signatureContent.textContent = signature;
+
+      // Signature badge: warn if alg is "none"
+      sigBadgeWrapper.innerHTML = '';
+      if (alg === 'none') {
+        sigBadgeWrapper.innerHTML = '<span class="pz-jwt-badge pz-jwt-badge--warning">无签名算法(alg=none)</span>';
+      }
+
+      // Info bar
+      headerLen.textContent = decoded.raw.header.length + ' 字符';
+      payloadLen.textContent = decoded.raw.payload.length + ' 字符';
+      signatureLen.textContent = decoded.raw.signature.length + ' 字符';
+      totalLen.textContent = (decoded.raw.header.length + decoded.raw.payload.length + decoded.raw.signature.length + 2) + ' 字符';
+      algoInfo.textContent = alg;
+
+      // Token type detection
+      var tokenType = 'JWT';
+      if (header.enc) {
+        tokenType = 'JWE (加密)';
+      } else if (header.typ) {
+        tokenType = header.typ.toUpperCase();
+      }
+      typeInfo.textContent = tokenType;
+
+      // Show containers
+      partsContainer.classList.remove('hidden');
+      infoContainer.classList.remove('hidden');
+      errorEl.classList.add('hidden');
+    }
+
+    // === Show error message ===
+    function showError(message) {
+      errorEl.classList.remove('hidden');
+      errorEl.innerHTML = '<div class="pz-jwt-error-msg">' + escapeHtml(message) + '</div>';
+      partsContainer.classList.add('hidden');
+      infoContainer.classList.add('hidden');
+    }
+
+    // === Clear all ===
+    function clearAll() {
+      inputEl.value = '';
+      inputCount.textContent = '0 字符';
+      errorEl.classList.add('hidden');
+      errorEl.innerHTML = '';
+      partsContainer.classList.add('hidden');
+      infoContainer.classList.add('hidden');
+      headerContent.textContent = '';
+      payloadContent.textContent = '';
+      signatureContent.textContent = '';
+      algoBadge.textContent = '-';
+      expBadgeWrapper.innerHTML = '';
+      sigBadgeWrapper.innerHTML = '';
+      headerNote.textContent = '';
+      payloadNote.textContent = '';
+      inputEl.focus();
+    }
+
+    // === Perform decode ===
+    function doDecode() {
+      var token = inputEl.value.trim();
+      if (!token) {
+        showError('请输入JWT令牌');
+        return;
+      }
+      try {
+        var decoded = decodeJWT(token);
+        renderResult(decoded);
+      } catch (e) {
+        showError(e.message);
+      }
+    }
+
+    // === Event listeners ===
+    decodeBtn.addEventListener('click', doDecode);
+
+    clearBtn.addEventListener('click', clearAll);
+
+    sampleBtn.addEventListener('click', function() {
+      inputEl.value = SAMPLE_JWT;
+      inputCount.textContent = SAMPLE_JWT.length + ' 字符';
+      doDecode();
+    });
+
+    inputEl.addEventListener('input', function() {
+      inputCount.textContent = inputEl.value.length + ' 字符';
+      // Debounced auto-decode (300ms)
+      if (debounceTimer) {
+        clearTimeout(debounceTimer);
+      }
+      debounceTimer = setTimeout(function() {
+        var token = inputEl.value.trim();
+        if (!token) {
+          errorEl.classList.add('hidden');
+          partsContainer.classList.add('hidden');
+          infoContainer.classList.add('hidden');
+          return;
+        }
+        doDecode();
+      }, 300);
+    });
+
+    // Ctrl/Cmd + Enter to decode
+    inputEl.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        doDecode();
+      }
+    });
+  })();
+</script>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
