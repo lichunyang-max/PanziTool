@@ -36,13 +36,13 @@ async function onSearchEnter() {
   try {
     const config = useRuntimeConfig()
     const baseURL = config.public.apiBase
-    const res = await $fetch<{ code: number; data: Array<{ slug: string; name: string; keywords?: string }> }>(
-      '/api/v1/tools',
-      { baseURL, params: { limit: 100 } },
-    )
-    if (res.code !== 0 || !res.data) return
+    const res = await $fetch<{
+      code: number
+      data: { items: Array<{ slug: string; name: string; keywords?: string }>; total: number }
+    }>('/api/v1/tools', { baseURL, params: { limit: 100 } })
+    if (res.code !== 0 || !res.data?.items) return
 
-    const matched = res.data.find((tool) => {
+    const matched = res.data.items.find((tool) => {
       const name = (tool.name || '').toLowerCase()
       const keywords = (tool.keywords || '').toLowerCase()
       return name.includes(keyword) || keywords.includes(keyword)

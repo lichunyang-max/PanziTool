@@ -34,7 +34,7 @@
           rel="noopener"
           class="pz-footer-link"
           style="font-size: var(--pz-text-xs)"
-          >京ICP备2026XXXXXX号</a
+          >渝ICP备2026015117号</a
         >
         <a
           href="http://www.beian.gov.cn/"

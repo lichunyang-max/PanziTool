@@ -39,14 +39,14 @@ const { data: toolsData } = await useAsyncData<ToolItem[]>(
       : (config.public.apiBase as string)
 
     try {
-      const response = await $fetch<{ code: number; data: ToolItem[] }>(
-        '/api/v1/tools',
-        {
-          baseURL,
-          params: { sort: 'popular', limit: 8 },
-        },
-      )
-      if (response.code === 0) return response.data || []
+      const response = await $fetch<{
+        code: number
+        data: { items: ToolItem[]; total: number }
+      }>('/api/v1/tools', {
+        baseURL,
+        params: { sort: 'popular', limit: 8 },
+      })
+      if (response.code === 0) return response.data?.items || []
       return []
     } catch {
       return []

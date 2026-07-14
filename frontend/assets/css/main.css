@@ -192,15 +192,19 @@ html,
 body {
   height: 100%;
   margin: 0;
-  overflow: hidden;
 }
 
 body {
-  display: flex;
-  flex-direction: column;
   background-color: var(--pz-color-bg);
   color: var(--pz-color-text-primary);
   font-family: var(--pz-font-sans);
+}
+
+/* Nuxt3 根节点：承载全站 flex 列布局（header + 内容 + footer） */
+#__nuxt {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 /* ==========================================================================

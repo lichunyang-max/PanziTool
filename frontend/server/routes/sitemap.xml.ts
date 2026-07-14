@@ -21,12 +21,12 @@ export default defineEventHandler(async () => {
   try {
     const config = useRuntimeConfig()
     const apiBase = config.apiBase || config.public.apiBase || 'http://localhost:8080'
-    const response = await $fetch<{ code: number; data: { slug: string; updated_at?: string }[] }>(
-      '/api/v1/tools',
-      { baseURL: apiBase as string },
-    )
-    if (response.code === 0 && response.data) {
-      toolUrls = response.data.map((tool) => ({
+    const response = await $fetch<{
+      code: number
+      data: { items: { slug: string; updated_at?: string }[]; total: number }
+    }>('/api/v1/tools', { baseURL: apiBase as string })
+    if (response.code === 0 && response.data?.items) {
+      toolUrls = response.data.items.map((tool) => ({
         loc: `${baseUrl}/tools/${tool.slug}`,
         priority: '0.8',
         changefreq: 'weekly',

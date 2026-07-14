@@ -50,8 +50,14 @@ export const toolRegistry: Record<string, () => Promise<Component>> = {
   // Task 14: 哈希计算工具
   hash: () =>
     import('~/components/tool/HashTool.vue').then((m) => m.default || m),
-  // 'image-compress': () => import('~/components/tool/ImageCompressTool.vue').then(m => m.default || m),
-  // 'image-crop': () => import('~/components/tool/ImageCropTool.vue').then(m => m.default || m),
+  // Task 16: 图片压缩工具
+  'image-compress': () =>
+    import('~/components/tool/ImageCompressTool.vue').then(
+      (m) => m.default || m,
+    ),
+  // Task 17: 图片裁剪工具
+  'image-crop': () =>
+    import('~/components/tool/ImageCropTool.vue').then((m) => m.default || m),
   // Task 18: 图片格式转换工具
   'image-convert': () =>
     import('~/components/tool/ImageConvertTool.vue').then(
