@@ -1,12 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import tailwindcss from '@tailwindcss/vite'
+import { process } from 'std-env'
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
   devtools: { enabled: true },
 
-  // SSR 模式（默认开启，显式声明以明确意图）
-  ssr: true,
+  // SSR 模式关闭：纯静态生成模式，build 后生成 dist 目录，可直接用 Nginx 托管
+  ssr: false,
 
   // 注册 Tailwind CSS v4 Vite 插件（v4 推荐方式）
   vite: {
@@ -23,9 +24,13 @@ export default defineNuxtConfig({
   // - apiBase: 服务端内网地址（SSR 阶段使用，如 Docker 内网 http://java-api:8080）
   // - public.apiBase: 客户端公开地址（如 https://www.panzipool.com/api）
   runtimeConfig: {
-    apiBase: process.env.NUXT_API_BASE || 'http://localhost:8080',
+    // 纯静态模式：SSR 已关闭，apiBase 不再使用，保留兼容
+    apiBase: '',
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8080',
+      // 空字符串 = 使用相对路径，API 请求自动跟随当前页面域名
+      // 开发时可通过 .env 覆盖为 http://localhost:8080
+      // 生产环境由 Nginx 反向代理 /api/ 到后端
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || '',
       baiduTongjiId: '06c8d960aee8a68f0a9a229ff4a18ceb',
       adSlots: {
         homeTop: '', // 广告位 key，空字符串表示未配置
@@ -73,10 +78,13 @@ export default defineNuxtConfig({
     },
   },
 
-  // Nitro 配置：trailing slash 规范（全站无尾斜杠）
+  // Nitro 配置
   nitro: {
+    // 静态生成预设（npm run generate 使用，关闭 SSR 后 build 也走静态生成）
+    preset: 'static',
     routeRules: {
-      // 预渲染规则将在后续 Task 中按页面配置
+      // 所有页面预渲染为静态 HTML
+      '/**': { prerender: true },
     },
   },
 
