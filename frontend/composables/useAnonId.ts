@@ -3,8 +3,10 @@
  *
  * 在 localStorage 生成/读取 UUID（匿名 anon_id）
  * 管理 liked_tools 列表（localStorage，JSON 数组）
- * - isLiked(slug) 判断是否已点赞
- * - addLiked(slug) 添加到已点赞列表
+ * - 存储格式：{slug}_{YYYY-MM-DD} 键（按自然天管理）
+ * - isLiked(slug) 判断今日是否已点赞
+ * - addLiked(slug) 添加到当日已点赞列表
+ * - 旧记录因日期不匹配自动失效，无需清理
  */
 
 const ANON_ID_KEY = 'panzipool_anon_id'
@@ -19,6 +21,13 @@ function generateUUID(): string {
     const v = c === 'x' ? r : (r & 0x3) | 0x8
     return v.toString(16)
   })
+}
+
+/**
+ * 获取今日日期（YYYY-MM-DD，UTC）
+ */
+function getToday(): string {
+  return new Date().toISOString().slice(0, 10)
 }
 
 function getAnonId(): string {
@@ -62,18 +71,21 @@ export function useAnonId() {
   }
 
   /**
-   * 判断是否已点赞某工具
+   * 判断今日是否已点赞某工具
+   * 按 {slug}_{YYYY-MM-DD} 键查找；旧记录因日期不匹配自动失效
    */
   function isLiked(slug: string): boolean {
-    return likedTools.value.includes(slug)
+    return likedTools.value.includes(`${slug}_${getToday()}`)
   }
 
   /**
-   * 添加工具到已点赞列表
+   * 添加工具到当日已点赞列表
+   * 存储为 {slug}_{YYYY-MM-DD} 键，自然天滚动后自动失效
    */
   function addLiked(slug: string): void {
-    if (!likedTools.value.includes(slug)) {
-      likedTools.value.push(slug)
+    const key = `${slug}_${getToday()}`
+    if (!likedTools.value.includes(key)) {
+      likedTools.value.push(key)
       setLikedTools(likedTools.value)
     }
   }

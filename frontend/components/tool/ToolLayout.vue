@@ -22,6 +22,7 @@ export interface ToolMeta {
   category: string
   useCount: number
   likeCount: number
+  isLiked?: boolean
   nextTool?: {
     slug: string
     name: string
@@ -109,18 +110,19 @@ function formatCount(count: number): string {
             {{ formatCount(tool.useCount) }} 次使用
           </span>
           <span class="flex items-center gap-1 tabular-nums whitespace-nowrap">
-            <Heart class="w-4 h-4" aria-hidden="true" />
+            <Heart class="w-4 h-4" aria-hidden="true" :style="{ color: tool.isLiked ? 'var(--pz-color-primary)' : undefined }" />
             {{ tool.likeCount }}
           </span>
         </div>
         <button
           type="button"
           class="pz-btn-secondary whitespace-nowrap"
-          :aria-label="`点赞 ${tool.name}`"
+          :aria-label="tool.isLiked ? `已点赞 ${tool.name}` : `点赞 ${tool.name}`"
+          :style="tool.isLiked ? { backgroundColor: 'var(--pz-color-primary-light)', borderColor: 'var(--pz-color-primary-border)', color: 'var(--pz-color-primary)' } : undefined"
           @click="emit('like', tool.slug)"
         >
-          <Heart class="w-4 h-4" aria-hidden="true" />
-          <span>点赞</span>
+          <Heart class="w-4 h-4" aria-hidden="true" :style="{ color: tool.isLiked ? 'var(--pz-color-primary)' : undefined }" />
+          <span>{{ tool.isLiked ? '已点赞' : '点赞' }}</span>
         </button>
       </div>
     </div>

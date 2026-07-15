@@ -6,8 +6,8 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
   devtools: { enabled: true },
 
-  // SSR 模式关闭：纯静态生成模式，build 后生成 dist 目录，可直接用 Nginx 托管
-  ssr: false,
+  // SSR 模式：生产构建为纯静态（SPA），开发模式启用 SSR 以支持 HMR
+  ssr: process.env.NODE_ENV === 'production' ? false : true,
 
   // 注册 Tailwind CSS v4 Vite 插件（v4 推荐方式）
   vite: {
@@ -80,12 +80,11 @@ export default defineNuxtConfig({
 
   // Nitro 配置
   nitro: {
-    // 静态生成预设（npm run generate 使用，关闭 SSR 后 build 也走静态生成）
-    preset: 'static',
-    routeRules: {
-      // 所有页面预渲染为静态 HTML
-      '/**': { prerender: true },
-    },
+    // 生产构建使用静态预设（npm run generate / build），开发使用 node-server
+    preset: process.env.NODE_ENV === 'production' ? 'static' : 'node-server',
+    routeRules: process.env.NODE_ENV === 'production'
+      ? { '/**': { prerender: true } }
+      : {},
   },
 
   // 全局路由配置：无尾斜杠

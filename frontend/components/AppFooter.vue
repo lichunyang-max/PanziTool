@@ -36,14 +36,6 @@
           style="font-size: var(--pz-text-xs)"
           >渝ICP备2026015117号</a
         >
-        <a
-          href="http://www.beian.gov.cn/"
-          target="_blank"
-          rel="noopener"
-          class="pz-footer-link"
-          style="font-size: var(--pz-text-xs)"
-          >京公网安备 110108020XXXXXX号</a
-        >
       </div>
     </div>
   </footer>

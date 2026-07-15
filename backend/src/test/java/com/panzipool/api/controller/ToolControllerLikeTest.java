@@ -3,6 +3,7 @@ package com.panzipool.api.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.panzipool.api.entity.Tool;
+import com.panzipool.api.entity.ToolLike;
 import com.panzipool.api.repository.ToolLikeRepository;
 import com.panzipool.api.repository.ToolRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,10 +27,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * 点赞 API 集成测试（Task 5）。
  *
- * <p>通过真实 HTTP 调用（含 context-path /api/v1）验证：</p>
+ * <p>通过真实 HTTP 调用（含 context-path /api/v1）验证每自然天一次的点赞规则：</p>
  * <ul>
- *   <li>首次点赞返回 200 + like_count（SubTask 5.1 / 5.3）</li>
- *   <li>重复点赞返回 409 + 当前 like_count（SubTask 5.2 / 5.3）</li>
+ *   <li>当日首次点赞返回 200 + like_count（SubTask 5.1 / 5.3）</li>
+ *   <li>当日重复点赞返回 409 + 当前 like_count（SubTask 5.2 / 5.3）</li>
+ *   <li>次日再次点赞返回 200（每自然天一次，使用不同的 like_date）</li>
  *   <li>tools.like_count 冗余计数同步更新（SubTask 5.4）</li>
  *   <li>不存在的 slug 返回 404（SubTask 5.1）</li>
  *   <li>anon_id 格式校验返回 400（SubTask 5.1）</li>
@@ -127,7 +130,7 @@ class ToolControllerLikeTest {
     void duplicateLike_returns409WithCurrentCount() throws Exception {
         // 首次点赞
         postLike(TEST_SLUG, VALID_ANON_ID);
-        // 重复点赞（同一 anon_id）
+        // 重复点赞（同一 anon_id，同一自然天）
         ResponseEntity<String> resp = postLike(TEST_SLUG, VALID_ANON_ID);
 
         assertThat(resp.getStatusCode().value()).isEqualTo(409);
@@ -137,6 +140,35 @@ class ToolControllerLikeTest {
         // 409 响应应携带 data（当前 like_count + liked=false），供前端同步修正
         assertThat(body.get("data").get("like_count").asInt()).isEqualTo(1);
         assertThat(body.get("data").get("liked").asBoolean()).isFalse();
+    }
+
+    // =========================================================================
+    // 每自然天一次：次日再次点赞返回 200（使用不同的 like_date）
+    // =========================================================================
+
+    @Test
+    void nextDayLike_returns200() throws Exception {
+        // 模拟昨日已点赞：直接写入一条 like_date=昨日的记录，并同步冗余计数
+        Tool tool = toolRepository.findBySlug(TEST_SLUG).orElseThrow();
+        ToolLike yesterdayLike = new ToolLike();
+        yesterdayLike.setToolId(tool.getId());
+        yesterdayLike.setAnonId(VALID_ANON_ID);
+        yesterdayLike.setLikeDate(LocalDate.now().minusDays(1));
+        toolLikeRepository.saveAndFlush(yesterdayLike);
+        tool.setLikeCount(1L);
+        toolRepository.save(tool);
+
+        // 当日再次点赞（同一 anon_id，但 like_date 不同）→ 应返回 200
+        ResponseEntity<String> resp = postLike(TEST_SLUG, VALID_ANON_ID);
+
+        assertThat(resp.getStatusCode().value()).isEqualTo(200);
+        JsonNode body = objectMapper.readTree(resp.getBody());
+        assertThat(body.get("code").asInt()).isZero();
+        assertThat(body.get("data").get("like_count").asInt()).isEqualTo(2);
+        assertThat(body.get("data").get("liked").asBoolean()).isTrue();
+
+        // 验证 tool_likes 表存在两条记录（昨日 + 今日）
+        assertThat(toolLikeRepository.countByToolId(tool.getId())).isEqualTo(2L);
     }
 
     // =========================================================================

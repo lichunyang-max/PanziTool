@@ -80,8 +80,8 @@ const { data: toolData } = await useAsyncData<ToolData | null>(
   },
 )
 
-// 计算 ToolMeta
-const toolMeta = computed<ToolMeta>(() => {
+// 基础 ToolMeta（来自 API 数据）
+const baseToolMeta = computed<ToolMeta>(() => {
   if (toolData.value) {
     return {
       slug: toolData.value.slug,
@@ -102,6 +102,22 @@ const toolMeta = computed<ToolMeta>(() => {
     likeCount: 0,
   }
 })
+
+// 点赞处理
+const { anonId, isLiked, addLiked } = useAnonId()
+const localLiked = ref(false)
+const localLikeCount = ref(baseToolMeta.value.likeCount)
+
+onMounted(() => {
+  localLiked.value = isLiked(slug.value)
+})
+
+// 最终 ToolMeta（合并本地点赞状态）
+const toolMeta = computed<ToolMeta>(() => ({
+  ...baseToolMeta.value,
+  likeCount: localLikeCount.value,
+  isLiked: localLiked.value,
+}))
 
 // SEO 元数据
 const seoTitle = computed(() => toolMeta.value.name || slug.value)
@@ -152,49 +168,44 @@ const toolComponent = computed(() => {
   return null
 })
 
-// 点赞处理
-const { isLiked, addLiked } = useAnonId()
-const localLiked = ref(false)
-const localLikeCount = ref(toolMeta.value.likeCount)
-
-onMounted(() => {
-  localLiked.value = isLiked(slug.value)
-})
-
 async function handleLike() {
-  if (localLiked.value) return
+    if (localLiked.value) return
 
-  try {
-    const config = useRuntimeConfig()
-    const baseURL = config.public.apiBase as string
-    const response = await $fetch<{ code: number; data?: { like_count?: number }; message?: string }>(
-      `/api/v1/tools/${slug.value}/like`,
-      {
-        baseURL,
-        method: 'POST',
-        onResponseError() {
-          throw new Error('点赞失败')
+    try {
+      const config = useRuntimeConfig()
+      const baseURL = config.public.apiBase as string
+      const response = await $fetch<{ code: number; data?: { like_count?: number; liked?: boolean }; message?: string }>(
+        `/api/v1/tools/${slug.value}/like`,
+        {
+          baseURL,
+          method: 'POST',
+          body: { anon_id: anonId.value },
+          onResponseError() {
+            throw new Error('点赞失败')
+          },
         },
-      },
-    )
+      )
 
-    if (response.code === 0) {
-      localLiked.value = true
-      addLiked(slug.value)
-      if (response.data?.like_count) {
-        localLikeCount.value = response.data.like_count
-      } else {
-        localLikeCount.value++
+      if (response.code === 0) {
+        localLiked.value = true
+        addLiked(slug.value)
+        if (response.data?.like_count) {
+          localLikeCount.value = response.data.like_count
+        } else {
+          localLikeCount.value++
+        }
+      } else if (response.code === 409) {
+        // 重复点赞，同步修正 localStorage
+        localLiked.value = true
+        addLiked(slug.value)
+        if (response.data?.like_count) {
+          localLikeCount.value = response.data.like_count
+        }
       }
-    } else if (response.code === 409) {
-      // 重复点赞，同步修正 localStorage
-      localLiked.value = true
-      addLiked(slug.value)
+    } catch {
+      // 网络错误静默忽略
     }
-  } catch {
-    // 网络错误静默忽略
   }
-}
 </script>
 
 <template>

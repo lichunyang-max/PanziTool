@@ -1,6 +1,7 @@
 package com.panzipool.api.controller;
 
 import com.panzipool.api.common.ApiResponse;
+import com.panzipool.api.dto.BatchEventReportRequest;
 import com.panzipool.api.dto.EventReportRequest;
 import com.panzipool.api.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,15 +39,19 @@ public class EventController {
     }
 
     /**
-     * 匿名统计事件上报接口。
+     * 批量匿名统计事件上报接口。
      *
      * <p><b>请求示例</b>：</p>
      * <pre>
      * POST /api/v1/events
      * {
-     *   "tool_slug": "json-formatter",    // 可选，page_view 事件可不带
-     *   "anon_id": "550e8400-e29b-41d4-a716-446655440000",
-     *   "event_type": "tool_use"
+     *   "events": [
+     *     {
+     *       "tool_slug": "json-formatter",
+     *       "anon_id": "550e8400-e29b-41d4-a716-446655440000",
+     *       "event_type": "tool_use"
+     *     }
+     *   ]
      * }
      * </pre>
      *
@@ -62,23 +67,25 @@ public class EventController {
      * <p><b>客户端 IP 获取策略</b>：优先读取 {@code X-Forwarded-For} 头（取第一个），
      * 若无则使用 {@code HttpServletRequest.getRemoteAddr()}。</p>
      *
-     * @param request 事件上报请求体（含 anon_id、event_type、可选 tool_slug）
+     * @param request 批量事件上报请求体（含 events 数组）
      * @param servletRequest 原始请求（用于获取客户端 IP）
      * @return 成功响应信封
      */
-    @Operation(summary = "上报匿名统计事件", description = "上报 page_view / tool_use / copy / download 事件，含频率限制防刷")
+    @Operation(summary = "上报批量匿名统计事件", description = "批量上报 page_view / tool_use / copy / download 事件，含频率限制防刷")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "上报成功"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "参数校验失败或工具不存在"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "429", description = "请求过于频繁")
     })
     @PostMapping
-    public ApiResponse<Void> reportEvent(
-            @Valid @RequestBody EventReportRequest request,
+    public ApiResponse<Void> reportBatchEvent(
+            @Valid @RequestBody BatchEventReportRequest request,
             HttpServletRequest servletRequest) {
 
         String clientIp = extractClientIp(servletRequest);
-        eventService.reportEvent(request, clientIp);
+        for (EventReportRequest eventRequest : request.getEvents()) {
+            eventService.reportEvent(eventRequest, clientIp);
+        }
         return ApiResponse.success();
     }
 

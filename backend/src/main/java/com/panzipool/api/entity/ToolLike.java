@@ -13,24 +13,25 @@ import jakarta.persistence.UniqueConstraint;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
  * 点赞记录实体（tool_likes 表）。
  *
- * <p>记录匿名用户对工具的点赞行为。唯一约束 (tool_id, anon_id) 确保同一匿名用户
- * 对同一工具仅能点赞一次且不可取消。点赞成功后同步更新 tools.like_count 冗余计数。</p>
+ * <p>记录匿名用户对工具的点赞行为。唯一约束 (tool_id, anon_id, like_date) 确保同一匿名用户
+ * 对同一工具每个自然天仅能点赞一次且不可取消。点赞成功后同步更新 tools.like_count 冗余计数。</p>
  *
  * <p>局限性：anon_id 由客户端 localStorage 生成，可被清除/伪造；MVP 防刷为基础级
- * （同设备一次），不抵御恶意伪造。</p>
+ * （同设备每自然天一次），不抵御恶意伪造。</p>
  */
 @Schema(description = "点赞记录")
 @Entity
 @Table(
         name = "tool_likes",
         uniqueConstraints = @UniqueConstraint(
-                name = "uk_tool_likes_tool_anon",
-                columnNames = {"tool_id", "anon_id"}
+                name = "uk_tool_likes_tool_anon_date",
+                columnNames = {"tool_id", "anon_id", "like_date"}
         )
 )
 @EntityListeners(AuditingEntityListener.class)
@@ -49,6 +50,10 @@ public class ToolLike {
     @Schema(description = "匿名用户 ID（UUID）", example = "550e8400-e29b-41d4-a716-446655440000")
     @Column(name = "anon_id", nullable = false, length = 64)
     private String anonId;
+
+    @Schema(description = "点赞所在自然天", example = "2026-07-15")
+    @Column(name = "like_date", nullable = false)
+    private LocalDate likeDate;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -78,6 +83,14 @@ public class ToolLike {
 
     public void setAnonId(String anonId) {
         this.anonId = anonId;
+    }
+
+    public LocalDate getLikeDate() {
+        return likeDate;
+    }
+
+    public void setLikeDate(LocalDate likeDate) {
+        this.likeDate = likeDate;
     }
 
     public LocalDateTime getCreatedAt() {

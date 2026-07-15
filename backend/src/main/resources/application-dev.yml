@@ -8,9 +8,9 @@
 
 spring:
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/panzipool}
+    url: ${DB_URL:jdbc:postgresql://localhost:7099/panzitooldb}
     username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:postgres}
+    password: ${DB_PASSWORD:root@123!}
     driver-class-name: org.postgresql.Driver
   jpa:
     show-sql: true
