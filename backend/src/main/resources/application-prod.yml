@@ -36,7 +36,7 @@ management:
 panzipool:
   cors:
     # 生产环境仅允许主站域名
-    allowed-origins: ${CORS_ORIGINS:https://www.panzipool.com}
+    allowed-origins: ${CORS_ORIGINS:https://tool.panzipool.com,https://www.panzipool.com,http://localhost:3000,http://localhost:8080}
 
 logging:
   level:

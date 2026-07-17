@@ -9,9 +9,18 @@ export default defineNuxtConfig({
   // SSR 模式：生产构建为纯静态（SPA），开发模式启用 SSR 以支持 HMR
   ssr: process.env.NODE_ENV === 'production' ? false : true,
 
-  // 注册 Tailwind CSS v4 Vite 插件（v4 推荐方式）
+  // Vite 开发服务器配置
   vite: {
     plugins: [tailwindcss()],
+    // 开发环境代理：将 /api/ 转发到后端（模拟生产 Nginx 反代，避免跨域）
+    server: {
+      proxy: {
+        '/api/': {
+          target: process.env.NUXT_API_BASE || 'http://localhost:8080',
+          changeOrigin: true,
+        },
+      },
+    },
   },
 
   // 全局样式入口（含 PanziPool 设计系统）
