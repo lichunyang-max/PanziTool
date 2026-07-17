@@ -2,15 +2,15 @@
 # 生产环境配置（profile=prod）
 # ----------------------------------------------------------------------------
 # 启动方式：SPRING_PROFILES_ACTIVE=prod
-# 必须通过环境变量提供数据库连接（无默认值，未配置将启动失败以暴露配置缺失）：
+# 数据库连接已内置默认值，也可通过环境变量覆盖：
 #   DB_URL / DB_USERNAME / DB_PASSWORD / CORS_ORIGINS
 # ============================================================================
 
 spring:
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/panzitooldb}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:DYGdyg123}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
