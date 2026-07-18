@@ -68,6 +68,7 @@ export default defineNuxtConfig({
             'PanziPool 在线工具聚合站 - JSON格式化、URL编码、Base64、时间戳、正则测试、JWT解析、哈希计算及图片压缩裁剪等开发者与图片工具，无需安装，隐私优先。',
         },
         { name: 'format-detection', content: 'telephone=no' },
+        { name: 'baidu-site-verification', content: 'codeva-KAhMB4oexB' },
       ],
       link: [
         // Google Fonts: Inter + Noto Sans SC + JetBrains Mono
