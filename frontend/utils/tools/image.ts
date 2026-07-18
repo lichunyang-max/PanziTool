@@ -299,33 +299,24 @@ export async function readExifOrientation(file: File): Promise<number> {
  * DOM 相关函数(浏览器环境,仅客户端调用)
  * ========================================================================= */
 
-/**
- * 加载图片 URL 为 HTMLImageElement。
- */
 function loadHtmlImage(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image()
-    img.onload = () => resolve(img)
-    img.onerror = () => reject(new Error('图片加载失败'))
+    const timeout = setTimeout(() => {
+      reject(new Error('图片加载超时'))
+    }, 30000)
+    img.onload = () => {
+      clearTimeout(timeout)
+      resolve(img)
+    }
+    img.onerror = () => {
+      clearTimeout(timeout)
+      reject(new Error('图片加载失败'))
+    }
     img.src = url
   })
 }
 
-/**
- * 将 HTMLImageElement 按 EXIF Orientation 绘制到 canvas,返回方向修正后的 canvas。
- *
- * 方向变换矩阵(参照标准 EXIF Orientation 规范):
- * - 1: 正常
- * - 2: 水平翻转
- * - 3: 180° 旋转
- * - 4: 垂直翻转
- * - 5: 对角翻转(transpose)
- * - 6: 顺时针 90°
- * - 7: 反对角翻转(transverse)
- * - 8: 逆时针 90°
- *
- * orientation 5-8 涉及 90° 旋转,输出 canvas 宽高互换。
- */
 function drawImageWithOrientation(
   img: HTMLImageElement,
   orientation: number,
@@ -339,7 +330,6 @@ function drawImageWithOrientation(
 
   const ctx = canvas.getContext('2d')
   if (!ctx) {
-    // 无法获取 2D 上下文时,回退为不修正方向
     canvas.width = width
     canvas.height = height
     const fallbackCtx = canvas.getContext('2d')
@@ -348,36 +338,35 @@ function drawImageWithOrientation(
   }
 
   switch (orientation) {
-    case 2: // 水平翻转
+    case 2:
       ctx.translate(width, 0)
       ctx.scale(-1, 1)
       break
-    case 3: // 180° 旋转
+    case 3:
       ctx.translate(width, height)
       ctx.rotate(Math.PI)
       break
-    case 4: // 垂直翻转
+    case 4:
       ctx.translate(0, height)
       ctx.scale(1, -1)
       break
-    case 5: // transpose
+    case 5:
       ctx.rotate(0.5 * Math.PI)
       ctx.scale(1, -1)
       break
-    case 6: // 顺时针 90°
+    case 6:
       ctx.rotate(0.5 * Math.PI)
       ctx.translate(0, -height)
       break
-    case 7: // transverse
+    case 7:
       ctx.rotate(0.5 * Math.PI)
       ctx.translate(width, -height)
       ctx.scale(-1, 1)
       break
-    case 8: // 逆时针 90°
+    case 8:
       ctx.rotate(-0.5 * Math.PI)
       ctx.translate(-width, 0)
       break
-    // case 1 及默认:正常,无需变换
     default:
       break
   }
@@ -386,12 +375,6 @@ function drawImageWithOrientation(
   return canvas
 }
 
-/**
- * 加载图片文件,读取 EXIF 方向,通过 Canvas transform 修正方向,
- * 返回方向修正后的 canvas。
- *
- * @param file 图片文件
- */
 export async function loadImageWithOrientation(
   file: File,
 ): Promise<HTMLCanvasElement> {
@@ -405,23 +388,45 @@ export async function loadImageWithOrientation(
   }
 }
 
-/**
- * Canvas 转 Blob。
- *
- * @param canvas  目标 canvas
- * @param type    输出 MIME 类型(如 'image/jpeg')
- * @param quality 质量 0-1(仅对 jpeg/webp 生效,png 忽略)
- */
 export function canvasToBlob(
   canvas: HTMLCanvasElement,
   type: string,
   quality?: number,
 ): Promise<Blob> {
   return new Promise<Blob>((resolve, reject) => {
+    let completed = false
+    const timeout = setTimeout(() => {
+      if (completed) return
+      completed = true
+      console.warn('canvasToBlob: toBlob timeout, falling back to toDataURL')
+      try {
+        const dataUrl = canvas.toDataURL(type, quality)
+        fetch(dataUrl)
+          .then((r) => r.blob())
+          .then(resolve)
+          .catch((e) => reject(new Error('Canvas 转 Blob 失败: ' + e.message)))
+      } catch (e) {
+        reject(new Error('Canvas 转 Blob 失败: ' + (e as Error).message))
+      }
+    }, 5000)
     canvas.toBlob(
       (blob) => {
+        if (completed) return
+        completed = true
+        clearTimeout(timeout)
         if (blob) resolve(blob)
-        else reject(new Error('Canvas 转 Blob 失败'))
+        else {
+          console.warn('canvasToBlob: toBlob returned null, falling back to toDataURL')
+          try {
+            const dataUrl = canvas.toDataURL(type, quality)
+            fetch(dataUrl)
+              .then((r) => r.blob())
+              .then(resolve)
+              .catch((e) => reject(new Error('Canvas 转 Blob 失败: ' + e.message)))
+          } catch (e) {
+            reject(new Error('Canvas 转 Blob 失败: ' + (e as Error).message))
+          }
+        }
       },
       type,
       quality,

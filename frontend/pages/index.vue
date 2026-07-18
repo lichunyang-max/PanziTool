@@ -81,11 +81,7 @@ const latestTools = computed(() => {
     .slice(0, 3)
 })
 
-/**
- * 格式化次数显示
- */
 function formatCount(count: number): string {
-  if (count >= 10000) return (count / 1000).toFixed(1) + 'k'
   if (count >= 1000) return (count / 1000).toFixed(1) + 'k'
   return String(count)
 }
@@ -251,14 +247,30 @@ const toolIconMap: Record<string, string> = {
 
           <!-- 统计 -->
           <div
-            class="mt-auto pt-3 flex items-center gap-1"
-            style="font-family: var(--pz-font-sans); font-size: var(--pz-text-xs); color: var(--pz-color-text-tertiary)"
+            class="mt-auto pt-4 flex items-center justify-between text-xs"
+            style="color: var(--pz-color-text-tertiary); font-family: var(--pz-font-sans)"
           >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
-              <circle cx="12" cy="12" r="3"/>
-            </svg>
-            <span class="whitespace-nowrap">{{ formatCount(tool.use_count) }} 次使用</span>
+            <span class="whitespace-nowrap flex items-center gap-1">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              {{ formatCount(tool.use_count) }} 次使用
+            </span>
+            <span class="whitespace-nowrap inline-flex items-center gap-1">
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                />
+              </svg>
+              <span>{{ tool.like_count }}</span>
+            </span>
           </div>
         </article>
       </NuxtLink>
@@ -309,14 +321,30 @@ const toolIconMap: Record<string, string> = {
             {{ tool.description }}
           </p>
           <div
-            class="mt-auto pt-3 flex items-center gap-1"
-            style="font-family: var(--pz-font-sans); font-size: var(--pz-text-xs); color: var(--pz-color-text-tertiary)"
+            class="mt-auto pt-4 flex items-center justify-between text-xs"
+            style="color: var(--pz-color-text-tertiary); font-family: var(--pz-font-sans)"
           >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
-              <circle cx="12" cy="12" r="3"/>
-            </svg>
-            <span class="whitespace-nowrap">{{ formatCount(tool.use_count) }} 次使用</span>
+            <span class="whitespace-nowrap flex items-center gap-1">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              {{ formatCount(tool.use_count) }} 次使用
+            </span>
+            <span class="whitespace-nowrap inline-flex items-center gap-1">
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                />
+              </svg>
+              <span>{{ tool.like_count }}</span>
+            </span>
           </div>
         </article>
       </NuxtLink>

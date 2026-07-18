@@ -62,13 +62,7 @@ const categoryRoute = computed(() => {
   }
 })
 
-/**
- * 格式化次数显示（如 12345 → 12.3k）
- */
 function formatCount(count: number): string {
-  if (count >= 10000) {
-    return (count / 1000).toFixed(1) + 'k'
-  }
   if (count >= 1000) {
     return (count / 1000).toFixed(1) + 'k'
   }

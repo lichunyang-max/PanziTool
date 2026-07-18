@@ -75,11 +75,7 @@ async function changeSort(value: string) {
   await refresh()
 }
 
-/**
- * 格式化次数显示
- */
 function formatCount(count: number): string {
-  if (count >= 10000) return (count / 1000).toFixed(1) + 'k'
   if (count >= 1000) return (count / 1000).toFixed(1) + 'k'
   return String(count)
 }
@@ -251,7 +247,13 @@ function formatCount(count: number): string {
           class="mt-auto pt-4 flex items-center justify-between text-xs"
           style="color: var(--pz-color-text-tertiary); font-family: var(--pz-font-sans)"
         >
-          <span class="whitespace-nowrap">使用 {{ formatCount(tool.use_count) }} 次</span>
+          <span class="whitespace-nowrap flex items-center gap-1">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            {{ formatCount(tool.use_count) }} 次使用
+          </span>
           <span class="whitespace-nowrap inline-flex items-center gap-1">
             <svg
               width="12"

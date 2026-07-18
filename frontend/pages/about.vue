@@ -268,11 +268,11 @@ useSeoMeta({
           <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
         </svg>
         <a
-          href="mailto:feedback@panzipool.com"
+          href="mailto:ly124596@qq.com"
           class="truncate"
           style="font-family: var(--pz-font-mono); font-size: var(--pz-text-sm); color: var(--pz-color-text-primary); text-decoration: none; transition: color 0.15s ease"
         >
-          feedback@panzipool.com
+          ly124596@qq.com
         </a>
       </div>
       <p

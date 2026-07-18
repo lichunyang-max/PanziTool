@@ -14,11 +14,13 @@
  * - 压缩 → tool_use 事件
  * - 下载 → download 事件
  */
-import { computed, onBeforeUnmount, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, ref } from 'vue'
 import {
   AlertCircle,
   Download,
+  Image,
   Images,
+  Layers,
   Loader2,
   RefreshCw,
   ShieldCheck,
@@ -144,6 +146,7 @@ function isAcceptedFile(file: File): boolean {
  */
 function addFiles(files: FileList | File[]): void {
   const list = Array.from(files)
+  const newItems: CompressItem[] = []
   for (const file of list) {
     if (!isAcceptedFile(file) || file.size > MAX_FILE_SIZE) {
       rejectedCount.value += 1
@@ -164,35 +167,45 @@ function addFiles(files: FileList | File[]): void {
       resultHeight: 0,
       error: '',
     }
-    items.value.push(item)
-    void compressItem(item)
+    newItems.push(item)
   }
+  items.value = [...items.value, ...newItems]
+  nextTick(() => {
+    for (const item of newItems) {
+      void compressItem(item)
+    }
+  })
 }
 
-/**
- * 压缩单个文件:加载(EXIF 修正)→ 缩放 → 转 Blob。
- */
 async function compressItem(item: CompressItem): Promise<void> {
+  const w = Number(maxWidth.value) || 1920
+  const h = Number(maxHeight.value) || 1080
   item.status = 'processing'
   item.error = ''
-  // 回收旧的结果 URL
   if (item.resultUrl) {
     URL.revokeObjectURL(item.resultUrl)
     item.resultUrl = ''
   }
 
   try {
+    console.log('[compressItem] step 1: start loadImageWithOrientation')
     const canvas = await loadImageWithOrientation(item.file)
+    console.log('[compressItem] step 2: loadImageWithOrientation done, canvas:', canvas.width, 'x', canvas.height)
     item.originalWidth = canvas.width
     item.originalHeight = canvas.height
 
-    const resized = resizeCanvas(canvas, maxWidth.value, maxHeight.value)
+    console.log('[compressItem] step 3: start resizeCanvas, max:', w, 'x', h)
+    const resized = resizeCanvas(canvas, w, h)
+    console.log('[compressItem] step 4: resizeCanvas done, resized:', resized.width, 'x', resized.height)
+
     const mime = FORMAT_MIME[format.value] ?? 'image/jpeg'
-    // PNG 为无损格式,quality 参数无效,不传
     const qualityArg =
       mime === 'image/png' ? undefined : Math.min(1, Math.max(0, quality.value / 100))
 
+    console.log('[compressItem] step 5: start canvasToBlob, mime:', mime, 'quality:', qualityArg)
     const blob = await canvasToBlob(resized, mime, qualityArg)
+    console.log('[compressItem] step 6: canvasToBlob done, blob size:', blob.size)
+
     item.blob = blob
     item.resultUrl = URL.createObjectURL(blob)
     item.resultSize = blob.size
@@ -201,9 +214,10 @@ async function compressItem(item: CompressItem): Promise<void> {
     item.status = 'done'
 
     reportEvent('tool_use', props.slug)
-  } catch {
+  } catch (e) {
+    console.error('[compressItem] error:', e)
     item.status = 'error'
-    item.error = '图片处理失败,请重试'
+    item.error = '图片处理失败,请重试: ' + (e as Error).message
   }
 }
 
@@ -515,21 +529,6 @@ onBeforeUnmount(() => {
             </select>
           </div>
         </div>
-
-        <!-- 重新压缩按钮 -->
-        <button
-          type="button"
-          class="pz-btn-secondary w-full justify-center mt-4"
-          :disabled="isCompressing"
-          @click="recompressAll"
-        >
-          <RefreshCw
-            class="w-4 h-4"
-            :class="{ 'animate-spin': isCompressing }"
-            aria-hidden="true"
-          />
-          重新压缩
-        </button>
       </div>
 
       <!-- 文件列表工具栏:全部下载 / 清空 -->
@@ -558,6 +557,19 @@ onBeforeUnmount(() => {
           <button
             type="button"
             class="pz-btn-primary whitespace-nowrap"
+            :disabled="isCompressing"
+            @click="recompressAll"
+          >
+            <Layers
+              class="w-4 h-4"
+              :class="{ 'animate-spin': isCompressing }"
+              aria-hidden="true"
+            />
+            批量压缩
+          </button>
+          <button
+            type="button"
+            class="pz-btn-primary whitespace-nowrap"
             :disabled="doneItems.length === 0"
             @click="downloadAll"
           >
@@ -578,7 +590,7 @@ onBeforeUnmount(() => {
       <!-- 文件列表 -->
       <div class="flex flex-col gap-6 mb-6">
         <div v-for="item in items" :key="item.id">
-          <!-- 文件项头部:文件名 + 移除 -->
+          <!-- 文件项头部:文件名 + 操作按钮 -->
           <div class="flex items-center justify-between gap-2 mb-3">
             <span
               class="text-xs truncate"
@@ -589,15 +601,32 @@ onBeforeUnmount(() => {
             >
               {{ item.file.name }}
             </span>
-            <button
-              type="button"
-              class="pz-btn-secondary pz-icon-btn"
-              style="padding: 0.25rem 0.5rem"
-              aria-label="移除该文件"
-              @click="removeItem(item)"
-            >
-              <X class="w-3.5 h-3.5" aria-hidden="true" />
-            </button>
+            <div class="flex items-center gap-1">
+              <button
+                type="button"
+                class="pz-btn-secondary pz-icon-btn"
+                style="padding: 0.25rem 0.5rem"
+                :disabled="item.status === 'processing'"
+                :title="item.status === 'processing' ? '压缩中...' : '图片压缩'"
+                aria-label="重新压缩该图片"
+                @click="compressItem(item)"
+              >
+                <Image
+                  class="w-3.5 h-3.5"
+                  aria-hidden="true"
+                />
+              </button>
+              <button
+                type="button"
+                class="pz-btn-secondary pz-icon-btn"
+                style="padding: 0.25rem 0.5rem"
+                title="删除"
+                aria-label="移除该文件"
+                @click="removeItem(item)"
+              >
+                <X class="w-3.5 h-3.5" aria-hidden="true" />
+              </button>
+            </div>
           </div>
 
           <!-- 前后预览对比 -->
