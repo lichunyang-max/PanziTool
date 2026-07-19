@@ -662,6 +662,29 @@ onUnmounted(() => {
   document.removeEventListener('touchmove', onDragMove)
   document.removeEventListener('touchend', onDragEnd)
 })
+
+useHead({
+  titleTemplate: null,
+  title: '图片裁剪工具 | 盘子工具站',
+  meta: [
+    {
+      name: 'description',
+      content: '免费在线图片裁剪工具，支持自定义尺寸、多比例裁剪、旋转翻转，本地浏览器处理不上传，免登录一键导出高清原图。'
+    },
+    {
+      name: 'keywords',
+      content: '图片裁剪,在线裁剪图片,图片旋转,自定义尺寸'
+    },
+    {
+      property: 'og:title',
+      content: '图片裁剪工具 | 盘子工具站'
+    },
+    {
+      property: 'og:description',
+      content: '免费在线图片裁剪工具，支持自定义尺寸、多比例裁剪、旋转翻转，本地浏览器处理不上传，免登录一键导出高清原图。'
+    }
+  ]
+})
 </script>
 
 <template>

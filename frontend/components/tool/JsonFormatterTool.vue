@@ -138,6 +138,29 @@ const errorPositionText = computed(() => {
   }
   return ''
 })
+
+useHead({
+  titleTemplate: null,
+  title: 'JSON格式化 | 盘子工具站',
+  meta: [
+    {
+      name: 'description',
+      content: '免费在线JSON格式化工具，支持美化、压缩、语法校验、错误定位，免登录打开即用，代码本地处理安全可靠。'
+    },
+    {
+      name: 'keywords',
+      content: 'JSON格式化,JSON美化,JSON压缩,JSON校验'
+    },
+    {
+      property: 'og:title',
+      content: 'JSON格式化 | 盘子工具站'
+    },
+    {
+      property: 'og:description',
+      content: '免费在线JSON格式化工具，支持美化、压缩、语法校验、错误定位，免登录打开即用，代码本地处理安全可靠。'
+    }
+  ]
+})
 </script>
 
 <template>

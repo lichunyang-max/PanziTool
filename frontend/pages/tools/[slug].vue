@@ -121,7 +121,7 @@ const toolMeta = computed<ToolMeta>(() => ({
 
 // SEO 元数据
 const seoTitle = computed(() => toolMeta.value.name || slug.value)
-const seoDescription = computed(() => toolMeta.value.description || `${seoTitle.value} - PanziPool 在线工具`)
+const seoDescription = computed(() => toolMeta.value.description || `${seoTitle.value} - 盘子 在线工具`)
 
 useSeoMeta({
   title: seoTitle.value,

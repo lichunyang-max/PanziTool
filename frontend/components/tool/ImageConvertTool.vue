@@ -532,6 +532,29 @@ const refRows: RefRow[] = [
   { format: 'GIF', full: 'Graphics Interchange Format', compress: '无损', alpha: '✓', anim: '✓', scene: '简单动画、表情图' },
   { format: 'BMP', full: 'Bitmap', compress: '无压缩', alpha: '✕', anim: '✕', scene: 'Windows 原生位图' },
 ]
+
+useHead({
+  titleTemplate: null,
+  title: '图片格式转换工具 | 盘子工具站',
+  meta: [
+    {
+      name: 'description',
+      content: '免费在线图片格式转换工具，支持PNG/JPG/WEBP无损互转，保留透明背景，本地浏览器处理不上传，免登录批量转换。'
+    },
+    {
+      name: 'keywords',
+      content: '图片格式转换,PNG转JPG,WEBP转换,在线转格式'
+    },
+    {
+      property: 'og:title',
+      content: '图片格式转换工具 | 盘子工具站'
+    },
+    {
+      property: 'og:description',
+      content: '免费在线图片格式转换工具，支持PNG/JPG/WEBP无损互转，保留透明背景，本地浏览器处理不上传，免登录批量转换。'
+    }
+  ]
+})
 </script>
 
 <template>

@@ -9,10 +9,27 @@
  * - 7 个章节：信息收集、图片处理、统计与分析、Cookie与存储、第三方服务、政策更新、联系我们
  */
 
-useSeoMeta({
-  title: '隐私政策',
-  description:
-    'PanziPool 尊重您的隐私。图片工具的所有处理在浏览器本地完成，不上传服务器。我们仅收集匿名访问统计用于改善产品。',
+useHead({
+  titleTemplate: null,
+  title: '隐私政策 | 盘子工具站',
+  meta: [
+    {
+      name: 'description',
+      content: '盘子工具站隐私政策页面，详细说明本站信息收集、图片处理、数据统计规则，所有工具均在浏览器本地运行，不上传用户数据，全力保护用户隐私安全。'
+    },
+    {
+      name: 'keywords',
+      content: '盘子工具站,隐私政策,用户隐私保护'
+    },
+    {
+      property: 'og:title',
+      content: '隐私政策 | 盘子工具站'
+    },
+    {
+      property: 'og:description',
+      content: '盘子工具站隐私政策页面，详细说明本站信息收集、图片处理、数据统计规则，所有工具均在浏览器本地运行，不上传用户数据，全力保护用户隐私安全。'
+    }
+  ]
 })
 </script>
 
@@ -73,7 +90,7 @@ useSeoMeta({
       class="text-sm"
       style="color: var(--pz-color-text-primary); font-family: var(--pz-font-sans); line-height: 1.6"
     >
-      PanziPool 尊重您的隐私。图片工具的所有处理在浏览器本地完成，不上传服务器。我们仅收集匿名访问统计用于改善产品。
+      盘子 尊重您的隐私。图片工具的所有处理在浏览器本地完成，不上传服务器。我们仅收集匿名访问统计用于改善产品。
     </p>
   </div>
 
@@ -107,7 +124,7 @@ useSeoMeta({
           class="text-sm mb-4"
           style="color: var(--pz-color-text-primary); font-family: var(--pz-font-sans); line-height: 1.7"
         >
-          PanziPool 是一个无需登录的在线工具站。我们不要求您注册账户或提供个人身份信息。在您使用工具时，我们不会收集您的工具输入内容或处理结果。
+          盘子 是一个无需登录的在线工具站。我们不要求您注册账户或提供个人身份信息。在您使用工具时，我们不会收集您的工具输入内容或处理结果。
         </p>
         <ul class="flex flex-col gap-2">
           <li class="flex items-start gap-2.5">
@@ -222,7 +239,7 @@ useSeoMeta({
             class="text-sm"
             style="color: var(--pz-color-text-primary); font-family: var(--pz-font-sans); line-height: 1.6"
           >
-            图片压缩、裁剪、格式转换等所有图片工具均在您的浏览器中使用 Canvas API 本地处理。图片文件不会上传到 PanziPool 或任何第三方服务器。关闭页面后数据即消失。
+            图片压缩、裁剪、格式转换等所有图片工具均在您的浏览器中使用 Canvas API 本地处理。图片文件不会上传到 盘子 或任何第三方服务器。关闭页面后数据即消失。
           </p>
         </div>
         <p
@@ -309,7 +326,7 @@ useSeoMeta({
             class="text-sm"
             style="color: var(--pz-color-text-secondary); font-family: var(--pz-font-sans); line-height: 1.6"
           >
-            数据由百度收集存储，PanziPool 仅查看聚合统计报告，不获取原始个人数据。
+            数据由百度收集存储，盘子 仅查看聚合统计报告，不获取原始个人数据。
           </p>
         </div>
 
@@ -330,7 +347,7 @@ useSeoMeta({
             class="text-sm mb-3"
             style="color: var(--pz-color-text-primary); font-family: var(--pz-font-sans); line-height: 1.6"
           >
-            由 PanziPool 自建后端收集，仅用于站内展示，不上传至任何第三方。采集内容包括：
+            由 盘子 自建后端收集，仅用于站内展示，不上传至任何第三方。采集内容包括：
           </p>
           <ul class="flex flex-col gap-2 mb-3">
             <li class="flex items-start gap-2.5">
@@ -386,7 +403,7 @@ useSeoMeta({
           class="text-sm mb-4"
           style="color: var(--pz-color-text-primary); font-family: var(--pz-font-sans); line-height: 1.7"
         >
-          PanziPool 使用 localStorage 存储以下信息：
+          盘子 使用 localStorage 存储以下信息：
         </p>
         <ul class="flex flex-col gap-2 mb-4">
           <li class="flex items-start gap-2.5">

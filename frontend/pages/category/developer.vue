@@ -23,11 +23,27 @@ interface ToolItem {
   created_at: string
 }
 
-// SEO
-useSeoMeta({
-  title: '开发者工具',
-  description:
-    'JSON格式化、URL编码、Base64、时间戳转换、正则测试、JWT解析、哈希计算等开发者常用工具，免费在线使用。',
+useHead({
+  titleTemplate: null,
+  title: '开发者工具 | 盘子工具站',
+  meta: [
+    {
+      name: 'description',
+      content: '免费在线开发者工具合集，涵盖JSON格式化、正则测试、编码解码、时间戳转换等常用编程工具，免登录即用，本地处理保障数据安全。'
+    },
+    {
+      name: 'keywords',
+      content: '开发者工具,在线开发工具,编程工具,前端开发工具'
+    },
+    {
+      property: 'og:title',
+      content: '开发者工具 | 盘子工具站'
+    },
+    {
+      property: 'og:description',
+      content: '免费在线开发者工具合集，涵盖JSON格式化、正则测试、编码解码、时间戳转换等常用编程工具，免登录即用，本地处理保障数据安全。'
+    }
+  ]
 })
 
 // 排序状态

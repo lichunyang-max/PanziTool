@@ -23,11 +23,27 @@ interface ToolItem {
   created_at: string
 }
 
-// SEO
-useSeoMeta({
-  title: '图片工具',
-  description:
-    '图片压缩、图片裁剪、格式转换等图片处理工具，全部在浏览器本地处理，不上传服务器，保护你的隐私。',
+useHead({
+  titleTemplate: null,
+  title: '图片工具合集 | 盘子工具站',
+  meta: [
+    {
+      name: 'description',
+      content: '免费在线图片工具合集，涵盖图片压缩、裁剪、格式转换等实用功能，全部浏览器本地处理不上传服务器，免登录即用，保护用户隐私安全。'
+    },
+    {
+      name: 'keywords',
+      content: '图片工具,在线图片处理,图片压缩裁剪,图片格式转换'
+    },
+    {
+      property: 'og:title',
+      content: '图片工具合集 | 盘子工具站'
+    },
+    {
+      property: 'og:description',
+      content: '免费在线图片工具合集，涵盖图片压缩、裁剪、格式转换等实用功能，全部浏览器本地处理不上传服务器，免登录即用，保护用户隐私安全。'
+    }
+  ]
 })
 
 // 排序状态

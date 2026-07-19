@@ -22,11 +22,27 @@ interface ToolItem {
   created_at: string
 }
 
-// SEO 基础配置
-useSeoMeta({
-  title: '首页',
-  description:
-    'PanziPool 在线工具聚合站 - JSON格式化、URL编码、Base64、时间戳、正则测试、JWT解析、哈希计算及图片压缩裁剪等开发者与图片工具，无需安装，隐私优先。',
+useHead({
+  titleTemplate: null,
+  title: '盘子工具站 - 免费在线开发者工具 图片处理工具集合',
+  meta: [
+    {
+      name: 'description',
+      content: '面向中文开发者的免费在线工具站，提供JSON格式化、正则测试、图片压缩等实用工具，免登录无广告，本地处理保护隐私，打开即用。'
+    },
+    {
+      name: 'keywords',
+      content: '在线工具,开发者工具,JSON格式化,图片压缩,正则测试'
+    },
+    {
+      property: 'og:title',
+      content: '盘子工具站 - 免费在线开发者工具 图片处理工具集合'
+    },
+    {
+      property: 'og:description',
+      content: '面向中文开发者的免费在线工具站，提供JSON格式化、正则测试、图片压缩等实用工具，免登录无广告，本地处理保护隐私，打开即用。'
+    }
+  ]
 })
 
 // SSR 获取热门工具数据

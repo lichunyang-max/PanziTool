@@ -10,9 +10,27 @@
  * - 联系方式
  */
 
-useSeoMeta({
-  title: '关于我们',
-  description: 'PanziPool 致力于为中文开发者提供便捷的在线工具集合。所有工具无需安装，打开即用。',
+useHead({
+  titleTemplate: null,
+  title: '关于我们 | 盘子工具站',
+  meta: [
+    {
+      name: 'description',
+      content: '盘子工具站是面向中文开发者的免费在线工具聚合站，提供开发者工具与图片处理工具，所有工具免登录、本地处理、保护隐私，本页介绍站点特色与联系方式。'
+    },
+    {
+      name: 'keywords',
+      content: '盘子工具站,关于我们,在线工具站介绍'
+    },
+    {
+      property: 'og:title',
+      content: '关于我们 | 盘子工具站'
+    },
+    {
+      property: 'og:description',
+      content: '盘子工具站是面向中文开发者的免费在线工具聚合站，提供开发者工具与图片处理工具，所有工具免登录、本地处理、保护隐私，本页介绍站点特色与联系方式。'
+    }
+  ]
 })
 </script>
 
@@ -56,7 +74,7 @@ useSeoMeta({
         class="pz-h1"
         style="color: var(--pz-color-primary); text-wrap: balance; word-break: keep-all; overflow-wrap: break-word"
       >
-        关于 PanziPool
+        关于 盘子工具站
       </h1>
       <p
         style="font-family: var(--pz-font-sans); font-size: var(--pz-text-lg); color: var(--pz-color-text-secondary); line-height: var(--pz-leading-normal); margin-top: 1rem; text-wrap: balance; word-break: keep-all"
@@ -66,7 +84,7 @@ useSeoMeta({
       <p
         style="font-family: var(--pz-font-sans); font-size: var(--pz-text-base); color: var(--pz-color-text-secondary); line-height: var(--pz-leading-relaxed); margin-top: 1.5rem"
       >
-        PanziPool
+        盘子工具站
         致力于为中文开发者提供便捷的在线工具集合。我们聚焦开发者日常工作中的格式化、编码解码、正则测试、时间转换等高频需求，同时提供图片压缩、格式转换等轻量图片处理工具。所有工具无需安装，打开即用。
       </p>
     </div>

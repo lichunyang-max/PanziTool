@@ -27,7 +27,7 @@
         class="flex flex-wrap items-center justify-center gap-4 text-xs"
         style="color: var(--pz-color-text-tertiary); font-family: var(--pz-font-sans)"
       >
-        <span>© 2026 PanziPool. All rights reserved.</span>
+        <span>© 2026 盘子工具站. All rights reserved.</span>
         <a
           href="https://beian.miit.gov.cn/"
           target="_blank"

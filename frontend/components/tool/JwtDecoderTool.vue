@@ -172,6 +172,29 @@ onBeforeUnmount(() => {
     clearTimeout(debounceTimer)
   }
 })
+
+useHead({
+  titleTemplate: null,
+  title: 'JWT解析工具 | 盘子工具站',
+  meta: [
+    {
+      name: 'description',
+      content: '免费在线JWT解析工具，快速解密JWT Token头部与载荷信息，附全量算法参考，本地解析不上传，保障接口调试数据安全。'
+    },
+    {
+      name: 'keywords',
+      content: 'JWT解析,JWT解密,Token解析,JWT校验'
+    },
+    {
+      property: 'og:title',
+      content: 'JWT解析工具 | 盘子工具站'
+    },
+    {
+      property: 'og:description',
+      content: '免费在线JWT解析工具，快速解密JWT Token头部与载荷信息，附全量算法参考，本地解析不上传，保障接口调试数据安全。'
+    }
+  ]
+})
 </script>
 
 <template>

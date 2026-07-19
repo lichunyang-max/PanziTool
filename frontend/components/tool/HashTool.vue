@@ -304,6 +304,29 @@ const comparisonData: ComparisonRow[] = [
     usage: '新一代标准（NIST FIPS 202）',
   },
 ]
+
+useHead({
+  titleTemplate: null,
+  title: '哈希计算 | 盘子工具站',
+  meta: [
+    {
+      name: 'description',
+      content: '免费在线哈希计算工具，支持MD5/SHA1/SHA256等多种算法，文本与文件均可计算，本地浏览器运算不上传，保障数据安全，免登录即用。'
+    },
+    {
+      name: 'keywords',
+      content: '哈希计算,MD5加密,SHA256,在线加密'
+    },
+    {
+      property: 'og:title',
+      content: '哈希计算 | 盘子工具站'
+    },
+    {
+      property: 'og:description',
+      content: '免费在线哈希计算工具，支持MD5/SHA1/SHA256等多种算法，文本与文件均可计算，本地浏览器运算不上传，保障数据安全，免登录即用。'
+    }
+  ]
+})
 </script>
 
 <template>

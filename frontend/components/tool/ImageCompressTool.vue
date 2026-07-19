@@ -321,6 +321,29 @@ onBeforeUnmount(() => {
     if (item.resultUrl) URL.revokeObjectURL(item.resultUrl)
   }
 })
+
+useHead({
+  titleTemplate: null,
+  title: '图片压缩工具 | 盘子工具站',
+  meta: [
+    {
+      name: 'description',
+      content: '免费在线图片压缩工具，支持JPG/PNG/WEBP批量压缩，自定义尺寸与画质，本地浏览器处理不上传服务器，保护隐私，免登录一键下载。'
+    },
+    {
+      name: 'keywords',
+      content: '图片压缩,在线压缩图片,JPG压缩,PNG压缩'
+    },
+    {
+      property: 'og:title',
+      content: '图片压缩工具 | 盘子工具站'
+    },
+    {
+      property: 'og:description',
+      content: '免费在线图片压缩工具，支持JPG/PNG/WEBP批量压缩，自定义尺寸与画质，本地浏览器处理不上传服务器，保护隐私，免登录一键下载。'
+    }
+  ]
+})
 </script>
 
 <template>
