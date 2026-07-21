@@ -13,16 +13,6 @@
  * 数据来源：GET /api/v1/tools?category=image&sort=popular
  */
 
-interface ToolItem {
-  slug: string
-  name: string
-  description: string
-  category: string
-  use_count: number
-  like_count: number
-  created_at: string
-}
-
 useHead({
   titleTemplate: null,
   title: '图片工具合集 | 盘子工具站',
@@ -45,6 +35,16 @@ useHead({
     }
   ]
 })
+
+interface ToolItem {
+  slug: string
+  name: string
+  description: string
+  category: string
+  use_count: number
+  like_count: number
+  created_at: string
+}
 
 // 排序状态
 const sortBy = ref<'popular' | 'latest'>('popular')

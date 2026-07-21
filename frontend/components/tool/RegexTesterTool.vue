@@ -21,6 +21,29 @@ import {
 } from '~/utils/tools/regex'
 import { useAnalytics } from '~/composables/useAnalytics'
 
+useHead({
+  titleTemplate: null,
+  title: '正则表达式 | 盘子工具站',
+  meta: [
+    {
+      name: 'description',
+      content: '免费在线正则表达式测试工具，支持实时匹配、结果高亮、分组信息展示，内置常用正则模板，免登录打开即用，本地运算保障数据安全。'
+    },
+    {
+      name: 'keywords',
+      content: '正则测试,正则表达式,正则匹配,在线正则'
+    },
+    {
+      property: 'og:title',
+      content: '正则表达式 | 盘子工具站'
+    },
+    {
+      property: 'og:description',
+      content: '免费在线正则表达式测试工具，支持实时匹配、结果高亮、分组信息展示，内置常用正则模板，免登录打开即用，本地运算保障数据安全。'
+    }
+  ]
+})
+
 const props = defineProps<{
   slug: string
 }>()
@@ -151,29 +174,6 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   if (debounceTimer) clearTimeout(debounceTimer)
-})
-
-useHead({
-  titleTemplate: null,
-  title: '正则表达式 | 盘子工具站',
-  meta: [
-    {
-      name: 'description',
-      content: '免费在线正则表达式测试工具，支持实时匹配、结果高亮、分组信息展示，内置常用正则模板，免登录打开即用，本地运算保障数据安全。'
-    },
-    {
-      name: 'keywords',
-      content: '正则测试,正则表达式,正则匹配,在线正则'
-    },
-    {
-      property: 'og:title',
-      content: '正则表达式 | 盘子工具站'
-    },
-    {
-      property: 'og:description',
-      content: '免费在线正则表达式测试工具，支持实时匹配、结果高亮、分组信息展示，内置常用正则模板，免登录打开即用，本地运算保障数据安全。'
-    }
-  ]
 })
 </script>
 

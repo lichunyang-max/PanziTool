@@ -31,6 +31,29 @@ import {
 } from '~/utils/tools/base64'
 import type { Base64Charset } from '~/utils/tools/base64'
 
+useHead({
+  titleTemplate: null,
+  title: 'Base64编码解码 | 盘子工具站',
+  meta: [
+    {
+      name: 'description',
+      content: '免费在线Base64编码解码工具，支持文本与图片文件互转，兼容UTF-8编码，免登录打开即用，本地浏览器处理保障数据安全。'
+    },
+    {
+      name: 'keywords',
+      content: 'Base64编码,Base64解码,Base64转换,图片Base64'
+    },
+    {
+      property: 'og:title',
+      content: 'Base64编码解码 | 盘子工具站'
+    },
+    {
+      property: 'og:description',
+      content: '免费在线Base64编码解码工具，支持文本与图片文件互转，兼容UTF-8编码，免登录打开即用，本地浏览器处理保障数据安全。'
+    }
+  ]
+})
+
 const props = withDefaults(defineProps<{ slug?: string }>(), { slug: '' })
 
 const { reportEvent } = useAnalytics()
@@ -267,29 +290,6 @@ function clearFile() {
   fileBase64.value = ''
   fileError.value = ''
 }
-
-useHead({
-  titleTemplate: null,
-  title: 'Base64编码解码 | 盘子工具站',
-  meta: [
-    {
-      name: 'description',
-      content: '免费在线Base64编码解码工具，支持文本与图片文件互转，兼容UTF-8编码，免登录打开即用，本地浏览器处理保障数据安全。'
-    },
-    {
-      name: 'keywords',
-      content: 'Base64编码,Base64解码,Base64转换,图片Base64'
-    },
-    {
-      property: 'og:title',
-      content: 'Base64编码解码 | 盘子工具站'
-    },
-    {
-      property: 'og:description',
-      content: '免费在线Base64编码解码工具，支持文本与图片文件互转，兼容UTF-8编码，免登录打开即用，本地浏览器处理保障数据安全。'
-    }
-  ]
-})
 </script>
 
 <template>

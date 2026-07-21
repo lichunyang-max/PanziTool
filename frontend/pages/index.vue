@@ -11,17 +11,6 @@
  * 数据来源：GET /api/v1/tools?sort=popular&limit=8
  */
 
-interface ToolItem {
-  slug: string
-  name: string
-  description: string
-  category: string
-  icon: string
-  use_count: number
-  like_count: number
-  created_at: string
-}
-
 useHead({
   titleTemplate: null,
   title: '盘子工具站 - 免费在线开发者工具 图片处理工具集合',
@@ -44,6 +33,17 @@ useHead({
     }
   ]
 })
+
+interface ToolItem {
+  slug: string
+  name: string
+  description: string
+  category: string
+  icon: string
+  use_count: number
+  like_count: number
+  created_at: string
+}
 
 // SSR 获取热门工具数据
 const { data: toolsData } = await useAsyncData<ToolItem[]>(

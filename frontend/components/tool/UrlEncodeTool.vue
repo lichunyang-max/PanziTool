@@ -34,6 +34,29 @@ import {
   type SpaceMode,
 } from '~/utils/tools/url'
 
+useHead({
+  titleTemplate: null,
+  title: 'URL编码解码 | 盘子工具站',
+  meta: [
+    {
+      name: 'description',
+      content: '免费在线URL编码解码工具，支持UrlEncode/Decode互转、批量处理、多种编码函数，附特殊字符对照表，免登录打开即用，本地处理数据安全。'
+    },
+    {
+      name: 'keywords',
+      content: 'URL编码解码,UrlEncode,UrlDecode,URL转换'
+    },
+    {
+      property: 'og:title',
+      content: 'URL编码解码 | 盘子工具站'
+    },
+    {
+      property: 'og:description',
+      content: '免费在线URL编码解码工具，支持UrlEncode/Decode互转、批量处理、多种编码函数，附特殊字符对照表，免登录打开即用，本地处理数据安全。'
+    }
+  ]
+})
+
 const props = defineProps<{
   slug: string
 }>()
@@ -256,29 +279,6 @@ function handleInputKeydown(e: KeyboardEvent) {
     doConvert()
   }
 }
-
-useHead({
-  titleTemplate: null,
-  title: 'URL编码解码 | 盘子工具站',
-  meta: [
-    {
-      name: 'description',
-      content: '免费在线URL编码解码工具，支持UrlEncode/Decode互转、批量处理、多种编码函数，附特殊字符对照表，免登录打开即用，本地处理数据安全。'
-    },
-    {
-      name: 'keywords',
-      content: 'URL编码解码,UrlEncode,UrlDecode,URL转换'
-    },
-    {
-      property: 'og:title',
-      content: 'URL编码解码 | 盘子工具站'
-    },
-    {
-      property: 'og:description',
-      content: '免费在线URL编码解码工具，支持UrlEncode/Decode互转、批量处理、多种编码函数，附特殊字符对照表，免登录打开即用，本地处理数据安全。'
-    }
-  ]
-})
 </script>
 
 <template>

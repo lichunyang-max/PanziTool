@@ -29,6 +29,29 @@ import {
 } from '~/utils/tools/timestamp'
 import { useAnalytics } from '~/composables/useAnalytics'
 
+useHead({
+  titleTemplate: null,
+  title: '时间戳转换 | 盘子工具站',
+  meta: [
+    {
+      name: 'description',
+      content: '免费在线Unix时间戳转换工具，支持秒/毫秒级互转、多时区切换、常用时间参考，免登录打开即用，本地计算精准高效。'
+    },
+    {
+      name: 'keywords',
+      content: '时间戳转换,Unix时间戳,时间转换,在线时间戳'
+    },
+    {
+      property: 'og:title',
+      content: '时间戳转换 | 盘子工具站'
+    },
+    {
+      property: 'og:description',
+      content: '免费在线Unix时间戳转换工具，支持秒/毫秒级互转、多时区切换、常用时间参考，免登录打开即用，本地计算精准高效。'
+    }
+  ]
+})
+
 const props = defineProps<{
   slug: string
 }>()
@@ -263,29 +286,6 @@ onBeforeUnmount(() => {
     clearInterval(liveTimer)
     liveTimer = null
   }
-})
-
-useHead({
-  titleTemplate: null,
-  title: '时间戳转换 | 盘子工具站',
-  meta: [
-    {
-      name: 'description',
-      content: '免费在线Unix时间戳转换工具，支持秒/毫秒级互转、多时区切换、常用时间参考，免登录打开即用，本地计算精准高效。'
-    },
-    {
-      name: 'keywords',
-      content: '时间戳转换,Unix时间戳,时间转换,在线时间戳'
-    },
-    {
-      property: 'og:title',
-      content: '时间戳转换 | 盘子工具站'
-    },
-    {
-      property: 'og:description',
-      content: '免费在线Unix时间戳转换工具，支持秒/毫秒级互转、多时区切换、常用时间参考，免登录打开即用，本地计算精准高效。'
-    }
-  ]
 })
 </script>
 
