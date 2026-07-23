@@ -36,6 +36,20 @@
           style="font-size: var(--pz-text-xs)"
           >渝ICP备2026015117号</a
         >
+        <a
+          href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=50019002505549"
+          target="_blank"
+          rel="noopener"
+          class="pz-footer-link flex items-center gap-1"
+          style="font-size: var(--pz-text-xs)"
+        >
+          <img
+            src="/images/logo01ga.png"
+            alt="公安备案"
+            class="w-4 h-4"
+          />
+          渝公网安备50019002505549号
+        </a>
       </div>
     </div>
   </footer>
