@@ -152,6 +152,17 @@
   - [x] SubTask 19.2: 封装可配置广告组件（开关、广告位 key，通过 runtimeConfig.public 管理）
   - [x] SubTask 19.3: 实现异步注入第三方脚本（不阻塞首屏）与降级策略（未配置/加载失败不影响布局）
   - [x] SubTask 19.4: 添加隐私/免责声明链接
+  - [x] SubTask 19.5: 首页广告位集成 — 在热门工具和最新上架之间插入 `homeMiddle` 广告位
+  - [x] SubTask 19.6: JSON 格式化工具页广告位集成 — 在页面底部插入 `jsonBottom` 广告位
+  - [x] SubTask 19.7: 正则测试工具页广告位集成 — 在分组信息和匹配结果之间插入 `regexMiddle` 广告位
+  - [x] SubTask 19.8: 时间戳转换工具页广告位集成 — 在时区选择和常用时间戳参考之间插入 `timestampMiddle` 广告位
+  - [x] SubTask 19.9: URL 编码解码工具页广告位集成 — 在常见问题和常见特殊字符编码对照表之间插入 `urlMiddle` 广告位 ✅
+  - [x] SubTask 19.10: JWT 解析工具页广告位集成 — 在 JWT 算法参考功能上面插入 `jwtTop` 广告位 ✅
+  - [x] SubTask 19.11: Base64 编码工具页广告位集成 — 在页面底部插入 `base64Bottom` 广告位 ✅
+  - [x] SubTask 19.12: 哈希计算工具页广告位集成 — 在哈希算法对比和文件哈希计算之间插入 `hashMiddle` 广告位 ✅
+  - [x] SubTask 19.13: 图片压缩工具页广告位集成 — 在页面底部插入 `imageCompressBottom` 广告位 ✅
+  - [x] SubTask 19.14: 图片裁剪工具页广告位集成 — 在本地处理保障和常见问题功能之间插入 `imageCropMiddle` 广告位 ✅
+  - [x] SubTask 19.15: 格式转换工具页广告位集成 — 在本地处理保障和格式参考表功能之间插入 `imageConvertMiddle` 广告位 ✅
   - 验证：广告位可配置，未配置时降级不影响布局 ✅
 
 - [x] Task 20: 接入百度统计（PV/工具使用）—— 职责边界明确

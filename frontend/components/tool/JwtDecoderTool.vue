@@ -322,8 +322,13 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
+    <!-- ============ 广告位（JWT算法参考功能上面） ============ -->
+    <div class="mb-6">
+      <AdSlot slot-key="jwtTop" />
+    </div>
+
     <!-- ============ 4. JWT 算法参考表 ============ -->
-    <div class="pz-card p-4 mb-6">
+    <div class="pz-card p-4">
       <div class="flex items-center gap-2 mb-3">
         <Table2 class="w-[18px] h-[18px]" style="color: var(--pz-color-primary)" aria-hidden="true" />
         <h2 class="text-base font-semibold" style="color: var(--pz-color-text-primary)">

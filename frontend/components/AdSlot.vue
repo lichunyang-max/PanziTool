@@ -84,15 +84,33 @@ onMounted(() => {
 </script>
 
 <template>
-  <ClientOnly>
-    <!-- 仅在已配置且未加载失败时渲染广告容器 -->
-    <div
-      v-if="adConfig && !loadFailed"
-      class="pz-ad-slot"
-      :data-ad-slot="slotKey"
-    >
-      <!-- 广告内容由第三方脚本异步注入 -->
-    </div>
-    <!-- 未配置或加载失败时不渲染任何内容，不影响布局 -->
-  </ClientOnly>
+  <!-- 广告位：已配置时渲染广告容器，未配置时显示占位符 -->
+  <!-- 注意：不使用 ClientOnly，避免 SSR hydration mismatch -->
+  <div
+    class="pz-ad-slot"
+    :class="{ 'pz-ad-slot-placeholder': !adConfig || loadFailed }"
+    :data-ad-slot="slotKey"
+    aria-label="广告位"
+  >
+    <span v-if="!adConfig || loadFailed">广告位</span>
+    <!-- 已配置时广告内容由第三方脚本异步注入 -->
+  </div>
 </template>
+
+<style scoped>
+.pz-ad-slot-placeholder {
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--pz-color-bg-tertiary);
+  border: 1px dashed var(--pz-color-border-strong);
+  border-radius: var(--pz-radius-lg);
+}
+
+.pz-ad-slot-placeholder span {
+  font-size: var(--pz-text-sm);
+  color: var(--pz-color-text-tertiary);
+  font-family: var(--pz-font-sans);
+}
+</style>

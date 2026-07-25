@@ -139,14 +139,49 @@
 
 ## Task 19: 实现广告位集成（预留+可配置）
 
-### SubTask 19.1-19.4: 广告位集成
+### SubTask 19.1-19.4: 广告位集成基础
 - [x] AdSlot.vue 可配置广告组件已创建（Props: slotKey，从 runtimeConfig.public.adSlots 读取配置）
 - [x] 首页集成 AdSlot slot-key=""homeTop""
 - [x] ToolLayout 集成 AdSlot slot-key=""toolBottom""
 - [x] AppSidebar 集成 AdSlot slot-key=""sidebar""
 - [x] 空字符串=未配置时静默隐藏，ClientOnly 包裹，requestIdleCallback 异步注入脚本
 - [x] 隐私政策页添加广告免责声明
-- [x] 验证：广告位可配置，未配置时降级不影响布局 ✅
+
+### SubTask 19.5: 首页广告位集成
+- [x] 首页在热门工具和最新上架之间集成 AdSlot slot-key=""homeMiddle""
+
+### SubTask 19.6: JSON 格式化工具页广告位集成
+- [x] JSON 格式化页面底部集成 AdSlot slot-key=""jsonBottom""
+
+### SubTask 19.7: 正则测试工具页广告位集成
+- [x] 正则测试页面在分组信息和匹配结果之间集成 AdSlot slot-key=""regexMiddle""
+
+### SubTask 19.8: 时间戳转换工具页广告位集成
+- [x] 时间戳转换页面在时区选择和常用时间戳参考之间集成 AdSlot slot-key=""timestampMiddle""
+
+### SubTask 19.9: URL 编码解码工具页广告位集成
+- [x] URL 编码解码页面在常见问题和常见特殊字符编码对照表之间集成 AdSlot slot-key=""urlMiddle""
+
+### SubTask 19.10: JWT 解析工具页广告位集成
+- [x] JWT 解析页面在 JWT 算法参考功能上面集成 AdSlot slot-key=""jwtTop""
+
+### SubTask 19.11: Base64 编码工具页广告位集成
+- [x] Base64 编码页面底部集成 AdSlot slot-key=""base64Bottom""
+
+### SubTask 19.12: 哈希计算工具页广告位集成
+- [x] 哈希计算页面在哈希算法对比和文件哈希计算之间集成 AdSlot slot-key=""hashMiddle""
+
+### SubTask 19.13: 图片压缩工具页广告位集成
+- [x] 图片压缩页面底部集成 AdSlot slot-key=""imageCompressBottom""
+
+### SubTask 19.14: 图片裁剪工具页广告位集成
+- [x] 图片裁剪页面在本地处理保障和常见问题功能之间集成 AdSlot slot-key=""imageCropMiddle""
+
+### SubTask 19.15: 格式转换工具页广告位集成
+- [x] 格式转换页面在本地处理保障和格式参考表功能之间集成 AdSlot slot-key=""imageConvertMiddle""
+
+### 验证
+- [x] 所有广告位可配置，未配置时降级不影响布局 ✅
 
 ## Task 20: 接入百度统计（PV/工具使用）
 

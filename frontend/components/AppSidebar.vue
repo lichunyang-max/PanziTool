@@ -214,10 +214,6 @@ function onSectionKeydown(e: KeyboardEvent, sectionId: string) {
           </div>
         </div>
       </div>
-      <!-- 侧边栏广告位（可配置，未配置时静默隐藏；折叠时随侧边栏隐藏） -->
-      <div class="mt-3 px-2">
-        <AdSlot slot-key="sidebar" />
-      </div>
     </aside>
   </div>
 </template>

@@ -985,7 +985,7 @@ onUnmounted(() => {
     </div>
 
     <!-- 4. 本地处理保障 -->
-    <div class="pz-crop-privacy mb-6">
+    <div class="pz-crop-privacy">
       <div class="pz-crop-privacy-icon" aria-hidden="true">
         <Lock class="w-[18px] h-[18px]" />
       </div>
@@ -997,8 +997,13 @@ onUnmounted(() => {
       </div>
     </div>
 
+    <!-- ============ 广告位（本地处理保障和常见问题之间） ============ -->
+    <div class="my-6">
+      <AdSlot slot-key="imageCropMiddle" />
+    </div>
+
     <!-- 5. 常见问题 -->
-    <section class="py-8">
+    <section class="pb-8">
       <h2
         class="text-xl font-semibold mb-4"
         style="

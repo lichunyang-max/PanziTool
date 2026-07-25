@@ -891,7 +891,7 @@ const refRows: RefRow[] = [
     </div>
 
     <!-- 4. 隐私提示 -->
-    <div class="pz-conv-privacy mb-6">
+    <div class="pz-conv-privacy">
       <div class="pz-conv-privacy-icon" aria-hidden="true">
         <Lock class="w-[18px] h-[18px]" />
       </div>
@@ -901,6 +901,11 @@ const refRows: RefRow[] = [
           所有图片格式转换在浏览器本地完成，图片不会上传到服务器，确保您的隐私安全。
         </div>
       </div>
+    </div>
+
+    <!-- ============ 广告位（本地处理保障和格式参考表之间） ============ -->
+    <div class="my-6">
+      <AdSlot slot-key="imageConvertMiddle" />
     </div>
 
     <!-- 5. 格式参考表 -->

@@ -593,6 +593,11 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
+    <!-- ============ 广告位（时区选择和常用时间戳参考之间） ============ -->
+    <div class="my-4">
+      <AdSlot slot-key="timestampMiddle" />
+    </div>
+
     <!-- ============ 4. 常用时间戳参考表 ============ -->
     <div class="pz-card p-4 mb-6">
       <div class="flex items-center gap-2 mb-3">

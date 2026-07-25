@@ -378,6 +378,9 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
+    <!-- ============ 广告位（匹配结果和分组信息之间） ============ -->
+    <AdSlot slot-key="regexMiddle" />
+
     <!-- ============ 4. 分组信息表卡片 ============ -->
     <div class="pz-card p-4">
       <div class="flex flex-col gap-3">

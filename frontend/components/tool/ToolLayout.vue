@@ -140,7 +140,7 @@ function formatCount(count: number): string {
     <slot name="faq" />
 
     <!-- ============ 广告位（可配置，未配置时静默隐藏） ============ -->
-    <AdSlot slot-key="toolBottom" />
+    <AdSlot v-if="!['regex-tester', 'timestamp', 'url-encode', 'jwt-decoder', 'hash', 'image-crop', 'image-convert'].includes(tool.slug)" slot-key="toolBottom" />
 
     <!-- ============ 下一工具链接 ============ -->
     <div v-if="tool.nextTool" class="flex justify-end py-4">

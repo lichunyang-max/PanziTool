@@ -120,11 +120,8 @@ const toolIconMap: Record<string, string> = {
 </script>
 
 <template>
-  <!-- ============ 首页顶部广告位 ============ -->
-  <AdSlot slot-key="homeTop" />
-
   <!-- ============ 热门工具区块（4 列网格） ============ -->
-  <section class="pb-12" aria-label="热门工具">
+  <section aria-label="热门工具">
     <div class="flex items-center justify-between mb-6">
       <h2
         style="
@@ -292,6 +289,11 @@ const toolIconMap: Record<string, string> = {
       </NuxtLink>
     </div>
   </section>
+
+  <!-- ============ 首页中间广告位（热门工具和最新上架之间） ============ -->
+  <div class="my-12">
+    <AdSlot slot-key="homeMiddle" />
+  </div>
 
   <!-- ============ 最新上架区块（3 列网格 + NEW 标签） ============ -->
   <section v-if="latestTools.length > 0" class="pb-12" aria-label="最新上架">

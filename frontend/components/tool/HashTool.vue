@@ -632,6 +632,9 @@ const comparisonData: ComparisonRow[] = [
       </p>
     </div>
 
+    <!-- ============ 广告位（哈希算法对比和文件哈希计算之间） ============ -->
+    <AdSlot slot-key="hashMiddle" />
+
     <!-- ===== 3. 哈希算法对比表 ===== -->
     <div class="pz-card p-4">
       <div class="flex items-center gap-2 mb-3">

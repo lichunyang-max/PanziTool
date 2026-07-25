@@ -360,5 +360,8 @@ const errorPositionText = computed(() => {
         输入是合法的 JSON 格式。
       </p>
     </div>
+
+    <!-- ============ 页面底部广告位 ============ -->
+    <AdSlot slot-key="jsonBottom" />
   </div>
 </template>

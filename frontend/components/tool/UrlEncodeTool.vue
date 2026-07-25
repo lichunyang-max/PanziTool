@@ -618,7 +618,7 @@ function handleInputKeydown(e: KeyboardEvent) {
     </div>
 
     <!-- 5. 常见特殊字符编码对照表 -->
-    <div class="pz-card p-4 mb-6">
+    <div class="pz-card p-4">
       <div class="flex items-center gap-2 mb-3">
         <FileText
           class="w-[18px] h-[18px]"
@@ -654,8 +654,13 @@ function handleInputKeydown(e: KeyboardEvent) {
       </div>
     </div>
 
+    <!-- ============ 广告位（常见问题和特殊字符编码对照表之间） ============ -->
+    <div class="my-6">
+      <AdSlot slot-key="urlMiddle" />
+    </div>
+
     <!-- 6. FAQ 常见问题 -->
-    <section class="py-8">
+    <section class="pb-8">
       <h2
         class="text-xl font-semibold mb-4"
         style="color: var(--pz-color-text-primary); font-family: var(--pz-font-display); text-wrap: balance"
