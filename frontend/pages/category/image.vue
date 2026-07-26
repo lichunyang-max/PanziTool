@@ -46,6 +46,40 @@ interface ToolItem {
   created_at: string
 }
 
+interface AdItem {
+  product_description: string
+  product_url: string
+  ad_url: string
+}
+
+// SSR 获取分类页底部广告数据
+const { data: adData } = await useAsyncData<AdItem | null>(
+  'category-footer-ad',
+  async () => {
+    const config = useRuntimeConfig()
+    const baseURL = import.meta.server
+      ? (config.apiBase as string)
+      : (config.public.apiBase as string)
+
+    try {
+      const response = await $fetch<{
+        code: number
+        data: AdItem[]
+      }>('/api/v1/ads', {
+        baseURL,
+        params: { locationSymbol: 'tool_footer' },
+      })
+      if (response.code === 0 && response.data && response.data.length > 0) {
+        return response.data[0]
+      }
+      return null
+    } catch {
+      return null
+    }
+  },
+  { default: () => null }
+)
+
 // 排序状态
 const sortBy = ref<'popular' | 'latest'>('popular')
 
@@ -301,16 +335,12 @@ function formatCount(count: number): string {
   </section>
 
   <!-- ============ 广告位 ============ -->
-  <aside
-    class="mt-8 h-24 flex items-center justify-center"
-    style="background-color: var(--pz-color-bg-tertiary); border: 1px dashed var(--pz-color-border-strong); border-radius: var(--pz-radius-lg)"
-    aria-label="广告位"
-  >
-    <span
-      class="text-sm"
-      style="color: var(--pz-color-text-tertiary); font-family: var(--pz-font-sans)"
-    >
-      广告位
-    </span>
-  </aside>
+  <div v-if="adData" class="mt-8">
+    <StaticAdCard
+      id="categoryFooter"
+      :title="adData.product_description"
+      :image-url="adData.product_url"
+      :link-url="adData.ad_url"
+    />
+  </div>
 </template>

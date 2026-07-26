@@ -29,6 +29,39 @@ import {
 } from '~/utils/tools/timestamp'
 import { useAnalytics } from '~/composables/useAnalytics'
 
+interface AdItem {
+  product_description: string
+  product_url: string
+  ad_url: string
+}
+
+const { data: adData } = await useAsyncData<AdItem | null>(
+  'dev-tool-middle-ad',
+  async () => {
+    const config = useRuntimeConfig()
+    const baseURL = import.meta.server
+      ? (config.apiBase as string)
+      : (config.public.apiBase as string)
+
+    try {
+      const response = await $fetch<{
+        code: number
+        data: AdItem[]
+      }>('/api/v1/ads', {
+        baseURL,
+        params: { locationSymbol: 'dev_tool_middle' },
+      })
+      if (response.code === 0 && response.data && response.data.length > 0) {
+        return response.data[0]
+      }
+      return null
+    } catch {
+      return null
+    }
+  },
+  { default: () => null }
+)
+
 useHead({
   titleTemplate: null,
   title: '时间戳转换 | 盘子工具站',
@@ -595,7 +628,13 @@ onBeforeUnmount(() => {
 
     <!-- ============ 广告位（时区选择和常用时间戳参考之间） ============ -->
     <div class="my-4">
-      <AdSlot slot-key="timestampMiddle" />
+      <StaticAdCard
+        v-if="adData"
+        id="timestampMiddle"
+        :title="adData.product_description"
+        :image-url="adData.product_url"
+        :link-url="adData.ad_url"
+      />
     </div>
 
     <!-- ============ 4. 常用时间戳参考表 ============ -->

@@ -29,6 +29,39 @@ import {
 } from '~/utils/tools/hash'
 import { useAnalytics } from '~/composables/useAnalytics'
 
+interface AdItem {
+  product_description: string
+  product_url: string
+  ad_url: string
+}
+
+const { data: adData } = await useAsyncData<AdItem | null>(
+  'dev-tool-middle-ad',
+  async () => {
+    const config = useRuntimeConfig()
+    const baseURL = import.meta.server
+      ? (config.apiBase as string)
+      : (config.public.apiBase as string)
+
+    try {
+      const response = await $fetch<{
+        code: number
+        data: AdItem[]
+      }>('/api/v1/ads', {
+        baseURL,
+        params: { locationSymbol: 'dev_tool_middle' },
+      })
+      if (response.code === 0 && response.data && response.data.length > 0) {
+        return response.data[0]
+      }
+      return null
+    } catch {
+      return null
+    }
+  },
+  { default: () => null }
+)
+
 useHead({
   titleTemplate: null,
   title: '哈希计算 | 盘子工具站',
@@ -633,7 +666,13 @@ const comparisonData: ComparisonRow[] = [
     </div>
 
     <!-- ============ 广告位（哈希算法对比和文件哈希计算之间） ============ -->
-    <AdSlot slot-key="hashMiddle" />
+    <StaticAdCard
+      v-if="adData"
+      id="hashMiddle"
+      :title="adData.product_description"
+      :image-url="adData.product_url"
+      :link-url="adData.ad_url"
+    />
 
     <!-- ===== 3. 哈希算法对比表 ===== -->
     <div class="pz-card p-4">

@@ -31,6 +31,12 @@ export interface ToolMeta {
   seoDescription?: string
 }
 
+interface AdItem {
+  product_description: string
+  product_url: string
+  ad_url: string
+}
+
 const props = defineProps<{
   tool: ToolMeta
 }>()
@@ -38,6 +44,36 @@ const props = defineProps<{
 const emit = defineEmits<{
   like: [slug: string]
 }>()
+
+// SSR 获取工具页底部广告数据（tool_footer）
+const { data: adData } = await useAsyncData<AdItem | null>(
+  'tool-footer-ad',
+  async () => {
+    const config = useRuntimeConfig()
+    const baseURL = import.meta.server
+      ? (config.apiBase as string)
+      : (config.public.apiBase as string)
+
+    try {
+      const response = await $fetch<{
+        code: number
+        data: AdItem[]
+      }>('/api/v1/ads', {
+        baseURL,
+        params: { locationSymbol: 'tool_footer' },
+      })
+      if (response.code === 0 && response.data && response.data.length > 0) {
+        return response.data[0]
+      }
+      return null
+    } catch {
+      return null
+    }
+  },
+  {
+    default: () => null,
+  },
+)
 
 // 从 category 获取分类中文名和路由
 const categoryLabel = computed(() => {
@@ -139,8 +175,14 @@ function formatCount(count: number): string {
     <!-- ============ FAQ 区 ============ -->
     <slot name="faq" />
 
-    <!-- ============ 广告位（可配置，未配置时静默隐藏） ============ -->
-    <AdSlot v-if="!['regex-tester', 'timestamp', 'url-encode', 'jwt-decoder', 'hash', 'image-crop', 'image-convert'].includes(tool.slug)" slot-key="toolBottom" />
+    <!-- ============ 广告位（动态数据源，无数据时静默隐藏） ============ -->
+    <StaticAdCard
+      v-if="adData && !['regex-tester', 'timestamp', 'url-encode', 'jwt-decoder', 'hash', 'image-crop', 'image-convert'].includes(tool.slug)"
+      id="toolFooter"
+      :title="adData.product_description"
+      :image-url="adData.product_url"
+      :link-url="adData.ad_url"
+    />
 
     <!-- ============ 下一工具链接 ============ -->
     <div v-if="tool.nextTool" class="flex justify-end py-4">

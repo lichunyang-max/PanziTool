@@ -63,6 +63,39 @@ const props = defineProps<{
 
 const { reportEvent } = useAnalytics()
 
+interface AdItem {
+  product_description: string
+  product_url: string
+  ad_url: string
+}
+
+const { data: adData } = await useAsyncData<AdItem | null>(
+  'dev-tool-middle-ad',
+  async () => {
+    const config = useRuntimeConfig()
+    const baseURL = import.meta.server
+      ? (config.apiBase as string)
+      : (config.public.apiBase as string)
+
+    try {
+      const response = await $fetch<{
+        code: number
+        data: AdItem[]
+      }>('/api/v1/ads', {
+        baseURL,
+        params: { locationSymbol: 'dev_tool_middle' },
+      })
+      if (response.code === 0 && response.data && response.data.length > 0) {
+        return response.data[0]
+      }
+      return null
+    } catch {
+      return null
+    }
+  },
+  { default: () => null }
+)
+
 // === 状态 ===
 const mode = ref<'encode' | 'decode'>('encode')
 const batchMode = ref<'encode' | 'decode'>('encode')
@@ -656,7 +689,13 @@ function handleInputKeydown(e: KeyboardEvent) {
 
     <!-- ============ 广告位（常见问题和特殊字符编码对照表之间） ============ -->
     <div class="my-6">
-      <AdSlot slot-key="urlMiddle" />
+      <StaticAdCard
+        v-if="adData"
+        id="urlMiddle"
+        :title="adData.product_description"
+        :image-url="adData.product_url"
+        :link-url="adData.ad_url"
+      />
     </div>
 
     <!-- 6. FAQ 常见问题 -->

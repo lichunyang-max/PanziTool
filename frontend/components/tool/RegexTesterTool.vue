@@ -21,6 +21,39 @@ import {
 } from '~/utils/tools/regex'
 import { useAnalytics } from '~/composables/useAnalytics'
 
+interface AdItem {
+  product_description: string
+  product_url: string
+  ad_url: string
+}
+
+const { data: adData } = await useAsyncData<AdItem | null>(
+  'dev-tool-middle-ad',
+  async () => {
+    const config = useRuntimeConfig()
+    const baseURL = import.meta.server
+      ? (config.apiBase as string)
+      : (config.public.apiBase as string)
+
+    try {
+      const response = await $fetch<{
+        code: number
+        data: AdItem[]
+      }>('/api/v1/ads', {
+        baseURL,
+        params: { locationSymbol: 'dev_tool_middle' },
+      })
+      if (response.code === 0 && response.data && response.data.length > 0) {
+        return response.data[0]
+      }
+      return null
+    } catch {
+      return null
+    }
+  },
+  { default: () => null }
+)
+
 useHead({
   titleTemplate: null,
   title: '正则表达式 | 盘子工具站',
@@ -379,7 +412,13 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- ============ 广告位（匹配结果和分组信息之间） ============ -->
-    <AdSlot slot-key="regexMiddle" />
+    <StaticAdCard
+      v-if="adData"
+      id="regexMiddle"
+      :title="adData.product_description"
+      :image-url="adData.product_url"
+      :link-url="adData.ad_url"
+    />
 
     <!-- ============ 4. 分组信息表卡片 ============ -->
     <div class="pz-card p-4">

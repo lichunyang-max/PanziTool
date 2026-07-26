@@ -350,6 +350,57 @@
 
 系统 SHALL 在首页/分类页/工具页预留广告位，封装可配置广告组件（支持开关、广告位 key），异步注入第三方脚本不阻塞首屏，未配置或加载失败时降级不影响布局，并提供隐私/免责声明链接。
 
+**首页广告动态数据源需求：**
+
+系统 SHALL 支持首页广告位（`homeMiddle`）从数据库 `ad_promotion` 表动态获取广告信息。查询条件为 `ad_location_symbol = 'home_middle'` 且 `ad_enabled = true`。返回字段包含 `product_description`（广告描述）、`product_url`（广告图片地址）、`ad_url`（广告跳转地址）。后端需提供广告查询 API，前端首页在 SSR 阶段调用该 API 获取数据并渲染广告组件。
+
+#### Scenario: 首页广告动态获取
+- **WHEN** 用户访问首页
+- **THEN** 前端通过 API 查询 `ad_promotion` 表中 `ad_location_symbol='home_middle'` 且 `ad_enabled=true` 的广告记录
+- **THEN** 使用返回的 `product_description`、`product_url`、`ad_url` 字段渲染 `StaticAdCard` 组件
+- **THEN** 若无符合条件的广告记录，则该广告位静默隐藏
+
+**工具页底部广告动态数据源需求：**
+
+系统 SHALL 支持开发者工具和图片工具详情页底部广告位（`toolBottom`）从数据库 `ad_promotion` 表动态获取广告信息。查询条件为 `ad_location_symbol = 'tool_footer'` 且 `ad_enabled = true`。返回字段包含 `product_description`（广告描述）、`product_url`（广告图片地址）、`ad_url`（广告跳转地址）。前端 `ToolLayout` 组件在 SSR 阶段调用广告 API 获取数据并渲染广告组件，无广告数据时静默隐藏。
+
+#### Scenario: 工具页底部广告动态获取
+- **WHEN** 用户访问任意开发者工具或图片工具详情页
+- **THEN** 前端通过 API 查询 `ad_promotion` 表中 `ad_location_symbol='tool_footer'` 且 `ad_enabled=true` 的广告记录
+- **THEN** 使用返回的 `product_description`、`product_url`、`ad_url` 字段渲染广告组件
+- **THEN** 若无符合条件的广告记录，则该广告位静默隐藏，不影响页面布局
+
+**开发者工具中间广告动态数据源需求：**
+
+系统 SHALL 支持以下 5 个开发者工具页面的中间广告位从数据库 `ad_promotion` 表动态获取广告信息。查询条件为 `ad_location_symbol = 'dev_tool_middle'` 且 `ad_enabled = true`。返回字段包含 `product_description`（广告描述）、`product_url`（广告图片地址）、`ad_url`（广告跳转地址）。各工具组件在 SSR 阶段调用广告 API 获取数据并渲染 `StaticAdCard` 组件，无广告数据时静默隐藏。
+
+涉及的工具页面和广告位位置：
+1. 正则测试页面（`regex-tester`）：匹配结果和分组信息之间的广告位
+2. 时间戳转换页面（`timestamp`）：时区选择和常用时间戳参考之间的广告位
+3. URL 编码解码页面（`url-encode`）：常见特殊字符编码对照表和常见问题之间的广告位
+4. JWT 解析页面（`jwt-decoder`）：JWT 令牌输入和 JWT 算法参考之间的广告位
+5. 哈希计算页面（`hash`）：文件哈希计算和哈希算法对比之间的广告位
+
+#### Scenario: 开发者工具中间广告动态获取
+- **WHEN** 用户访问任意上述 5 个开发者工具页面
+- **THEN** 前端通过 API 查询 `ad_promotion` 表中 `ad_location_symbol='dev_tool_middle'` 且 `ad_enabled=true` 的广告记录
+- **THEN** 使用返回的 `product_description`、`product_url`、`ad_url` 字段渲染 `StaticAdCard` 组件
+- **THEN** 若无符合条件的广告记录，则该广告位静默隐藏，不影响页面布局
+
+**图片工具中间广告动态数据源需求：**
+
+系统 SHALL 支持以下 2 个图片工具页面的中间广告位从数据库 `ad_promotion` 表动态获取广告信息。查询条件为 `ad_location_symbol = 'img_tool_middle'` 且 `ad_enabled = true`。返回字段包含 `product_description`（广告描述）、`product_url`（广告图片地址）、`ad_url`（广告跳转地址）。各工具组件在 SSR 阶段调用广告 API 获取数据并渲染 `StaticAdCard` 组件，无广告数据时静默隐藏。
+
+涉及的工具页面和广告位位置：
+1. 图片裁剪页面（`image-crop`）：本地处理保障和常见问题之间的广告位
+2. 格式转换页面（`image-convert`）：本地处理保障和格式参考表之间的广告位
+
+#### Scenario: 图片工具中间广告动态获取
+- **WHEN** 用户访问任意上述 2 个图片工具页面
+- **THEN** 前端通过 API 查询 `ad_promotion` 表中 `ad_location_symbol='img_tool_middle'` 且 `ad_enabled=true` 的广告记录
+- **THEN** 使用返回的 `product_description`、`product_url`、`ad_url` 字段渲染 `StaticAdCard` 组件
+- **THEN** 若无符合条件的广告记录，则该广告位静默隐藏，不影响页面布局
+
 **广告位详细规划：**
 
 **首页广告位：**

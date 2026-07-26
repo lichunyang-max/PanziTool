@@ -45,6 +45,42 @@ interface ToolItem {
   created_at: string
 }
 
+interface AdItem {
+  product_description: string
+  product_url: string
+  ad_url: string
+}
+
+// SSR 获取首页广告数据（home_middle）
+const { data: adData } = await useAsyncData<AdItem | null>(
+  'home-ad',
+  async () => {
+    const config = useRuntimeConfig()
+    const baseURL = import.meta.server
+      ? (config.apiBase as string)
+      : (config.public.apiBase as string)
+
+    try {
+      const response = await $fetch<{
+        code: number
+        data: AdItem[]
+      }>('/api/v1/ads', {
+        baseURL,
+        params: { locationSymbol: 'home_middle' },
+      })
+      if (response.code === 0 && response.data && response.data.length > 0) {
+        return response.data[0]
+      }
+      return null
+    } catch {
+      return null
+    }
+  },
+  {
+    default: () => null,
+  },
+)
+
 // SSR 获取热门工具数据
 const { data: toolsData } = await useAsyncData<ToolItem[]>(
   'home-tools',
@@ -291,8 +327,13 @@ const toolIconMap: Record<string, string> = {
   </section>
 
   <!-- ============ 首页中间广告位（热门工具和最新上架之间） ============ -->
-  <div class="my-12">
-    <AdSlot slot-key="homeMiddle" />
+  <div v-if="adData" class="my-12">
+    <StaticAdCard
+      id="homeMiddle"
+      :title="adData.product_description"
+      :image-url="adData.product_url"
+      :link-url="adData.ad_url"
+    />
   </div>
 
   <!-- ============ 最新上架区块（3 列网格 + NEW 标签） ============ -->

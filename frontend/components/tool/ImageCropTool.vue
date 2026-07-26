@@ -46,6 +46,41 @@ import {
   type ImageFormat,
 } from '~/utils/tools/image'
 
+/** 广告数据接口 */
+interface AdItem {
+  product_description: string
+  product_url: string
+  ad_url: string
+}
+
+/** SSR 获取图片工具中间广告数据（img_tool_middle） */
+const { data: adData } = await useAsyncData<AdItem | null>(
+  'img-tool-middle-ad',
+  async () => {
+    const config = useRuntimeConfig()
+    const baseURL = import.meta.server
+      ? (config.apiBase as string)
+      : (config.public.apiBase as string)
+
+    try {
+      const response = await $fetch<{
+        code: number
+        data: AdItem[]
+      }>('/api/v1/ads', {
+        baseURL,
+        params: { locationSymbol: 'img_tool_middle' },
+      })
+      if (response.code === 0 && response.data && response.data.length > 0) {
+        return response.data[0]
+      }
+      return null
+    } catch {
+      return null
+    }
+  },
+  { default: () => null }
+)
+
 useHead({
   titleTemplate: null,
   title: '图片裁剪工具 | 盘子工具站',
@@ -999,7 +1034,13 @@ onUnmounted(() => {
 
     <!-- ============ 广告位（本地处理保障和常见问题之间） ============ -->
     <div class="my-6">
-      <AdSlot slot-key="imageCropMiddle" />
+      <StaticAdCard
+        v-if="adData"
+        id="imageCropMiddle"
+        :title="adData.product_description"
+        :image-url="adData.product_url"
+        :link-url="adData.ad_url"
+      />
     </div>
 
     <!-- 5. 常见问题 -->
