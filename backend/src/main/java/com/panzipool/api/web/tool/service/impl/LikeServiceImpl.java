@@ -1,0 +1,80 @@
+package com.panzipool.api.web.tool.service.impl;
+
+import com.panzipool.api.common.ApiConstants;
+import com.panzipool.api.common.BusinessException;
+import com.panzipool.api.web.tool.dao.ToolLikeRepository;
+import com.panzipool.api.web.tool.dao.ToolRepository;
+import com.panzipool.api.web.tool.dto.LikeResponse;
+import com.panzipool.api.web.tool.entity.Tool;
+import com.panzipool.api.web.tool.entity.ToolLike;
+import com.panzipool.api.web.tool.service.LikeService;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+
+/**
+ * 点赞服务实现。
+ *
+ * <p>核心职责：</p>
+ * <ol>
+ *   <li>根据 slug 查询工具，不存在则抛出 404 业务异常</li>
+ *   <li>基于 (tool_id, anon_id, like_date) 唯一约束实现防刷：同一匿名用户对同一工具每个自然天仅能点赞一次且不可取消</li>
+ *   <li>点赞成功后原子递增 {@code tools.like_count} 冗余计数</li>
+ *   <li>并发容错：乐观检查 + 唯一约束兜底，捕获 {@link DataIntegrityViolationException}</li>
+ * </ol>
+ */
+@Service
+@RequiredArgsConstructor
+public class LikeServiceImpl implements LikeService {
+
+    private static final Logger log = LoggerFactory.getLogger(LikeServiceImpl.class);
+
+    private final ToolRepository toolRepository;
+    private final ToolLikeRepository toolLikeRepository;
+
+    @Override
+    @Transactional
+    public LikeResponse like(String slug, String anonId) {
+        // 1. 查询工具，不存在则 404
+        Tool tool = toolRepository.findBySlug(slug)
+                .orElseThrow(() -> new BusinessException(
+                        ApiConstants.CODE_NOT_FOUND,
+                        "工具不存在或已下线",
+                        HttpStatus.NOT_FOUND));
+
+        Long toolId = tool.getId();
+        long currentLikeCount = tool.getLikeCount();
+
+        // 2. 乐观检查：是否已存在 (tool_id, anon_id, like_date) 记录（每自然天一次）
+        LocalDate today = LocalDate.now();
+        if (toolLikeRepository.existsByToolIdAndAnonIdAndLikeDate(toolId, anonId, today)) {
+            log.debug("重复点赞（乐观检查命中）: slug={}, anon_id={}, like_date={}", slug, anonId, today);
+            return new LikeResponse(currentLikeCount, false);
+        }
+
+        // 3. 插入点赞记录；使用 saveAndFlush 确保唯一约束冲突在事务内立即抛出
+        try {
+            ToolLike like = new ToolLike();
+            like.setToolId(toolId);
+            like.setAnonId(anonId);
+            like.setLikeDate(today);
+            toolLikeRepository.saveAndFlush(like);
+        } catch (DataIntegrityViolationException e) {
+            // 并发兜底：另一请求在同一事务提交前插入了相同 (tool_id, anon_id, like_date)
+            log.debug("并发重复点赞（唯一约束冲突）: slug={}, anon_id={}, like_date={}", slug, anonId, today);
+            return new LikeResponse(currentLikeCount, false);
+        }
+
+        // 4. 原子递增冗余计数 like_count + 1（避免 "读-改-写" 竞态）
+        toolRepository.incrementLikeCount(toolId);
+
+        log.info("点赞成功: slug={}, anon_id={}, like_date={}, like_count={}", slug, anonId, today, currentLikeCount + 1);
+        return new LikeResponse(currentLikeCount + 1, true);
+    }
+}
