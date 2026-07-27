@@ -4,6 +4,8 @@
 # 说明：默认 profile 使用 H2 内存数据库，便于在无外部 PostgreSQL 的环境下
 # 一键启动验证（Tomcat 可达、Actuator/OpenAPI/Ping 可用）。
 # dev/prod profile 会覆盖 datasource 为 PostgreSQL（见 application-dev.yml / application-prod.yml）。
+# 表结构由 JPA ddl-auto=update 自动管理（已有表不变，无表自动创建，新增字段自动追加），
+# 不再使用 Flyway，避免启动时执行 SQL 迁移脚本。
 # ============================================================================
 
 server:
@@ -16,29 +18,26 @@ spring:
   application:
     name: panzipool-backend
   profiles:
-    # 通过环境变量 SPRING_PROFILES_ACTIVE 切换 dev/prod；默认使用 dev（PostgreSQL）
-    active: ${SPRING_PROFILES_ACTIVE:dev}
+    # 部署时通过环境变量 SPRING_PROFILES_ACTIVE 切换 dev/prod；
+    # 默认不激活任何 profile，使用本文件中的 H2 内存库配置（便于本地启动与单元测试）
+    active: ${SPRING_PROFILES_ACTIVE:}
   datasource:
     # 默认 H2 内存库 + PostgreSQL 兼容模式，无需外部依赖即可启动
     # DATABASE_TO_LOWER=TRUE：将未加引号的标识符折叠为小写，与 PostgreSQL 行为一致，
-    # 确保 JPA ddl-auto=validate 在 H2 与 PostgreSQL 之间行为一致
+    # 确保 JPA ddl-auto=update 在 H2 与 PostgreSQL 之间行为一致
     url: jdbc:h2:mem:panzipool;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     username: sa
     password:
     driver-class-name: org.h2.Driver
   jpa:
     hibernate:
-      # 由 Flyway 管理表结构，JPA 仅校验
-      ddl-auto: validate
+      # 表结构由 JPA 自动管理：已存在表保留，无表自动创建，新增字段自动追加
+      ddl-auto: update
     show-sql: false
     properties:
       hibernate:
         format_sql: true
         # 默认 profile 不显式指定 dialect，由 Hibernate 依据 H2 自动检测
-  flyway:
-    enabled: true
-    locations: classpath:db/migration
-    baseline-on-migrate: true
 
 # Actuator 健康检查
 management:

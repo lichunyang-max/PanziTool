@@ -8,7 +8,7 @@
 
 spring:
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/panzitooldb}
+    url: ${DB_URL:jdbc:postgresql://192.168.110.234:5432/testdb}
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:DYGdyg123}
     driver-class-name: org.postgresql.Driver
@@ -35,7 +35,7 @@ management:
 panzipool:
   cors:
     # 生产环境仅允许主站域名
-    allowed-origins: ${CORS_ORIGINS:https://tool.panzipool.com,https://www.panzipool.com,http://localhost:3000,http://localhost:8080}
+    allowed-origins: ${CORS_ORIGINS:https://www.panzipool.com,http://localhost:3000,http://localhost:8080}
 
 logging:
   level:
