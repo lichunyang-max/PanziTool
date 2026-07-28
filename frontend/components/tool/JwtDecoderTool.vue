@@ -81,9 +81,12 @@ const SAMPLE_JWT =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjk3NTIzNDU2Nzh9.jND5T1q3GFlvRDXm3V6KNqg8Zq5jvBmCZ_iIqjB4HMI'
 
 // === 响应式状态 ===
-const tokenInput = ref('')
+// 预填充示例 JWT 并解码，确保 SSR/预渲染时页面有实际内容（利于 SEO）
+const tokenInput = ref(SAMPLE_JWT)
 const errorMessage = ref<string | null>(null)
-const decodedParts = ref<JwtParts | null>(null)
+const decodedParts = ref<JwtParts | null>(
+  decodeJwt(SAMPLE_JWT).parts ?? null,
+)
 
 // 防抖定时器
 let debounceTimer: ReturnType<typeof setTimeout> | null = null

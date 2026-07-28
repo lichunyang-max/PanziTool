@@ -70,8 +70,10 @@ const mode = ref<Mode>('encode')
 const charset = ref<Base64Charset>('utf8')
 const linebreak = ref(false)
 
-const input = ref('')
-const output = ref('')
+// 预填充示例数据，确保 SSR/预渲染时页面有实际内容（利于 SEO）
+const SAMPLE_TEXT = 'Hello World'
+const input = ref(SAMPLE_TEXT)
+const output = ref(encodeBase64(SAMPLE_TEXT, 'utf8').output ?? '')
 const errorMsg = ref('')
 
 // 文件上传状态

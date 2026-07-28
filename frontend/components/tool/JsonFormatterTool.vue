@@ -68,18 +68,21 @@ const effectiveSlug = computed(
   () => props.slug || (route.params.slug as string) || 'json-formatter',
 )
 
+// === 示例数据 ===
+const SAMPLE_JSON = '{"name":"PanziPool","tools":["json","regex"],"count":7}'
+
 // === 状态 ===
-const input = ref('')
-const output = ref('')
+// 预填充示例数据，确保 SSR/预渲染时页面有实际内容（利于 SEO）
+const input = ref(SAMPLE_JSON)
+const output = ref(
+  formatJson(SAMPLE_JSON, 2).output ?? '',
+)
 const errorMsg = ref('')
 const errorLine = ref<number | undefined>(undefined)
 const errorColumn = ref<number | undefined>(undefined)
 /** null = 未校验；true = 校验通过；false = 校验失败 */
 const validateStatus = ref<boolean | null>(null)
 const indent = ref<number>(2)
-
-// === 示例数据 ===
-const SAMPLE_JSON = '{"name":"PanziPool","tools":["json","regex"],"count":7}'
 
 // === 大输入防护：1MB ===
 const LARGE_INPUT_THRESHOLD = 1024 * 1024

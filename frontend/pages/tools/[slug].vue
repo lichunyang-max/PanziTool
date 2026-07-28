@@ -9,6 +9,7 @@
  * - 通过 toolRegistry 懒加载对应工具交互组件
  */
 import { hasTool, toolRegistry } from '~/utils/toolRegistry'
+import { getToolStaticMeta, type ToolFaqItem } from '~/utils/toolMeta'
 import type { ToolMeta } from '~/components/tool/ToolLayout.vue'
 
 interface ToolData {
@@ -80,7 +81,8 @@ const { data: toolData } = await useAsyncData<ToolData | null>(
   },
 )
 
-// 基础 ToolMeta（来自 API 数据）
+// 基础 ToolMeta（来自 API 数据，降级使用静态元数据）
+const staticMeta = computed(() => getToolStaticMeta(slug.value))
 const baseToolMeta = computed<ToolMeta>(() => {
   if (toolData.value) {
     return {
@@ -92,12 +94,13 @@ const baseToolMeta = computed<ToolMeta>(() => {
       likeCount: toolData.value.likeCount,
     }
   }
-  // 降级数据
+  // 降级数据：优先使用静态元数据（中文名、描述），确保预渲染有完整内容
+  const meta = staticMeta.value
   return {
     slug: slug.value,
-    name: slug.value,
-    description: '',
-    category: 'developer',
+    name: meta?.name || slug.value,
+    description: meta?.description || '',
+    category: meta?.category || 'developer',
     useCount: 0,
     likeCount: 0,
   }
@@ -119,9 +122,9 @@ const toolMeta = computed<ToolMeta>(() => ({
   isLiked: localLiked.value,
 }))
 
-// SEO 元数据
-const seoTitle = computed(() => toolMeta.value.name || slug.value)
-const seoDescription = computed(() => toolMeta.value.description || `${seoTitle.value} - 盘子 在线工具`)
+// SEO 元数据（API 不可用时降级到静态元数据）
+const seoTitle = computed(() => toolMeta.value.name || staticMeta.value?.name || slug.value)
+const seoDescription = computed(() => toolMeta.value.description || staticMeta.value?.description || `${seoTitle.value} - 盘子工具站在线工具`)
 
 useSeoMeta({
   title: seoTitle.value,
@@ -129,15 +132,22 @@ useSeoMeta({
   description: seoDescription.value,
   ogDescription: seoDescription.value,
   ogType: 'website',
-  ogUrl: () => `https://www.panzipool.com/tools/${slug.value}`,
+  ogUrl: () => `https://tool.panzipool.com/tools/${slug.value}`,
 })
+
+// keywords（静态元数据提供）
+if (staticMeta.value?.keywords) {
+  useHead({
+    meta: [{ name: 'keywords', content: staticMeta.value.keywords }],
+  })
+}
 
 // canonical URL
 useHead({
   link: () => [
     {
       rel: 'canonical',
-      href: `https://www.panzipool.com/tools/${slug.value}`,
+      href: `https://tool.panzipool.com/tools/${slug.value}`,
     },
   ],
 })
@@ -153,7 +163,7 @@ useHead({
         name: toolMeta.value.name,
         description: toolMeta.value.description,
         applicationCategory: 'DeveloperApplication',
-        url: `https://www.panzipool.com/tools/${slug.value}`,
+        url: `https://tool.panzipool.com/tools/${slug.value}`,
       }),
     },
   ],
@@ -220,7 +230,55 @@ async function handleLike() {
         </template>
 
         <template #faq>
-          <!-- 各工具的 FAQ 由各自组件提供 -->
+          <!-- FAQ 区：静态元数据提供，保证预渲染有文字内容 -->
+          <section
+            v-if="staticMeta?.faq?.length"
+            class="mt-8"
+            aria-label="常见问题"
+          >
+            <h2
+              class="text-lg font-semibold mb-4"
+              style="color: var(--pz-color-text-primary); font-family: var(--pz-font-display)"
+            >
+              常见问题
+            </h2>
+            <div class="flex flex-col gap-2">
+              <details
+                v-for="(item, index) in staticMeta.faq"
+                :key="index"
+                class="pz-card p-4 pz-faq"
+                open
+              >
+                <summary
+                  class="cursor-pointer text-sm font-medium flex items-center justify-between gap-2"
+                  style="color: var(--pz-color-text-primary)"
+                >
+                  {{ item.question }}
+                  <svg
+                    class="pz-faq-chevron shrink-0"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    style="color: var(--pz-color-text-tertiary)"
+                    aria-hidden="true"
+                  >
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </summary>
+                <p
+                  class="mt-3 text-sm"
+                  style="color: var(--pz-color-text-secondary); line-height: 1.6"
+                >
+                  {{ item.answer }}
+                </p>
+              </details>
+            </div>
+          </section>
         </template>
       </ToolLayout>
     </template>

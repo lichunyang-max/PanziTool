@@ -31,7 +31,7 @@ export default defineNuxtConfig({
 
   // 运行时配置：环境相关配置，避免硬编码
   // - apiBase: 服务端内网地址（SSR 阶段使用，如 Docker 内网 http://java-api:8080）
-  // - public.apiBase: 客户端公开地址（如 https://www.panzipool.com/api）
+  // - public.apiBase: 客户端公开地址（如 https://tool.panzipool.com/api）
   runtimeConfig: {
     // 纯静态模式：SSR 已关闭，apiBase 不再使用，保留兼容
     apiBase: '',

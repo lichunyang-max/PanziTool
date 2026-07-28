@@ -133,7 +133,9 @@ interface HashResultItem {
 }
 
 // === 文本哈希 ===
-const textInput = ref('')
+// 预填充示例文本，确保 SSR/预渲染时页面有实际内容（利于 SEO）
+// 注意：哈希计算使用 Web Crypto API（异步），SSR 阶段不计算结果
+const textInput = ref('Hello PanziPool')
 const textResults = ref<HashResultItem[]>([])
 const textComputing = ref(false)
 const textError = ref('')

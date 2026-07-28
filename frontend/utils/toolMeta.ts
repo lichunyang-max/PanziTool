@@ -1,0 +1,214 @@
+/**
+ * toolMeta.ts - 工具静态元数据（降级数据源）
+ *
+ * 用途：
+ * - 预渲染（nuxt generate）时 API 不可用，提供完整的名称、描述、FAQ
+ * - 客户端水合后 API 数据会覆盖这些降级值（use_count / like_count 等）
+ * - 保证百度爬虫抓取到的是有意义的中文内容，而非 slug 空壳
+ */
+
+export interface ToolFaqItem {
+  question: string
+  answer: string
+}
+
+export interface ToolStaticMeta {
+  slug: string
+  name: string
+  description: string
+  keywords: string
+  category: 'developer' | 'image'
+  faq: ToolFaqItem[]
+}
+
+export const toolStaticMeta: Record<string, ToolStaticMeta> = {
+  'json-formatter': {
+    slug: 'json-formatter',
+    name: 'JSON格式化',
+    description: '免费在线JSON格式化工具，支持美化、压缩、语法校验、错误定位，免登录打开即用，代码本地处理安全可靠。',
+    keywords: 'JSON格式化,JSON美化,JSON压缩,JSON校验',
+    category: 'developer',
+    faq: [
+      {
+        question: 'JSON格式化工具有哪些功能？',
+        answer: '支持JSON美化（缩进格式化）、压缩（去除空白）、语法校验（错误行列定位）三大核心功能，全部在浏览器本地处理，不上传服务器。',
+      },
+      {
+        question: '数据是否安全？',
+        answer: '所有JSON数据均在浏览器本地处理，不会上传到服务器，完全保障数据隐私安全。',
+      },
+      {
+        question: '支持多大的JSON文件？',
+        answer: '支持处理1MB以内的JSON文本，超过1MB会显示警告提示，建议缩减输入以获得更好性能。',
+      },
+    ],
+  },
+  'regex-tester': {
+    slug: 'regex-tester',
+    name: '正则表达式测试',
+    description: '免费在线正则表达式测试工具，支持实时匹配、结果高亮、分组信息展示，内置常用正则模板，免登录打开即用，本地运算保障数据安全。',
+    keywords: '正则测试,正则表达式,正则匹配,在线正则',
+    category: 'developer',
+    faq: [
+      {
+        question: '正则测试工具支持哪些标志位？',
+        answer: '支持 g（全局匹配）、i（忽略大小写）、m（多行模式）、s（dotAll）、u（Unicode）五种标志位，可自由组合。',
+      },
+      {
+        question: '如何查看匹配分组信息？',
+        answer: '执行匹配后，分组信息卡片会展示每个捕获组的内容和索引，方便调试复杂正则表达式。',
+      },
+      {
+        question: '是否有 ReDoS 防护？',
+        answer: '工具使用 try-catch 包裹执行，最大匹配数限制为 10000，防止灾难性回溯导致浏览器卡死。',
+      },
+    ],
+  },
+  timestamp: {
+    slug: 'timestamp',
+    name: '时间戳转换',
+    description: '免费在线Unix时间戳转换工具，支持秒/毫秒级互转、多时区切换、常用时间参考，免登录打开即用，本地计算精准高效。',
+    keywords: '时间戳转换,Unix时间戳,时间转换,在线时间戳',
+    category: 'developer',
+    faq: [
+      {
+        question: '支持秒级和毫秒级时间戳吗？',
+        answer: '支持秒级和毫秒级Unix时间戳互转，自动识别时间戳类型，可手动切换。',
+      },
+      {
+        question: '支持哪些时区？',
+        answer: '支持UTC、北京时间（UTC+8）等常用时区切换，方便不同地区的开发者使用。',
+      },
+    ],
+  },
+  'url-encode': {
+    slug: 'url-encode',
+    name: 'URL编码解码',
+    description: '免费在线URL编码解码工具，支持UrlEncode/Decode互转、批量处理、多种编码函数，附特殊字符对照表，免登录打开即用，本地处理数据安全。',
+    keywords: 'URL编码解码,UrlEncode,UrlDecode,URL转换',
+    category: 'developer',
+    faq: [
+      {
+        question: 'URL编码解码工具支持哪些功能？',
+        answer: '支持UrlEncode编码、UrlDecode解码、批量处理，以及encodeURIComponent/decodeURIComponent等多种编码函数。',
+      },
+      {
+        question: '有特殊字符对照表吗？',
+        answer: '内置常用特殊字符的编码对照表，方便快速查询空格、中文、符号等字符的编码结果。',
+      },
+    ],
+  },
+  'jwt-decoder': {
+    slug: 'jwt-decoder',
+    name: 'JWT解析工具',
+    description: '免费在线JWT解析工具，快速解密JWT Token头部与载荷信息，附全量算法参考，本地解析不上传，保障接口调试数据安全。',
+    keywords: 'JWT解析,JWT解密,Token解析,JWT校验',
+    category: 'developer',
+    faq: [
+      {
+        question: 'JWT解析工具会上传Token吗？',
+        answer: '不会。所有JWT Token均在浏览器本地解析，不上传服务器，保障接口调试数据安全。',
+      },
+      {
+        question: '支持哪些JWT算法？',
+        answer: '支持解析HS256、HS384、HS512、RS256等常见算法的JWT Token，展示Header和Payload详情。',
+      },
+    ],
+  },
+  base64: {
+    slug: 'base64',
+    name: 'Base64编码解码',
+    description: '免费在线Base64编码解码工具，支持文本与图片文件互转，兼容UTF-8编码，免登录打开即用，本地浏览器处理保障数据安全。',
+    keywords: 'Base64编码,Base64解码,Base64转换,图片Base64',
+    category: 'developer',
+    faq: [
+      {
+        question: 'Base64工具支持图片转换吗？',
+        answer: '支持将图片文件转换为Base64编码字符串，也支持将Base64字符串解码还原为图片。',
+      },
+      {
+        question: '兼容中文编码吗？',
+        answer: '完全兼容UTF-8编码，中文文本可正确进行Base64编解码。',
+      },
+    ],
+  },
+  hash: {
+    slug: 'hash',
+    name: '哈希计算',
+    description: '免费在线哈希计算工具，支持MD5/SHA1/SHA256等多种算法，文本与文件均可计算，本地浏览器运算不上传，保障数据安全，免登录即用。',
+    keywords: '哈希计算,MD5加密,SHA256,在线加密',
+    category: 'developer',
+    faq: [
+      {
+        question: '哈希计算工具支持哪些算法？',
+        answer: '支持MD5、SHA1、SHA256、SHA512等多种哈希算法，可同时计算多种算法结果。',
+      },
+      {
+        question: '可以计算文件的哈希值吗？',
+        answer: '支持拖拽或选择文件计算哈希值，文件在浏览器本地读取，不上传服务器。',
+      },
+    ],
+  },
+  'image-compress': {
+    slug: 'image-compress',
+    name: '图片压缩',
+    description: '免费在线图片压缩工具，支持JPG/PNG/WEBP批量压缩，自定义尺寸与画质，本地浏览器处理不上传服务器，保护隐私，免登录一键下载。',
+    keywords: '图片压缩,在线压缩图片,JPG压缩,PNG压缩',
+    category: 'image',
+    faq: [
+      {
+        question: '图片压缩支持哪些格式？',
+        answer: '支持JPG、PNG、WEBP格式的图片压缩，可自定义压缩质量和输出尺寸。',
+      },
+      {
+        question: '图片会上传到服务器吗？',
+        answer: '不会。所有图片压缩均在浏览器本地使用Canvas处理，不上传服务器，保护隐私安全。',
+      },
+      {
+        question: '支持批量压缩吗？',
+        answer: '支持批量上传多张图片同时压缩，一键下载压缩后的图片。',
+      },
+    ],
+  },
+  'image-crop': {
+    slug: 'image-crop',
+    name: '图片裁剪',
+    description: '免费在线图片裁剪工具，支持自定义尺寸、多比例裁剪、旋转翻转，本地浏览器处理不上传，免登录一键导出高清原图。',
+    keywords: '图片裁剪,在线裁剪图片,图片旋转,自定义尺寸',
+    category: 'image',
+    faq: [
+      {
+        question: '图片裁剪支持哪些比例？',
+        answer: '支持自由裁剪和1:1、4:3、16:9等常用比例裁剪，可自定义裁剪尺寸。',
+      },
+      {
+        question: '可以旋转和翻转图片吗？',
+        answer: '支持90度旋转和水平/垂直翻转，方便调整图片方向后再裁剪。',
+      },
+    ],
+  },
+  'image-convert': {
+    slug: 'image-convert',
+    name: '图片格式转换',
+    description: '免费在线图片格式转换工具，支持PNG/JPG/WEBP无损互转，保留透明背景，本地浏览器处理不上传，免登录批量转换。',
+    keywords: '图片格式转换,PNG转JPG,WEBP转换,在线转格式',
+    category: 'image',
+    faq: [
+      {
+        question: '图片格式转换支持哪些格式？',
+        answer: '支持PNG、JPG、WEBP三种格式互转，可根据需要选择输出格式。',
+      },
+      {
+        question: 'PNG转JPG会丢失透明背景吗？',
+        answer: 'PNG转JPG时透明背景会变为白色，如需保留透明背景请使用WEBP或PNG格式输出。',
+      },
+    ],
+  },
+}
+
+/**
+ * 获取工具静态元数据，不存在时返回 null
+ */
+export function getToolStaticMeta(slug: string): ToolStaticMeta | null {
+  return toolStaticMeta[slug] || null
+}

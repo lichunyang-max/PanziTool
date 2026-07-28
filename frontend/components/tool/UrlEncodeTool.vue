@@ -102,8 +102,12 @@ const batchMode = ref<'encode' | 'decode'>('encode')
 const encodeFn = ref<EncodeFunction>('encodeURIComponent')
 const spaceMode = ref<SpaceMode>('percent20')
 
-const input = ref('')
-const output = ref('')
+// 预填充示例数据，确保 SSR/预渲染时页面有实际内容（利于 SEO）
+const SAMPLE_URL = 'https://example.com/搜索?q=中文测试'
+const input = ref(SAMPLE_URL)
+const output = ref(
+  encodeUrl(SAMPLE_URL, 'encodeURIComponent', 'percent20').output ?? '',
+)
 const error = ref('')
 
 const batchInput = ref('')

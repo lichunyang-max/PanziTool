@@ -152,12 +152,19 @@ function updateLive() {
 let liveTimer: ReturnType<typeof setInterval> | null = null
 
 // === 2. 左栏：时间戳 → 日期时间 ===
-const tsInput = ref('')
+// 预填充示例时间戳并计算结果，确保 SSR/预渲染时页面有实际内容（利于 SEO）
+const SAMPLE_TS = '1700000000'
+const tsInput = ref(SAMPLE_TS)
 const tsUnit = ref<TimestampUnit>('s')
 const tsError = ref('')
-const tsOutDatetime = ref('—')
-const tsOutIso = ref('—')
-const tsOutRelative = ref('—')
+const _initialTsResult = timestampToDate(
+  Number(SAMPLE_TS) * 1000,
+  'ms',
+  8,
+)
+const tsOutDatetime = ref(_initialTsResult.datetime)
+const tsOutIso = ref(_initialTsResult.iso)
+const tsOutRelative = ref(_initialTsResult.relative)
 const lastTsMs = ref<number | null>(null)
 
 function renderTsResult(date: Date) {

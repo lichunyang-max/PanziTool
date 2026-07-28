@@ -5,7 +5,7 @@
  * 从后端 API 获取工具列表生成工具页 URL
  */
 export default defineEventHandler(async () => {
-  const baseUrl = 'https://www.panzipool.com'
+  const baseUrl = 'https://tool.panzipool.com'
 
   // 静态页面
   const staticUrls = [
