@@ -1,9 +1,9 @@
 # ============================================================================
-# PanziPool 前端 Dockerfile（Nuxt3 SSR 多阶段构建）
+# PanziPool 前端 Dockerfile（Nuxt3 静态预渲染 + Nginx）
 # ----------------------------------------------------------------------------
 # 阶段说明：
-#   builder  - 安装依赖并构建 Nuxt3 产物（.output）
-#   runner   - 仅携带构建产物运行 Node.js SSR 服务，减小镜像体积
+#   builder  - 安装依赖并预渲染所有路由（nuxt generate → .output/public）
+#   runner   - Nginx 提供静态文件服务，返回完整 HTML 利于 SEO / 百度收录
 # ============================================================================
 
 # ----------------------------------------------------------------------------
@@ -25,35 +25,19 @@ RUN npm ci
 # 复制全部源码
 COPY . .
 
-# 构建 Nuxt3 产物（生成 .output 目录，包含 SSR server bundle 和静态资源）
-RUN npm run build
+# 预渲染所有路由（生成 .output/public，包含每个页面的完整 HTML）
+RUN npm run generate
 
 # ----------------------------------------------------------------------------
-# 阶段 2: runner - 仅运行构建产物
+# 阶段 2: runner - Nginx 提供静态文件服务
 # ----------------------------------------------------------------------------
-FROM node:20-alpine AS runner
+FROM nginx:alpine AS runner
 
-WORKDIR /app
+# 复制 Nginx 配置
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# 生产环境标志
-ENV NODE_ENV=production
+# 复制预渲染产物到 Nginx 静态目录
+COPY --from=builder /app/.output/public /usr/share/nginx/html
 
-# Nuxt3 运行时监听地址和端口（0.0.0.0 确保容器外可访问，供 nginx 反代）
-ENV NUXT_HOST=0.0.0.0
-ENV NUXT_PORT=3000
-
-# API 基础地址配置（容器内通信，通过 Docker 自定义网络访问后端服务）
-# - NUXT_API_BASE: SSR 阶段使用（服务端内网地址，直接访问后端容器）
-# - NUXT_PUBLIC_API_BASE: 客户端浏览器使用（生产环境应通过 .env 覆盖为公网域名）
-ENV NUXT_API_BASE=http://java-api:8080
-ENV NUXT_PUBLIC_API_BASE=http://java-api:8080
-
-# 仅复制构建产物
-# Nuxt3 的 nitro 构建已将所有运行时依赖打包进 .output，无需额外安装 node_modules
-COPY --from=builder /app/.output ./.output
-
-# 暴露 Nuxt3 SSR 服务端口
+# 暴露端口（与原 Node 服务一致，外部 Nginx 反代无需修改）
 EXPOSE 3000
-
-# 启动 Nuxt3 SSR 服务
-CMD ["node", ".output/server/index.mjs"]
