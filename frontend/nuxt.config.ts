@@ -6,8 +6,8 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
   devtools: { enabled: true },
 
-  // SSR 模式：生产构建为纯静态（SPA），开发模式启用 SSR 以支持 HMR
-  ssr: process.env.NODE_ENV === 'production' ? false : true,
+  // SSR 模式：开发模式启用 SSR 以支持 HMR，生产构建也启用 SSR 以生成完整 HTML
+  ssr: true,
 
   // Vite 开发服务器配置
   vite: {
@@ -88,13 +88,17 @@ export default defineNuxtConfig({
     },
   },
 
-  // Nitro 配置
+  // Nitro 配置：静态预渲染（构建时生成所有路由的完整 HTML，利于 SEO / 百度收录）
+  // dev 模式下 nuxt dev 会忽略此预设，使用内置开发服务器
   nitro: {
-    // 生产构建使用静态预设（npm run generate / build），开发使用 node-server
-    preset: process.env.NODE_ENV === 'production' ? 'static' : 'node-server',
-    routeRules: process.env.NODE_ENV === 'production'
-      ? { '/**': { prerender: true } }
-      : {},
+    preset: 'static',
+    routeRules: {
+      '/**': { prerender: true },
+    },
+    prerender: {
+      crawlLinks: true, // 从页面中的 <NuxtLink> 爬取所有路由
+      failOnError: false, // API 不可用时降级渲染，不中断构建
+    },
   },
 
   // 全局路由配置：无尾斜杠
