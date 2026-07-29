@@ -413,3 +413,136 @@
   - [x] SubTask 29.2: 修改 `ImageConvertTool.vue`，在 SSR 阶段调用 `/api/v1/ads?locationSymbol=img_tool_middle` 获取广告数据，将中间广告位从 `AdSlot` 改为 `StaticAdCard` 渲染
   - 验证：图片裁剪和格式转换页面中间广告位可动态从数据库获取并渲染，无数据时静默隐藏 ✅
 
+## 新增任务：移动端适配基础架构
+
+- [x] Task 30: 移动端设备检测与布局切换
+  - **Priority**: high
+  - **Depends On**: Task 1（前端骨架）
+  - **Description**: 
+    - 创建 `composables/useDevice.ts` composable，用于检测设备类型（移动/桌面）
+    - 创建 `middleware/device-detect.global.ts` 全局中间件，在 SSR 阶段检测 User-Agent 并设置响应式状态
+    - 创建 `layouts/mobile.vue` 移动端基础布局（Header + 内容区 + Footer + 底部导航）
+    - 修改现有布局逻辑，实现 PC/移动端自动切换
+  - **Acceptance Criteria Addressed**: AC-30.1, AC-30.7
+  - **Test Requirements**:
+    - `programmatic` TR-30.1.1: 中间件正确识别移动端 User-Agent（iPhone, Android, Mobile 等）
+    - `programmatic` TR-30.1.2: 中间件将爬虫 User-Agent 识别为桌面设备（确保 SEO）
+    - `human-judgement` TR-30.1.3: 移动设备访问网站时加载移动端布局
+    - `human-judgement` TR-30.1.4: 桌面设备访问网站时保持 PC 端布局不变
+
+- [x] Task 31: 移动端通用组件开发
+  - **Priority**: high
+  - **Depends On**: Task 30
+  - **Description**:
+    - 创建 `components/mobile/MobileHeader.vue`：移动端顶部导航（Logo + 返回按钮）
+    - 创建 `components/mobile/MobileFooter.vue`：移动端页脚
+    - 创建 `components/mobile/MobileBottomNav.vue`：移动端底部导航栏（首页、工具、关于，active 状态高亮）
+    - 创建 `components/mobile/MobileToolLayout.vue`：移动端工具页通用布局（面包屑 + 标题 + 使用统计 + 内容区 + 广告位）
+    - 创建 `components/mobile/MobileToolCard.vue`：移动端工具卡片组件（2列网格 + 竖排列表两种模式）
+    - 创建 `components/mobile/MobileAdCard.vue`：移动端广告卡片组件
+  - **Acceptance Criteria Addressed**: AC-30.2, AC-30.4
+  - **Test Requirements**:
+    - `human-judgement` TR-31.1: MobileHeader 样式与 panzi-tools-mobile 设计一致
+    - `human-judgement` TR-31.2: MobileBottomNav 三个入口正确显示，当前页高亮
+    - `human-judgement` TR-31.3: MobileToolLayout 布局完整，包含所有必要区块
+    - `human-judgement` TR-31.4: MobileToolCard 支持网格和列表两种展示模式
+
+## 新增任务：移动端页面实现（P0 优先级）
+
+- [x] Task 32: 移动端核心页面实现（P0）
+  - **Priority**: high
+  - **Depends On**: Task 31
+  - **Description**:
+    - **SubTask 32.1**: 创建 `pages/mobile/index.vue` 移动端首页（热门工具 2 列网格 + 广告 + 最新上架列表）
+    - **SubTask 32.2**: 创建 `pages/mobile/dev-tools.vue` 开发者工具列表页（Tab 切换 + 竖排列表）
+    - **SubTask 32.3**: 创建 `pages/mobile/image-tools.vue` 图片工具列表页
+    - **SubTask 32.4**: 创建 `pages/mobile/tools/[slug].vue` 移动端工具详情页动态路由
+    - **SubTask 32.5**: 实现移动端路由映射逻辑，根据设备类型自动路由到移动端页面
+  - **Acceptance Criteria Addressed**: AC-30.2, AC-30.3
+  - **Test Requirements**:
+    - `human-judgement` TR-32.1: 移动端首页与 panzi-tools-mobile/pages/index.html 设计一致
+    - `human-judgement` TR-32.2: 移动端分类页与 panzi-tools-mobile/pages/dev-tools.html 设计一致
+    - `human-judgement` TR-32.3: 移动端工具页与 panzi-tools-mobile/pages/json-format.html 设计一致
+    - `programmatic` TR-32.4: 移动端页面正确显示工具使用次数和点赞数
+    - `programmatic` TR-32.5: 移动端页面底部导航栏正确显示
+
+## 新增任务：移动端工具组件实现（P0 优先级）
+
+- [x] Task 33: 移动端开发者工具组件实现（P0）
+  - **Priority**: high
+  - **Depends On**: Task 32
+  - **Description**:
+    - **SubTask 33.1**: 创建 `components/mobile/tools/MobileJsonFormatter.vue` JSON 格式化工具
+    - **SubTask 33.2**: 创建 `components/mobile/tools/MobileUrlEncode.vue` URL 编码解码工具
+    - **SubTask 33.3**: 创建 `components/mobile/tools/MobileBase64.vue` Base64 编码工具
+    - **SubTask 33.4**: 创建 `components/mobile/tools/MobileTimestamp.vue` 时间戳转换工具
+    - **SubTask 33.5**: 创建 `components/mobile/tools/MobileRegexTester.vue` 正则测试工具
+    - **SubTask 33.6**: 创建 `components/mobile/tools/MobileJwtDecoder.vue` JWT 解析工具
+    - **SubTask 33.7**: 创建 `components/mobile/tools/MobileHash.vue` 哈希计算工具
+    - 每个工具组件复用 PC 端的业务逻辑（utils/tools/），仅重写 UI 层
+    - 每个工具组件接入统计上报、点赞功能、广告展示
+  - **Acceptance Criteria Addressed**: AC-30.3, AC-30.5, AC-30.6
+  - **Test Requirements**:
+    - `programmatic` TR-33.1: 移动端 JSON 格式化功能与 PC 端结果一致
+    - `programmatic` TR-33.2: 移动端 URL 编码解码功能与 PC 端结果一致
+    - `programmatic` TR-33.3: 移动端 Base64 编码解码功能与 PC 端结果一致
+    - `programmatic` TR-33.4: 移动端时间戳转换功能与 PC 端结果一致
+    - `programmatic` TR-33.5: 移动端正则测试功能与 PC 端结果一致
+    - `programmatic` TR-33.6: 移动端 JWT 解析功能与 PC 端结果一致
+    - `programmatic` TR-33.7: 移动端哈希计算功能与 PC 端结果一致
+    - `programmatic` TR-33.8: 所有移动端工具页面统计事件正常上报
+    - `human-judgement` TR-33.9: 所有移动端工具页面样式与静态设计一致
+
+## 新增任务：移动端工具组件实现（P1 优先级）
+
+- [x] Task 34: 移动端图片工具及辅助页面实现（P1）
+  - **Priority**: medium
+  - **Depends On**: Task 32
+  - **Description**:
+    - **SubTask 34.1**: 创建 `components/mobile/tools/MobileImageCompress.vue` 图片压缩工具
+    - **SubTask 34.2**: 创建 `components/mobile/tools/MobileImageCrop.vue` 图片裁剪工具
+    - **SubTask 34.3**: 创建 `components/mobile/tools/MobileImageConvert.vue` 格式转换工具
+    - **SubTask 34.4**: 创建 `pages/mobile/about.vue` 关于页
+    - **SubTask 34.5**: 创建 `pages/mobile/privacy.vue` 隐私政策页
+    - 图片工具需确保本地处理逻辑在移动端正常工作（Canvas API 兼容性）
+  - **Acceptance Criteria Addressed**: AC-30.3, AC-30.5, AC-30.10
+  - **Test Requirements**:
+    - `programmatic` TR-34.1: 移动端图片压缩功能正常（上传、压缩、下载）
+    - `programmatic` TR-34.2: 移动端图片裁剪功能正常
+    - `programmatic` TR-34.3: 移动端格式转换功能正常
+    - `human-judgement` TR-34.4: 移动端关于页与隐私政策页样式正确
+    - `human-judgement` TR-34.5: 图片工具在移动端触控操作流畅
+
+## 新增任务：移动端适配集成测试与优化
+
+- [x] Task 35: 移动端适配集成测试与优化
+  - **Priority**: high
+  - **Depends On**: Task 33, Task 34
+  - **Description**:
+    - **SubTask 35.1**: 配置移动端专属路由规则，确保 SEO 友好
+    - **SubTask 35.2**: 实现移动端组件懒加载（defineAsyncComponent），首屏不加载 PC 端组件
+    - **SubTask 35.3**: 添加移动端专属 SEO 元数据（viewport、OG 等）
+    - **SubTask 35.4**: 验证移动端广告数据动态获取（中间广告 + 底部广告）
+    - **SubTask 35.5**: 验证移动端百度统计上报正常
+    - **SubTask 35.6**: 验证移动端点赞功能正常
+    - **SubTask 35.7**: 性能优化：确保移动端首屏资源 < 200KB，关键 CSS 内联
+  - **Acceptance Criteria Addressed**: AC-30.5, AC-30.6, AC-30.8, AC-30.10
+  - **Test Requirements**:
+    - `programmatic` TR-35.1: 移动端页面正确获取并展示广告数据
+    - `programmatic` TR-35.2: 移动端百度统计 PV 和事件正常上报
+    - `programmatic` TR-35.3: 移动端点赞功能正常（首次点赞、重复点赞）
+    - `programmatic` TR-35.4: 移动端首屏资源加载时间 < 2s（4G 网络模拟）
+    - `human-judgement` TR-35.5: 移动端页面无横向滚动，布局自适应
+    - `human-judgement` TR-35.6: PC 端功能不受移动端适配影响
+
+# Task Dependencies (移动端)
+
+* Task 30（设备检测与布局切换）依赖 Task 1（前端骨架）
+* Task 31（通用组件）依赖 Task 30
+* Task 32（核心页面 P0）依赖 Task 31
+* Task 33（工具组件 P0）依赖 Task 32
+* Task 34（图片工具 + 辅助页面 P1）依赖 Task 32
+* Task 35（集成测试与优化）依赖 Task 33、Task 34
+
+移动端任务可与现有任务并行执行，不影响 PC 端功能。
+

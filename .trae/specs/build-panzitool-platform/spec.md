@@ -504,3 +504,217 @@
 #### Scenario: 裸域跳转与 HTTPS
 - **WHEN** 用户访问 `http://panzipool.com` 或 `http://www.panzipool.com`
 - **THEN** 强制跳转到 `https://www.panzipool.com`（裸域 301 到 www）
+
+### Requirement: 移动端自适应适配
+
+系统 SHALL 支持根据访问设备自动切换 PC 端或移动端展示模式，提供一致的功能体验。移动端页面基于已完成的 UI 设计（存储于 `panzi-tools-mobile/` 目录）实现。
+
+#### 技术架构
+
+- **设备检测**：使用服务端 User-Agent 检测（Nuxt middleware），在 SSR 阶段判断设备类型并设置布局，避免客户端检测导致的布局闪烁。检测逻辑基于 User-Agent 关键字匹配（Mobile|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini）
+- **布局切换**：通过 Nuxt Layout 系统实现，`layouts/default.vue` 用于 PC 端，`layouts/mobile.vue` 用于移动端。在 middleware 中检测设备类型后，通过 `route.meta.layout` 或响应式状态动态切换布局
+- **组件复用**：业务逻辑（广告获取、统计、工具操作）抽取为 composable，PC/移动端组件共享。UI 层分别实现 PC 端和移动端组件变体
+- **路由策略**：使用相同的 URL 路由，根据设备类型加载不同的布局和组件变体，保持 SEO 友好
+- **样式方案**：移动端使用 scoped CSS + CSS Variables 实现独立样式系统，不与 PC 端 Tailwind CSS 冲突
+
+#### 移动端页面范围
+
+需要实现移动端版本的页面（参考 `panzi-tools-mobile/pages/` 目录）：
+
+| PC 端页面 | 移动端页面 | 路由 | 优先级 |
+|-----------|-----------|------|--------|
+| 首页 | index.html | `/` | P0 |
+| 开发者工具列表 | dev-tools.html | `/category/developer` | P0 |
+| 图片工具列表 | image-tools.html | `/category/image` | P0 |
+| JSON 格式化 | json-format.html | `/tools/json-formatter` | P0 |
+| URL 编码解码 | url-encode.html | `/tools/url-encode` | P0 |
+| Base64 编码 | base64.html | `/tools/base64` | P0 |
+| 时间戳转换 | timestamp.html | `/tools/timestamp` | P0 |
+| 正则测试 | regex-test.html | `/tools/regex-tester` | P0 |
+| JWT 解析 | jwt-parse.html | `/tools/jwt-decoder` | P0 |
+| 哈希计算 | hash-calc.html | `/tools/hash` | P0 |
+| 图片压缩 | image-compress.html | `/tools/image-compress` | P1 |
+| 图片裁剪 | image-crop.html | `/tools/image-crop` | P1 |
+| 格式转换 | format-convert.html | `/tools/image-convert` | P1 |
+| 关于页 | about.html | `/about` | P1 |
+| 隐私政策 | privacy.html | `/privacy` | P1 |
+
+#### 移动端 UI 设计规范
+
+**布局结构：**
+- 顶部 Header（52px）：Logo + 返回按钮（工具页），sticky 固定
+- 内容区域：单栏展示，16px 内边距
+- 底部导航栏（56px）：首页、工具、关于三大入口，fixed 固定
+
+**设计 Token（参考 colors_and_type.css）：**
+- 主色调：`--color-primary: #7c3aed`
+- 主色浅：`--color-primary-light: #a78bfa`
+- 主色背景：`--color-primary-lighter: #ede9fe`
+- 成功色：`--state-success: #16a34a`
+- 错误色：`--state-error: #dc2626`
+- 圆角：`--radius-sm: 4px`, `--radius-md: 8px`, `--radius-lg: 12px`
+- 间距：`--spacing-xs: 4px`, `--spacing-sm: 8px`, `--spacing-md: 12px`, `--spacing-lg: 16px`
+- 字体：Noto Sans SC, 字重 400/500/600/700
+
+**组件规范：**
+- 按钮最小高度 44px（触控友好）
+- 卡片圆角 12px，1px 边框
+- 工具图标 44px 圆形，渐变背景（#7c3aed → #a78bfa）
+- 输入框圆角 8px，聚焦时主色边框 + 浅紫色阴影
+
+**页面模板：**
+- 首页：2列网格展示热门工具，竖排列表展示最新上架
+- 分类页：Tab 切换（全部/开发者工具/图片工具），竖排列表展示工具
+- 工具页：面包屑导航 + 标题 + 使用统计 + 输入/输出区 + 操作按钮栏
+
+#### 移动端组件架构
+
+**需要创建的移动端专用组件：**
+- `layouts/mobile.vue`：移动端基础布局（Header + 内容区 + Footer + 底部导航）
+- `components/mobile/MobileHeader.vue`：移动端顶部导航
+- `components/mobile/MobileFooter.vue`：移动端页脚
+- `components/mobile/MobileBottomNav.vue`：移动端底部导航栏
+- `components/mobile/MobileToolLayout.vue`：移动端工具页布局
+- `components/mobile/MobileToolCard.vue`：移动端工具卡片
+- `components/mobile/MobileAdCard.vue`：移动端广告卡片（适配移动端样式）
+
+**移动端工具组件（基于 PC 端逻辑）：**
+- `components/mobile/tools/MobileJsonFormatter.vue`
+- `components/mobile/tools/MobileUrlEncode.vue`
+- `components/mobile/tools/MobileBase64.vue`
+- `components/mobile/tools/MobileTimestamp.vue`
+- `components/mobile/tools/MobileRegexTester.vue`
+- `components/mobile/tools/MobileJwtDecoder.vue`
+- `components/mobile/tools/MobileHash.vue`
+- `components/mobile/tools/MobileImageCompress.vue`
+- `components/mobile/tools/MobileImageCrop.vue`
+- `components/mobile/tools/MobileImageConvert.vue`
+
+**共享 composable（PC/移动端共用）：**
+- `composables/useDevice.ts`：设备检测 composable
+- `composables/useMobileAd.ts`：移动端广告获取逻辑
+- 现有 composable（useAnalytics, useAnonId, useBaiduTongji）
+
+#### Scenario: 移动端自动识别
+- **WHEN** 用户使用移动设备访问网站任意页面
+- **THEN** 系统在 SSR 阶段检测 User-Agent，识别为移动设备
+- **THEN** 加载移动端布局（mobile.vue）和移动端组件
+- **THEN** 页面底部显示导航栏（首页、工具、关于）
+- **THEN** 页面样式、交互符合移动端设计规范（单栏、触控友好、紫色主题）
+
+#### Scenario: PC 端保持不变
+- **WHEN** 用户使用桌面设备访问网站
+- **THEN** 系统加载原有的 PC 端布局（default.vue）和组件
+- **THEN** 现有功能和视觉保持不变
+- **THEN** 侧边栏、多列网格布局正常显示
+
+#### Scenario: 功能一致性
+- **WHEN** 用户在移动端使用工具功能
+- **THEN** 工具的核心功能（格式化、编码、计算等）与 PC 端一致
+- **THEN** 广告展示、统计上报、点赞功能正常工作
+- **THEN** 页面数据从同一后端 API 获取
+- **THEN** 使用次数、点赞次数正确显示
+
+#### Scenario: 广告与统计一致性
+- **WHEN** 移动端页面加载时
+- **THEN** 中间广告位从 `ad_promotion` 表动态获取对应广告数据
+- **THEN** 底部广告位从 `ad_promotion` 表动态获取 `tool_footer` 广告数据
+- **THEN** 百度统计正常上报 PV 和事件
+- **THEN** 使用次数、点赞次数正确显示
+
+#### Scenario: SEO 兼容
+- **WHEN** 搜索引擎爬虫访问页面
+- **THEN** 返回 PC 端版本的 HTML（爬虫 User-Agent 按桌面设备处理）
+- **THEN** 保持现有 SEO 元数据、JSON-LD 结构化数据不变
+- **THEN** canonical URL、OG 标签等保持一致
+
+#### Scenario: 移动端性能
+- **WHEN** 移动端页面加载
+- **THEN** 首屏资源加载时间 < 2s（4G 网络）
+- **THEN** 移动端专属资源按需加载，不加载 PC 端组件
+- **THEN** 图片资源使用适当的尺寸和格式
+
+#### Scenario: 设备检测中间件
+- **WHEN** 请求到达 Nuxt 服务端
+- **THEN** middleware 检查 User-Agent 字符串
+- **THEN** 识别 mobile 关键字（Mobile|Android|iPhone|iPad|iPod 等）
+- **THEN** 设置 `isMobile` 状态供布局组件使用
+- **THEN** 爬虫 User-Agent 按桌面设备处理（确保 SEO）
+
+### Acceptance Criteria (移动端适配)
+
+#### AC-30.1: 设备自动检测
+- **Given**: 一个移动设备（宽度 <= 768px 或 User-Agent 包含 mobile 关键字）
+- **When**: 用户访问网站任意页面
+- **Then**: 系统自动加载移动端布局和组件
+- **Verification**: `programmatic`
+- **Notes**: 通过 Nuxt middleware 检测，设置响应式状态
+
+#### AC-30.2: 移动端首页渲染
+- **Given**: 移动端用户访问首页 `/`
+- **When**: 页面加载完成
+- **Then**: 显示移动端首页布局（Header + 搜索栏 + 热门工具网格 + 广告 + 最新上架列表 + Footer + 底部导航）
+- **Then**: 热门工具以 2 列网格展示，与静态页面设计一致
+- **Verification**: `human-judgment`
+- **Notes**: 对比 panzi-tools-mobile/pages/index.html 的设计
+
+#### AC-30.3: 移动端工具页渲染
+- **Given**: 移动端用户访问任意工具页（如 `/tools/json-formatter`）
+- **When**: 页面加载完成
+- **Then**: 显示移动端工具页布局（Header + 面包屑 + 标题 + 使用统计 + 输入区 + 操作按钮 + 输出区 + Footer）
+- **Then**: 操作流程与 PC 端一致（格式化、编码、计算等功能正常）
+- **Verification**: `human-judgment`
+- **Notes**: 对比 panzi-tools-mobile/pages/json-format.html 的设计
+
+#### AC-30.4: 底部导航栏
+- **Given**: 移动端用户在任意页面
+- **When**: 查看页面底部
+- **Then**: 显示固定底部导航栏，包含「首页」「工具」「关于」三个入口
+- **Then**: 当前页面对应导航项高亮显示（紫色主色调）
+- **Verification**: `programmatic`
+
+#### AC-30.5: 功能一致性
+- **Given**: 移动端用户使用工具功能
+- **When**: 执行核心操作（格式化、编码、压缩等）
+- **Then**: 结果与 PC 端完全一致
+- **Then**: 统计事件正常上报（tool_use、copy、download）
+- **Then**: 点赞功能正常工作
+- **Verification**: `programmatic`
+
+#### AC-30.6: 广告展示
+- **Given**: 移动端用户访问工具页
+- **When**: 页面加载完成
+- **Then**: 中间广告位从 `ad_promotion` 表动态获取并渲染
+- **Then**: 底部广告位从 `ad_promotion` 表动态获取并渲染
+- **Then**: 广告样式适配移动端（卡片样式，12px 圆角）
+- **Verification**: `programmatic`
+
+#### AC-30.7: 桌面端不受影响
+- **Given**: 桌面端用户访问网站
+- **When**: 页面加载完成
+- **Then**: 保持原有的 PC 端布局（侧边栏 + 多列网格）
+- **Then**: 所有现有功能正常工作
+- **Verification**: `human-judgment`
+
+#### AC-30.8: SEO 兼容
+- **Given**: 搜索引擎爬虫访问网站
+- **When**: 爬虫请求页面
+- **Then**: 返回 PC 端版本的 HTML
+- **Then**: 保持 JSON-LD 结构化数据、canonical URL、OG 标签完整
+- **Verification**: `programmatic`
+
+#### AC-30.9: 触控友好
+- **Given**: 移动端用户使用触控操作
+- **When**: 点击任意按钮或交互元素
+- **Then**: 按钮最小触摸区域 44x44px
+- **Then**: 点击反馈即时（<100ms）
+- **Then**: 无意外缩放或滚动
+- **Verification**: `human-judgment`
+
+#### AC-30.10: 响应式适配
+- **Given**: 不同尺寸的移动设备（320px-428px 宽度）
+- **When**: 访问网站任意页面
+- **Then**: 布局自适应设备宽度
+- **Then**: 内容不溢出、不截断
+- **Then**: 滚动流畅，无横向滚动条
+- **Verification**: `human-judgment`

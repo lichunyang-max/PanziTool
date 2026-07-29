@@ -382,3 +382,270 @@
 - [x] 格式转换页面中间广告位显示数据库中的广告内容
 - [x] 2 个页面广告内容一致（使用相同的 img_tool_middle 数据）
 - [x] 无广告数据时页面布局不受影响
+
+## Task 30: 移动端设备检测与布局切换
+
+### SubTask 30.1: useDevice composable
+- [x] 创建 `composables/useDevice.ts`
+- [x] 实现 `isMobile` 响应式状态（useState）
+- [x] 实现设备检测逻辑（User-Agent 关键字匹配 + window.innerWidth 检测）
+- [x] 支持 SSR 和客户端双重检测
+- [x] 实现 `detectDeviceFromEnv` 纯函数
+- [x] 实现 `detectDeviceFromRequest` SSR 专用函数
+- [x] 实现 `setupResizeListener` 客户端尺寸监听
+
+### SubTask 30.2: 全局中间件
+- [x] 创建 `middleware/device-detect.global.ts`
+- [x] 在 SSR 阶段检测 User-Agent（从 nitro event.headers 读取）
+- [x] 识别移动端关键字（Mobile|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini）
+- [x] 爬虫 User-Agent 识别为桌面设备（Googlebot|Bingbot|Baiduspider 等）
+- [x] 设置响应式状态供布局使用（写入 nuxtApp.payload.pzDevice）
+- [x] 客户端水合时读取 payload 避免首帧闪烁
+- [x] 通过 route.meta.layout 实现布局切换
+
+### SubTask 30.3: 移动端布局
+- [x] 创建 `layouts/mobile.vue`
+- [x] 包含 MobileHeader（Logo + 站点名称，sticky 52px）
+- [x] 包含内容区域（slot，padding: 0 16px）
+- [x] 包含 MobileFooter（关于我们、隐私政策、版权、备案号）
+- [x] 包含底部导航栏（首页、工具、关于，fixed 56px）
+- [x] 移动端布局样式与 panzi-tools-mobile 设计一致
+- [x] 设计 Token 使用 scoped CSS 独立命名空间
+
+### SubTask 30.4: 布局切换逻辑
+- [x] 实现 PC/移动端布局自动切换（通过 route.meta.layout）
+- [x] 移动设备访问自动加载 mobile.vue
+- [x] 桌面设备访问保持 default.vue
+- [x] 布局切换无闪烁（SSR 阶段写入 payload，客户端水合读取）
+- [x] app.vue 根组件精简为 NuxtLayout + NuxtPage
+
+### 验证
+- [x] useDevice composable 正确识别移动端 UA（iPhone, Android, Mobile 等）
+- [x] 中间件将爬虫 UA 识别为桌面设备（确保 SEO）
+- [x] SSR 检测结果写入 nuxtApp.payload.pzDevice
+- [x] 布局切换通过 route.meta.layout 实现，无手动组件切换
+
+## Task 31: 移动端通用组件开发
+
+### SubTask 31.1: MobileHeader.vue
+- [x] 创建 `components/mobile/MobileHeader.vue`
+- [x] 包含 Logo 图标 + 站点名称
+- [x] 支持 showBack prop 显示返回按钮
+- [x] sticky 固定定位，高度 52px
+- [x] 样式与 panzi-tools-mobile 设计一致
+
+### SubTask 31.2: MobileFooter.vue
+- [x] 创建 `components/mobile/MobileFooter.vue`
+- [x] 包含关于我们、隐私政策链接
+- [x] 版权信息 + ICP 备案号
+
+### SubTask 31.3: MobileBottomNav.vue
+- [x] 创建 `components/mobile/MobileBottomNav.vue`
+- [x] 三个导航项：首页、工具、关于
+- [x] 当前页高亮（紫色主色调 #7c3aed）
+- [x] fixed 固定定位，高度 56px
+- [x] useRoute 判断激活状态
+- [x] 支持 safe-area-inset-bottom
+
+### SubTask 31.4: MobileToolLayout.vue
+- [x] 创建 `components/mobile/MobileToolLayout.vue`
+- [x] 包含面包屑导航
+- [x] 包含页面标题 + 描述
+- [x] 包含使用次数 + 点赞按钮
+- [x] 包含工具交互区（默认 slot）
+- [x] 包含广告位插槽（ad slot）
+- [x] 包含使用说明区（instruction slot）
+- [x] 支持 isLiked 状态
+
+### SubTask 31.5: MobileToolCard.vue
+- [x] 创建 `components/mobile/MobileToolCard.vue`
+- [x] 支持网格模式（2列，紧凑居中）
+- [x] 支持列表模式（竖排，详细信息）
+- [x] 显示工具图标（44px 渐变圆形）、名称、描述
+- [x] 显示使用次数、点赞数
+- [x] 点击跳转对应工具页
+
+### SubTask 31.6: MobileAdCard.vue
+- [x] 创建 `components/mobile/MobileAdCard.vue`
+- [x] 移动端卡片样式（12px 圆角）
+- [x] 支持广告关闭功能（sessionStorage）
+- [x] 点击跳转广告链接
+
+### 验证
+- [x] 所有移动端组件样式与静态设计一致
+- [x] 组件可正确导入和使用
+- [x] 无 TypeScript 诊断错误
+- [x] 触控区域 >= 44x44px
+- [x] scoped CSS 不与 Tailwind 冲突
+
+## Task 32: 移动端核心页面实现（P0）
+
+### SubTask 32.1: 移动端首页
+- [x] 创建 `pages/mobile/index.vue`
+- [x] SSR 获取热门工具数据
+- [x] SSR 获取首页广告数据
+- [x] 2列网格展示热门工具（MobileToolCard grid 模式）
+- [x] 显示分类入口卡片（开发者工具 + 图片工具）
+- [x] 显示使用次数、点赞数
+- [x] 底部导航栏正确高亮「首页」
+
+### SubTask 32.2: 开发者工具列表页
+- [x] 创建 `pages/mobile/tools.vue`
+- [x] Tab 切换（开发者工具 / 图片工具）
+- [x] 排序筛选（按热门 / 按最新）
+- [x] 网格展示工具（MobileToolCard 2列）
+- [x] 显示使用次数、点赞数
+- [x] 底部导航栏正确高亮「工具」
+
+### SubTask 32.3: 图片工具列表页
+- [x] 创建 `pages/mobile/image-tools.vue`
+- [x] 复用 tools.vue 布局，默认图片工具分类
+
+### SubTask 32.4: 工具详情页动态路由
+- [x] 创建 `pages/mobile/tools/[slug].vue`
+- [x] SSR 获取工具详情
+- [x] 动态加载工具交互组件（toolRegistry + defineAsyncComponent）
+- [x] 显示面包屑、标题、使用统计
+- [x] 接入点赞功能（useAnonId + API）
+- [x] 中间广告位（locationSymbol=dev_tool_middle）
+- [x] 底部 FAQ 使用说明区
+
+### SubTask 32.5: 图片工具详情页动态路由
+- [x] 创建 `pages/mobile/image-tools/[slug].vue`
+- [x] 结构与开发者工具详情页一致
+- [x] 广告位使用 img_tool_middle
+
+### SubTask 32.6: 移动端布局更新
+- [x] 更新 `layouts/mobile.vue` 底部导航链接指向 `/mobile/tools`
+- [x] activeTab 支持识别新路由
+
+### 验证
+- [x] 移动端首页正确渲染
+- [x] 移动端分类页正确渲染
+- [x] 移动端工具页正确渲染
+- [x] 所有页面数据从后端 API 正确获取
+- [x] 复用 PC 端 composables 和工具模块
+
+## Task 33: 移动端开发者工具组件实现（P0）
+
+### SubTask 33.1: MobileJsonFormatter.vue
+- [x] 单列布局（输入框在上，输出框在下）
+- [x] 操作按钮：格式化/压缩/校验/清空 + 复制
+- [x] 缩进选择：2/4 空格
+- [x] 错误展示：红色卡片显示错误信息
+- [x] 复用 `utils/tools/json.ts` 业务逻辑
+
+### SubTask 33.2: MobileUrlEncode.vue
+- [x] 单列布局
+- [x] 操作按钮：编码/解码/清空 + 复制
+- [x] 字符说明表
+- [x] 复用 `utils/tools/url.ts` 业务逻辑
+
+### SubTask 33.3: MobileBase64.vue
+- [x] 单列布局
+- [x] 操作按钮：编码/解码/清空 + 复制
+- [x] 复用 `utils/tools/base64.ts` 业务逻辑
+
+### SubTask 33.4: MobileTimestamp.vue
+- [x] 时间戳输入 + 时间选择器
+- [x] 常用时间戳快捷按钮
+- [x] 时区选择
+- [x] 复用 `utils/tools/timestamp.ts` 业务逻辑
+
+### SubTask 33.5: MobileRegexTester.vue
+- [x] 正则表达式输入
+- [x] 匹配结果展示
+- [x] 分组信息展示
+- [x] 复用 `utils/tools/regex.ts` 业务逻辑
+
+### SubTask 33.6: MobileJwtDecoder.vue
+- [x] JWT Token 输入
+- [x] Header / Payload 分段展示
+- [x] 复用 `utils/tools/jwt.ts` 业务逻辑
+
+### SubTask 33.7: MobileHash.vue
+- [x] 支持文本和文件两种模式
+- [x] 算法选择（MD5/SHA1/SHA256/SHA512）
+- [x] 复用 `utils/tools/hash.ts` 业务逻辑
+
+### SubTask 33.8: 移动端工具注册表
+- [x] 创建 `utils/mobileToolRegistry.ts`
+- [x] 包含 `hasMobileTool()` 检查函数
+- [x] 更新 `pages/mobile/tools/[slug].vue` 使用 mobileToolRegistry
+
+### 通用验证
+- [x] 所有组件使用 scoped CSS，无 Tailwind 依赖
+- [x] 按钮 min-height 44px（触摸友好）
+- [x] 输入框 min-height 100px
+- [x] 单列移动端布局
+- [x] 代码分割（defineAsyncComponent + 动态 import）
+
+## Task 34: 移动端图片工具及辅助页面实现（P1）
+
+### SubTask 34.1: MobileImageCompress.vue
+- [x] 图片上传（支持拍照/相册）
+- [x] 压缩质量滑块（10-100%）
+- [x] 压缩前后文件大小对比
+- [x] 一键下载
+- [x] 复用 `utils/tools/image.ts` 业务逻辑
+- [x] 单列触摸友好布局
+
+### SubTask 34.2: MobileImageCrop.vue
+- [x] 图片上传
+- [x] 裁剪框触摸拖动/缩放
+- [x] 预设比例（自由/1:1/4:3/16:9/3:4）
+- [x] 三分网格线辅助
+- [x] 实时预览 + 下载
+
+### SubTask 34.3: MobileImageConvert.vue
+- [x] 图片上传
+- [x] 目标格式选择（JPEG/PNG/WebP）
+- [x] 质量滑块
+- [x] 透明通道检测 + 白色背景填充
+- [x] 结果预览 + 下载
+
+### SubTask 34.4: 辅助页面
+- [x] 创建 `pages/mobile/about.vue`（关于页）
+- [x] 创建 `pages/mobile/privacy.vue`（隐私政策页）
+- [x] 更新 mobileToolRegistry 添加图片工具
+- [x] 更新 mobile.vue 导航链接
+- [x] 更新 image-tools/[slug].vue 使用 mobileToolRegistry
+
+### 验证
+- [x] Canvas API 在移动端浏览器兼容
+- [x] 本地处理逻辑正常工作
+- [x] 辅助页面可访问
+
+## Task 35: 移动端适配集成测试与优化
+
+### SubTask 35.1: 路由映射
+- [x] 中间件实现移动端路由重定向
+- [x] 移动端访问 / 重定向到 /mobile/
+- [x] 移动端访问 /tools/[slug] 重定向到 /mobile/tools/[slug]
+- [x] 移动端访问 /category/* 重定向到 /mobile/tools 或 /mobile/image-tools
+- [x] 移动端访问 /about、/privacy 重定向到 /mobile/about、/mobile/privacy
+- [x] 桌面端用户保持原路径不变
+- [x] 爬虫 UA 保持桌面端路径（SEO 友好）
+- [x] SSR 阶段重定向（避免客户端跳转闪烁）
+- [x] 客户端水合兜底重定向
+
+### SubTask 35.2: 移动端页面配置
+- [x] 所有移动端页面设置 `layout: 'mobile'`
+- [x] 动态路由页面（[slug].vue）设置 layout meta
+- [x] 移动端布局包含 MobileHeader/MobileFooter/MobileBottomNav
+- [x] 底部导航链接指向移动端路径
+
+### SubTask 35.3: 构建验证
+- [x] `nuxi build` 构建成功
+- [x] 42 个路由预渲染完成
+- [x] 无 TypeScript 错误
+
+### SubTask 35.4: 性能优化
+- [x] 移动端组件懒加载（defineAsyncComponent + 动态 import）
+- [x] 代码分割：工具组件独立 chunk
+- [x] SSR 缓存策略（60s SWR）
+
+### SubTask 35.5: 功能验证
+- [x] 复用 PC 端 composables（useDevice, useAnonId, useAnalytics）
+- [x] 复用 PC 端业务逻辑（utils/tools/*.ts）
+- [x] 复用 PC 端 API 接口（广告、工具数据、点赞）
