@@ -66,6 +66,8 @@ const savingsRatio = computed(() => {
   return Math.round((1 - compressedSize.value / originalSize.value) * 100)
 })
 
+const isCompressedLarger = computed(() => compressedSize.value > originalSize.value)
+
 // ============ 文件选择 ============
 function triggerFilePick() {
   fileInputRef.value?.click()
@@ -107,20 +109,47 @@ async function handleFilePick(event: Event) {
 }
 
 // ============ 压缩 ============
+const compressWarning = ref('')
+
 async function doCompress() {
   if (!originalCanvas.value) return
 
   try {
     isProcessing.value = true
     errorMsg.value = ''
+    compressWarning.value = ''
     reportEvent('tool_use', effectiveSlug.value)
     emit('tool_use', effectiveSlug.value)
 
-    // 格式选择：JPEG 不支持透明通道，若原图是 PNG 且质量较高时输出 PNG
-    const format: ImageFormat = 'image/jpeg'
+    const isPng = originalFile.value?.type === 'image/png'
+    const isWebp = originalFile.value?.type === 'image/webp'
+    const origSize = originalSize.value
+
+    // 智能格式选择
+    const usePng = isPng && quality.value >= 0.8
+    const format: ImageFormat = usePng ? 'image/png' : isWebp ? 'image/webp' : 'image/jpeg'
     const qualityValue = quality.value
 
-    const blob = await canvasToBlob(originalCanvas.value, format, qualityValue)
+    // 主压缩
+    let blob = await canvasToBlob(originalCanvas.value, format, qualityValue)
+
+    // 智能降级：如果压缩后反而更大，逐步降低质量重试
+    if (blob.size >= origSize && format !== 'image/png') {
+      const fallbackQualities = [0.7, 0.6, 0.5, 0.4, 0.3]
+      for (const q of fallbackQualities) {
+        if (q >= qualityValue) continue
+        const smallerBlob = await canvasToBlob(originalCanvas.value, format, q)
+        if (smallerBlob.size < blob.size) {
+          blob = smallerBlob
+          break
+        }
+      }
+    }
+
+    // 若最终仍更大，显示警告
+    if (blob.size >= origSize) {
+      compressWarning.value = '当前压缩质量下文件未变小，已自动降低质量获取更小文件。可尝试调低压缩质量滑块。'
+    }
 
     // 释放之前的预览 URL
     if (compressedPreview.value) {
@@ -145,9 +174,10 @@ async function doCompress() {
     c.height = img.naturalHeight
     const ctx = c.getContext('2d')
     if (ctx) {
-      // 填充白色背景（防止 JPEG 黑底）
-      ctx.fillStyle = '#ffffff'
-      ctx.fillRect(0, 0, c.width, c.height)
+      if (format === 'image/jpeg') {
+        ctx.fillStyle = '#ffffff'
+        ctx.fillRect(0, 0, c.width, c.height)
+      }
       ctx.drawImage(img, 0, 0)
     }
     compressedCanvas.value = c
@@ -185,6 +215,7 @@ function resetState() {
   compressedSize.value = 0
   compressedPreview.value = ''
   compressedCanvas.value = null
+  compressWarning.value = ''
   errorMsg.value = ''
 }
 
@@ -228,9 +259,10 @@ onBeforeUnmount(() => {
           <img :src="compressedPreview" alt="压缩后预览" class="m-compare__img" />
           <div class="m-compare__label">
             <span>压缩后</span>
-            <span class="m-compare__size m-compare__size--compressed">
+            <span class="m-compare__size" :class="{ 'm-compare__size--larger': isCompressedLarger }">
               {{ formatFileSize(compressedSize) }}
               <span v-if="savingsRatio > 0" class="m-compare__savings">省 {{ savingsRatio }}%</span>
+              <span v-else-if="savingsRatio < 0" class="m-compare__larger">增大 {{ -savingsRatio }}%</span>
             </span>
           </div>
         </div>
@@ -241,17 +273,33 @@ onBeforeUnmount(() => {
         ref="fileInputRef"
         type="file"
         accept="image/*"
-        capture="environment"
         class="m-tool__file-input"
         @change="handleFilePick"
       />
+      <div class="m-tool__btn-row" v-if="originalFile">
+        <button
+          type="button"
+          class="m-tool__file-btn"
+          @click="triggerFilePick"
+        >
+          重新选择
+        </button>
+        <button
+          type="button"
+          class="m-btn m-btn--primary"
+          :disabled="isProcessing"
+          @click="doCompress"
+        >
+          {{ isProcessing ? '处理中...' : '重新压缩' }}
+        </button>
+      </div>
       <button
+        v-if="!originalFile"
         type="button"
         class="m-tool__file-btn"
         @click="triggerFilePick"
       >
-        <span v-if="!originalFile">选择图片 / 拍照</span>
-        <span v-else>重新选择</span>
+        选择图片 / 拍照
       </button>
     </div>
 
@@ -295,6 +343,12 @@ onBeforeUnmount(() => {
     <div v-if="errorMsg" class="m-tool__alert m-tool__alert--error" role="alert">
       <span class="m-tool__alert-title">操作失败</span>
       <span class="m-tool__alert-desc">{{ errorMsg }}</span>
+    </div>
+
+    <!-- 压缩警告 -->
+    <div v-if="compressWarning" class="m-tool__alert m-tool__alert--warning" role="alert">
+      <span class="m-tool__alert-title">压缩优化</span>
+      <span class="m-tool__alert-desc">{{ compressWarning }}</span>
     </div>
   </div>
 </template>
@@ -408,6 +462,16 @@ onBeforeUnmount(() => {
   margin-left: 4px;
 }
 
+.m-compare__larger {
+  color: #ef4444 !important;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.m-compare__size--larger {
+  color: #ef4444 !important;
+}
+
 .m-compare__arrow {
   color: var(--m-color-text-tertiary);
   flex-shrink: 0;
@@ -469,6 +533,7 @@ onBeforeUnmount(() => {
 }
 
 .m-tool__file-btn {
+  flex: 1;
   min-height: 44px;
   border: 1px dashed var(--m-color-border);
   border-radius: 10px;
@@ -478,6 +543,11 @@ onBeforeUnmount(() => {
   cursor: pointer;
   transition: all 0.15s ease;
   -webkit-tap-highlight-color: transparent;
+}
+
+.m-tool__btn-row {
+  display: flex;
+  gap: 8px;
 }
 
 .m-tool__file-btn:active {
@@ -550,6 +620,15 @@ onBeforeUnmount(() => {
 
 .m-tool__alert--error .m-tool__alert-title {
   color: var(--m-color-error);
+}
+
+.m-tool__alert--warning {
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.m-tool__alert--warning .m-tool__alert-title {
+  color: #d97706;
 }
 
 .m-tool__alert-title {

@@ -259,7 +259,6 @@ onBeforeUnmount(() => {
         ref="fileInputRef"
         type="file"
         accept="image/*"
-        capture="environment"
         class="m-tool__file-input"
         @change="handleFilePick"
       />

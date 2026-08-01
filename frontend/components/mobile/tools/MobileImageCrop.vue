@@ -55,7 +55,8 @@ const ratios: { value: CropRatio; label: string }[] = [
 
 // ============ 状态 ============
 const fileInputRef = ref<HTMLInputElement | null>(null)
-const imageCanvas = ref<HTMLCanvasElement | null>(null)
+const loadedCanvas = ref<HTMLCanvasElement | null>(null)
+const imageUrl = ref('')
 const imageFileName = ref('')
 const imageLoaded = ref(false)
 const isProcessing = ref(false)
@@ -129,9 +130,11 @@ async function handleFilePick(event: Event) {
   try {
     isProcessing.value = true
     const canvas = await loadImageWithOrientation(file)
-    imageCanvas.value = canvas
-    fitImageToContainer()
+    loadedCanvas.value = canvas
+    imageUrl.value = URL.createObjectURL(file)
     imageLoaded.value = true
+    await nextTick()
+    fitImageToContainer()
     initCropBox()
   } catch (e) {
     errorMsg.value = `图片加载失败：${e instanceof Error ? e.message : '未知错误'}`
@@ -142,9 +145,9 @@ async function handleFilePick(event: Event) {
 
 // ============ 图片适配容器 ============
 function fitImageToContainer() {
-  if (!imageCanvas.value || !containerRef.value) return
+  if (!loadedCanvas.value || !containerRef.value) return
 
-  const canvas = imageCanvas.value
+  const canvas = loadedCanvas.value
   const container = containerRef.value
   const maxW = container.clientWidth - 16 // padding
   const maxH = container.clientHeight - 16
@@ -324,7 +327,7 @@ function setRatio(r: CropRatio) {
 
 // ============ 执行裁剪 ============
 async function doCrop() {
-  if (!imageCanvas.value) return
+  if (!loadedCanvas.value) return
 
   try {
     isProcessing.value = true
@@ -332,7 +335,7 @@ async function doCrop() {
     reportEvent('tool_use', effectiveSlug.value)
     emit('tool_use', effectiveSlug.value)
 
-    const canvas = imageCanvas.value
+    const canvas = loadedCanvas.value
     const sx = Math.round(cropBox.x * canvas.width)
     const sy = Math.round(cropBox.y * canvas.height)
     const sw = Math.round(cropBox.w * canvas.width)
@@ -378,8 +381,12 @@ function handleDownload() {
 // ============ 重置 ============
 function resetState() {
   if (croppedPreview.value) URL.revokeObjectURL(croppedPreview.value)
+  if (imageUrl.value) {
+    URL.revokeObjectURL(imageUrl.value)
+    imageUrl.value = ''
+  }
 
-  imageCanvas.value = null
+  loadedCanvas.value = null
   imageFileName.value = ''
   imageLoaded.value = false
   croppedBlob.value = null
@@ -408,6 +415,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('resize', onResize)
   if (croppedPreview.value) URL.revokeObjectURL(croppedPreview.value)
+  if (imageUrl.value) URL.revokeObjectURL(imageUrl.value)
 })
 </script>
 
@@ -431,10 +439,11 @@ onBeforeUnmount(() => {
           class="m-crop-image-wrap"
           :style="{ width: displayWidth + 'px', height: displayHeight + 'px' }"
         >
-          <canvas
-            :ref="imageCanvas"
+          <img
+            :src="imageUrl"
             class="m-crop-image"
             :style="{ width: displayWidth + 'px', height: displayHeight + 'px' }"
+            alt="图片预览"
           />
 
           <!-- 裁剪框覆盖层 -->
@@ -467,23 +476,23 @@ onBeforeUnmount(() => {
               <!-- 四角手柄 -->
               <div
                 class="m-crop-handle m-crop-handle--tl"
-                @touchstart="onCropTouchStart($event, 'resize-tl')"
-                @mousedown="onCropTouchStart($event, 'resize-tl')"
+                @touchstart.stop="onCropTouchStart($event, 'resize-tl')"
+                @mousedown.stop="onCropTouchStart($event, 'resize-tl')"
               ></div>
               <div
                 class="m-crop-handle m-crop-handle--tr"
-                @touchstart="onCropTouchStart($event, 'resize-tr')"
-                @mousedown="onCropTouchStart($event, 'resize-tr')"
+                @touchstart.stop="onCropTouchStart($event, 'resize-tr')"
+                @mousedown.stop="onCropTouchStart($event, 'resize-tr')"
               ></div>
               <div
                 class="m-crop-handle m-crop-handle--bl"
-                @touchstart="onCropTouchStart($event, 'resize-bl')"
-                @mousedown="onCropTouchStart($event, 'resize-bl')"
+                @touchstart.stop="onCropTouchStart($event, 'resize-bl')"
+                @mousedown.stop="onCropTouchStart($event, 'resize-bl')"
               ></div>
               <div
                 class="m-crop-handle m-crop-handle--br"
-                @touchstart="onCropTouchStart($event, 'resize-br')"
-                @mousedown="onCropTouchStart($event, 'resize-br')"
+                @touchstart.stop="onCropTouchStart($event, 'resize-br')"
+                @mousedown.stop="onCropTouchStart($event, 'resize-br')"
               ></div>
             </div>
           </div>
@@ -495,7 +504,6 @@ onBeforeUnmount(() => {
         ref="fileInputRef"
         type="file"
         accept="image/*"
-        capture="environment"
         class="m-tool__file-input"
         @change="handleFilePick"
       />
@@ -639,7 +647,7 @@ onBeforeUnmount(() => {
 .m-crop-image {
   display: block;
   max-width: 100%;
-  height: auto;
+  object-fit: contain;
   pointer-events: none;
 }
 
