@@ -109,6 +109,18 @@ const FLAG_DESCRIPTIONS: Record<string, string> = {
   u: 'Unicode 模式：正确处理 emoji 和代理对字符',
 }
 
+const PRESET_PATTERNS: { label: string; pattern: string }[] = [
+  { label: '邮箱', pattern: '[a-zA-Z0-9_-]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}' },
+  { label: '手机号', pattern: '1[3-9]\\d{9}' },
+  { label: '固定电话', pattern: '\\d{3,4}-\\d{7,8}' },
+  { label: 'QQ号', pattern: '[1-9]\\d{4,11}' },
+  { label: '身份证(18位)', pattern: '[1-6]\\d{5}(19|20)\\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])\\d{3}[\\dXx]' },
+  { label: 'URL', pattern: '(?:http|https|ftp)://[^\\s,<>()"]+' },
+  { label: 'IPv4地址', pattern: '((25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)' },
+  { label: '中文汉字', pattern: '[\\u4e00-\\u9fa5]+' },
+  { label: '日期', pattern: '\\d{4}[-/]\\d{1,2}[-/]\\d{1,2}' },
+]
+
 const flagsStr = computed(() =>
   FLAG_LIST.filter((f) => flags.value[f]).join(''),
 )
@@ -157,6 +169,11 @@ function clearAll() {
   pattern.value = ''
   testText.value = ''
   result.value = { success: true, matches: [] }
+}
+
+function applyPreset(p: string) {
+  pattern.value = p
+  execute()
 }
 
 /** HTML 转义（用于无匹配时安全展示文本） */
@@ -290,6 +307,30 @@ onBeforeUnmount(() => {
       >
         try-catch 包裹执行，最大匹配数 10000 防止灾难性回溯
       </p>
+    </div>
+
+    <!-- ============ 常用正则快捷按钮 ============ -->
+    <div class="flex flex-wrap items-center gap-2">
+      <span
+        class="shrink-0 whitespace-nowrap"
+        style="
+          font-family: var(--pz-font-sans);
+          font-size: var(--pz-text-sm);
+          color: var(--pz-color-text-tertiary);
+        "
+      >
+        常用正则
+      </span>
+      <button
+        v-for="preset in PRESET_PATTERNS"
+        :key="preset.label"
+        type="button"
+        class="pz-flag-toggle"
+        :title="preset.pattern"
+        @click="applyPreset(preset.pattern)"
+      >
+        {{ preset.label }}
+      </button>
     </div>
 
     <!-- ============ 2. 测试文本卡片 ============ -->
