@@ -101,6 +101,14 @@ const flags = ref<Record<string, boolean>>({
 
 const FLAG_LIST = ['g', 'i', 'm', 's', 'u'] as const
 
+const FLAG_DESCRIPTIONS: Record<string, string> = {
+  g: '全局匹配：查找所有匹配项，而非仅第一个',
+  i: '忽略大小写：匹配时不区分大小写',
+  m: '多行模式：^ 和 $ 匹配每行的首尾',
+  s: '点号匹配换行：. 可以匹配换行符 \\n',
+  u: 'Unicode 模式：正确处理 emoji 和代理对字符',
+}
+
 const flagsStr = computed(() =>
   FLAG_LIST.filter((f) => flags.value[f]).join(''),
 )
@@ -256,6 +264,7 @@ onBeforeUnmount(() => {
             class="pz-flag-toggle"
             :aria-pressed="flags[flag] ? 'true' : 'false'"
             :aria-label="`${flag} 标志`"
+            :title="FLAG_DESCRIPTIONS[flag]"
             @click="toggleFlag(flag)"
           >
             {{ flag }}

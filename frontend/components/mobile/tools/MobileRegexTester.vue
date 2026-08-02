@@ -104,22 +104,12 @@ const matchCount = computed(() => result.value?.matches.length ?? 0)
         <span class="m-tool__label">正则表达式</span>
       </div>
       <div class="m-tool__pattern-row">
-        <span class="m-tool__pattern-slash">/</span>
         <input
           v-model="pattern"
           type="text"
           class="m-tool__input m-tool__input--pattern"
           placeholder="输入正则表达式..."
           spellcheck="false"
-        />
-        <span class="m-tool__pattern-slash">/</span>
-        <input
-          v-model="flags"
-          type="text"
-          class="m-tool__input m-tool__input--flags"
-          placeholder="gim"
-          spellcheck="false"
-          maxlength="5"
         />
       </div>
       <!-- 标志位快捷 -->
@@ -256,6 +246,8 @@ const matchCount = computed(() => result.value?.matches.length ?? 0)
   display: flex;
   flex-direction: column;
   gap: 8px;
+  box-sizing: border-box;
+  max-width: 100%;
 }
 
 .m-tool__header {
@@ -298,12 +290,6 @@ const matchCount = computed(() => result.value?.matches.length ?? 0)
   gap: 4px;
 }
 
-.m-tool__pattern-slash {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--m-color-primary);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-}
 
 .m-tool__input {
   flex: 1;
@@ -325,17 +311,13 @@ const matchCount = computed(() => result.value?.matches.length ?? 0)
 
 .m-tool__input--pattern {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-}
-
-.m-tool__input--flags {
-  flex: 0 0 60px;
-  text-align: center;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  min-width: 0;
 }
 
 .m-tool__flags {
   display: flex;
   gap: 6px;
+  flex-wrap: wrap;
 }
 
 .m-tool__flag {
