@@ -649,3 +649,266 @@
 - [x] 复用 PC 端 composables（useDevice, useAnonId, useAnalytics）
 - [x] 复用 PC 端业务逻辑（utils/tools/*.ts）
 - [x] 复用 PC 端 API 接口（广告、工具数据、点赞）
+
+## Task 36: 实现意见反馈公开留言板（前台）
+
+### SubTask 36.1: feedback_messages 表 Flyway 迁移
+- [x] 创建 Flyway 迁移文件（如 V14__create_feedback_messages_table.sql）
+- [x] 表结构包含：id、content（TEXT 必填）、nickname（VARCHAR 可空）、contact（VARCHAR 可空）、ip（VARCHAR）、status（VARCHAR 默认 visible）、admin_reply（TEXT 可空）、reply_at（TIMESTAMP 可空）、reply_by（VARCHAR 可空）、created_at、updated_at
+- [x] 创建索引：(status, created_at) 复合索引、created_at 索引
+- [x] Flyway 迁移成功执行
+
+### SubTask 36.2: FeedbackMessage 实体与 Repository
+- [x] 创建 `FeedbackMessage` 实体类（`backend/src/main/java/com/panzipool/api/web/feedback/entity/FeedbackMessage.java`）
+- [x] 创建 `FeedbackMessageRepository` 接口，支持按 status 分页查询（Pageable）、按 id 查询
+- [x] 实体字段与数据库表结构一致
+
+### SubTask 36.3: 留言提交接口 POST /api/v1/feedback
+- [x] 创建 `FeedbackController` 控制器，实现 `POST /api/v1/feedback`
+- [x] content 必填校验（@NotBlank）、长度限制（1-1000 字符）
+- [x] nickname 可选长度限制（1-30 字符）、contact 可选长度限制（1-100 字符）
+- [x] 后端从 HttpServletRequest 获取 IP 地址（X-Forwarded-For 或 getRemoteAddr）
+- [x] 实现基础限流（同一 IP 1 分钟最多 3 条）
+- [x] 输出做 XSS 转义防护
+- [x] 留言状态默认为 visible
+
+### SubTask 36.4: 公开留言查询接口 GET /api/v1/feedback
+- [x] 实现 `GET /api/v1/feedback?page=N&size=M`
+- [x] 返回 status=visible 的留言（按 created_at 倒序、分页）
+- [x] 每条留言包含 content、nickname、created_at、admin_reply、reply_at
+- [x] 输出做 XSS 转义防护
+- [x] hidden/deleted 状态留言不返回
+
+### SubTask 36.5: 单元测试与集成测试
+- [x] 测试：提交合法留言成功
+- [x] 测试：空内容提交返回校验错误
+- [x] 测试：超长内容提交返回校验错误
+- [x] 测试：同一 IP 1 分钟内提交超过 3 条返回频率限制错误
+- [x] 测试：公开查询返回 visible 留言分页列表
+- [x] 测试：hidden/deleted 留言不在公开查询结果中
+
+### SubTask 36.6: 顶部导航新增入口
+- [x] PC 端 AppHeader.vue 在"关于我们"后新增"意见反馈"链接，指向 `/feedback`
+- [x] 移动端 MobileHeader.vue 或 MobileBottomNav.vue 新增"意见反馈"入口
+- [x] 导航入口样式与现有风格一致
+
+### SubTask 36.7: /feedback 留言板页面（PC 端）
+- [x] 创建 `frontend/pages/feedback.vue`
+- [x] 留言提交表单：content 文本域（必填）、nickname 输入框（可选）、contact 输入框（可选）
+- [x] 表单前端基础校验（content 非空、长度限制）
+- [x] 提交成功展示成功提示并刷新留言列表
+- [x] 公开留言列表：时间倒序、分页展示
+- [x] 每条留言展示：内容、时间、昵称（如有）、站长回复（如有）
+- [x] 页面风格与站点一致（使用 Tailwind/ToolLayout 风格）
+
+### SubTask 36.8: 移动端留言板页面
+- [x] 创建 `frontend/pages/mobile/feedback.vue`
+- [x] 复用 PC 端 API 与逻辑
+- [x] 移动端布局（单栏、触控友好、44px 按钮高度）
+- [x] 接入移动端布局（layout: 'mobile'）
+
+### SubTask 36.9: SEO 与隐私说明
+- [x] 留言板页面设置 title/description
+- [x] 页面展示隐私提示（留言内容将公开展示）
+
+### 验证
+- [x] 留言提交成功并展示在列表中
+- [x] 空内容/超长内容提交校验失败
+- [x] 同一 IP 1 分钟内提交超过 3 条被限流
+- [x] hidden/deleted 留言不在公开列表展示
+- [x] 分页正常工作
+- [x] 移动端页面正常渲染
+
+## Task 37: 实现站长管理后台（登录+回复+内容治理）
+
+### 阶段一：后端认证与鉴权基础设施
+
+### SubTask 37.1: 管理员凭据配置与会话存储
+- [x] `application.yml` 新增 admin 配置段（username、password-hash、session-timeout-minutes、secure-cookie）
+- [x] 创建 `AdminProperties.java`（@ConfigurationProperties(prefix="admin")）
+- [x] 创建 `AdminSession.java`（token、username、expireAt、isExpired）
+- [x] 创建 `AdminSessionStore.java`（ConcurrentHashMap 内存存储、create/get/remove/cleanupExpired、定时清理）
+- [x] `pom.xml` 新增 spring-security-crypto 依赖（BCryptPasswordEncoder）
+- [x] `application-prod.yml` 覆盖 secure-cookie=true
+
+### SubTask 37.2: 管理员登录接口 POST /api/v1/admin/login
+- [x] 创建 `AdminAuthController.java`（@RequestMapping("/admin")）
+- [x] 创建 DTO：AdminLoginRequest（username/password @NotBlank）、AdminLoginResponse（token/username/expireAt）
+- [x] 创建 `AdminAuthService.login()`：用户名匹配 + BCrypt 比对密码哈希
+- [x] 登录失败限流：同一 IP 5 分钟最多 5 次失败，超限返回 429
+- [x] 登录成功清除失败计数 + 创建会话
+- [x] 设置 admin_token cookie（HttpOnly、SameSite=Strict、Path=/api/v1、Max-Age=会话超时）
+
+### SubTask 37.3: 管理员鉴权拦截器
+- [x] 创建 `AdminAuthInterceptor.java`（HandlerInterceptor）
+- [x] preHandle：从 cookie 或 Authorization Bearer 头读取 token
+- [x] 无效 token 返回 401 JSON（{"code":401,"message":"未登录或会话已过期"}）
+- [x] 有效 token 设置 request.setAttribute("adminUser", username)
+- [x] 创建 `WebMvcConfig.java` 注册拦截器（addPathPatterns("/admin/**")，excludePathPatterns("/admin/login")）
+
+### SubTask 37.4: 登出接口 POST /api/v1/admin/logout
+- [x] AdminAuthController 新增 POST /admin/logout
+- [x] 读取 token 并调用 AdminSessionStore.removeSession
+- [x] 清除 admin_token cookie（Max-Age=0）
+- [x] 返回 ApiResponse.success()
+
+### SubTask 37.5: 当前管理员信息接口 GET /api/v1/admin/me
+- [x] AdminAuthController 新增 GET /admin/me
+- [x] 校验会话有效性，无效抛 401
+- [x] 返回 {username, expireAt}
+
+### SubTask 37.6: CSRF 防护（SameSite cookie 方案）
+- [x] 采用 SameSite=Strict cookie 天然防范 CSRF
+- [x] 无需额外 CSRF token 机制
+- [x] AdminAuthInterceptor 可选校验 Origin/Referer 头
+
+### 阶段二：后端留言管理 API
+
+### SubTask 37.7: 管理员留言管理 Service
+- [x] 创建 `AdminFeedbackService.java`
+- [x] listFeedback(page, size, status, keyword)：status 筛选 + keyword 模糊搜索 + 分页
+- [x] getFeedbackDetail(id)：不存在抛 404
+- [x] replyFeedback(id, replyContent, adminUser)：更新 adminReply/replyAt/replyBy
+- [x] updateStatus(id, newStatus)：visible↔hidden↔deleted 状态切换
+- [x] 扩展 FeedbackMessageRepository：findByStatusAndContentContainingOrderByCreatedAtDesc、findByContentContainingOrderByCreatedAtDesc
+
+### SubTask 37.8: 管理员留言管理 Controller
+- [x] 创建 `AdminFeedbackController.java`（@RequestMapping("/admin/feedback")）
+- [x] GET /admin/feedback：分页+状态筛选+搜索，返回 ApiResponse<Page<AdminFeedbackItem>>
+- [x] GET /admin/feedback/{id}：返回 ApiResponse<AdminFeedbackDetail>
+- [x] PUT /admin/feedback/{id}/reply：从 request attribute 读取 adminUser
+- [x] PUT /admin/feedback/{id}/status：校验 status pattern
+- [x] 创建 DTO：AdminFeedbackItem、AdminFeedbackDetail、AdminReplyRequest、AdminStatusRequest
+
+### 阶段三：前端后台页面（参考 panzitool-extension 设计）
+
+### SubTask 37.9: 创建后台布局与路由守卫
+- [x] 创建 `frontend/layouts/admin.vue`（深色 header + shield 图标 + 退出登录按钮）
+- [x] 创建 `frontend/middleware/admin-auth.ts`（检查 localStorage admin_logged_in，未登录跳转 /admin/login）
+- [x] 退出登录按钮调用 POST /api/v1/admin/logout 并清理 localStorage
+
+### SubTask 37.10: 实现 /admin/login 登录页
+- [x] 创建 `frontend/pages/admin/login.vue`（参考 admin-login.html 设计）
+- [x] 深色 header（shield 图标 + "盘子工具站 管理后台" + 返回首页链接）
+- [x] 登录表单：账号输入框、密码输入框、错误提示区、登录按钮
+- [x] 提交逻辑：POST /api/v1/admin/login（credentials: 'include'），成功后 navigateTo('/admin/feedback')
+- [x] 错误处理：401 显示"账号或密码错误"、429 显示"登录尝试过于频繁"、网络错误提示
+- [x] 表单校验：账号/密码非空
+- [x] useHead 设置 title + robots noindex
+
+### SubTask 37.11: 实现 /admin/feedback 留言管理列表页
+- [x] 创建 `frontend/pages/admin/feedback.vue`（参考 admin-messages.html）
+- [x] definePageMeta({ layout: 'admin', middleware: 'admin-auth' })
+- [x] 左侧侧边栏：留言管理（高亮）
+- [x] 顶部工具栏：搜索框 + 状态下拉筛选 + 刷新按钮
+- [x] 留言表格：内容/昵称/时间/状态标签/操作按钮
+- [x] 分页控件
+- [x] API：GET /admin/feedback，SSR + watch refresh
+- [x] 操作：查看跳转详情、回复跳转详情、隐藏/恢复调用 PUT status
+
+### SubTask 37.12: 实现 /admin/feedback/[id] 留言详情与回复页
+- [x] 创建 `frontend/pages/admin/feedback/[id].vue`（参考 admin-message-detail.html）
+- [x] definePageMeta({ layout: 'admin', middleware: 'admin-auth' })
+- [x] 返回链接 + 留言详情卡片（状态/时间/留言者/联系方式/内容）
+- [x] 操作栏：隐藏留言按钮、删除按钮
+- [x] 回复编辑卡片：textarea + 保存回复按钮
+- [x] 历史回复卡片：展示回复内容 + 回复时间 + 删除回复按钮
+- [x] API：GET /admin/feedback/{id}、PUT reply、PUT status
+
+### SubTask 37.13: 实现登出功能
+- [x] admin layout 退出登录按钮调用 POST /api/v1/admin/logout
+- [x] 成功后跳转 /admin/login
+- [x] 清理 localStorage admin_logged_in
+
+### 阶段四：测试与联调
+
+### SubTask 37.14: 后端单元测试与集成测试
+- [x] 测试 AdminAuthService.login：正确凭据返回 token、错误密码抛 401
+- [x] 测试 AdminAuthInterceptor：无 token 401、无效 token 401、有效 token 通过
+- [x] 测试 AdminFeedbackService.listFeedback：status 筛选、keyword 搜索、分页
+- [x] 测试 AdminFeedbackService.replyFeedback：更新字段正确
+- [x] 测试 AdminFeedbackService.updateStatus：状态流转正确
+- [x] 测试登录失败限流：5 次失败后第 6 次返回 429
+
+### 验证
+- [x] 后端编译通过（mvn compile）
+- [x] 前端 TypeScript 无错误
+- [x] 管理员登录成功并重定向到后台
+- [x] 错误密码登录失败并提示
+- [x] 未登录访问后台接口返回 401
+- [x] 留言列表按状态筛选与分页正常
+- [x] 回复保存后前台公开列表同步展示回复
+- [x] 隐藏留言后前台不再展示
+- [x] 删除留言（软删除）后前台与后台默认列表不展示
+- [x] 恢复留言后重新展示
+- [x] 登录失败限流生效
+- [x] 登出后会话失效
+
+## Task 38: 实现 Cron 表达式工具（开发者工具新增）
+
+### SubTask 38.1: Cron 纯函数与单元测试
+- [x] 创建 `frontend/utils/tools/cron.ts`
+- [x] 实现 Cron 表达式解析与校验函数（支持 5 段与 6 段格式、范围/特殊字符/步长/列表校验）
+- [x] 实现中文解释生成函数（覆盖通配符/列表/范围/步长/特殊字符）
+- [x] 实现未来触发时间计算函数（基于当前时间计算 N 次触发时间、考虑时区）
+- [x] 编写 Vitest 单元测试（覆盖 5段/6段、合法/非法表达式、各类语法解释、触发时间计算）
+
+### SubTask 38.2: Cron 工具 UI（PC 端）
+- [x] 创建 `frontend/components/tool/CronTool.vue`
+- [x] 表达式输入区（文本输入或分段输入）
+- [x] 5段/6段格式切换控件（切换时字段数与标签变化）
+- [x] 字段含义提示与示例展示
+- [x] 校验结果区（通过/错误提示，指出错误字段与原因）
+
+### SubTask 38.3: 中文解释输出区
+- [x] 展示 Cron 表达式的人类可读中文描述
+- [x] 覆盖通配符（*）、列表（,）、范围（-）、步长（/）、特殊字符（? L W #）
+
+### SubTask 38.4: 未来触发时间预览
+- [x] 展示未来 N 次触发时间（默认 10 次）
+- [x] 提供次数配置（可调整预览次数）
+- [x] 基于当前时间计算
+- [x] 时区标注（本地时区或 UTC）
+- [x] 复制/下载功能（可选）
+
+### SubTask 38.5: 常用模板区
+- [x] 提供常见 Cron 模板按钮（每分钟、每小时整点、每天凌晨、每周一、每月1日、工作日9点等）
+- [x] 点击模板一键填入表达式
+- [x] 填入后自动触发校验/解释/预览
+
+### SubTask 38.6: 一键复制
+- [x] 复制 Cron 表达式按钮（复用 CopyButton 组件）
+- [x] 复制中文解释文本按钮
+
+### SubTask 38.7: toolRegistry 注册与种子数据
+- [x] 在 `toolRegistry.ts` 注册 slug=cron → CronTool 组件映射
+- [x] 创建 Flyway 迁移插入 cron 工具元数据到 tools 表（slug=cron、名称、分类=developer、关键词、描述）
+- [x] 工具列表/导航展示 Cron 工具卡片
+
+### SubTask 38.8: 工具页 SEO 与统计接入
+- [x] 工具页设置 title/description、说明、示例、FAQ
+- [x] 添加 JSON-LD 结构化数据
+- [x] 接入统计（核心操作触发 tool_use 事件）
+- [x] 接入点赞功能
+- [x] 接入广告位（如需要）
+
+### SubTask 38.9: 移动端 Cron 工具组件
+- [x] 创建 `frontend/components/mobile/tools/MobileCron.vue`
+- [x] 复用 PC 端 `utils/tools/cron.ts` 业务逻辑
+- [x] 移动端布局（单栏、触控友好、44px 按钮）
+- [x] 接入移动端 toolRegistry（`utils/mobileToolRegistry.ts`）
+- [x] 移动端工具详情页路由支持 cron slug
+
+### 验证
+- [x] 5段与6段格式切换正常（字段数与标签变化）
+- [x] 合法 Cron 表达式校验通过
+- [x] 非法 Cron 表达式（字段越界、非法字符）输出友好错误提示
+- [x] 中文解释准确（覆盖各类语法）
+- [x] 未来触发时间预览正确（默认 10 次、可配置）
+- [x] 常用模板一键填入并触发校验/解释/预览
+- [x] 复制表达式与解释文本正常
+- [x] toolRegistry 注册成功，工具列表展示 Cron 卡片
+- [x] 工具页 SEO 元数据与 JSON-LD 正确
+- [x] 统计与点赞功能正常
+- [x] 移动端 Cron 工具组件正常渲染与交互
+- [x] Vitest 单元测试全部通过

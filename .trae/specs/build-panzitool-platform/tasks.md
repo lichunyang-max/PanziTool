@@ -546,3 +546,181 @@
 
 移动端任务可与现有任务并行执行，不影响 PC 端功能。
 
+## 新增里程碑：意见反馈 + 管理后台 + Cron 工具（PRD panzitool2）
+
+> 对应 PRD `prd/panzitool2.md`：在现有工具类网站基础上扩展三大新功能。
+> 里程碑 M1（意见反馈前台留言板）→ M2（站长管理后台）→ M3（Cron 表达式工具）。
+> M2 依赖 M1 的留言数据模型；M3（Cron 工具）独立，可与 M1/M2 并行。
+
+### 里程碑 M1：意见反馈（前台公开留言板）
+
+* [x] Task 36: 实现意见反馈公开留言板（前台）
+
+  * [x] SubTask 36.1: 编写 feedback_messages 表 Flyway 迁移（id、content、nickname 可空、contact 可空、ip、status visible/hidden/deleted、admin_reply 可空、reply_at、reply_by、created_at、updated_at；(status, created_at) 复合索引、created_at 索引）
+
+  * [x] SubTask 36.2: 实现 FeedbackMessage 实体与 Repository（Spring Data JPA），支持按 status 分页查询、按 id 查询
+
+  * [x] SubTask 36.3: 实现留言提交接口 `POST /api/v1/feedback`（content 必填长度校验、nickname/contact 可选长度校验、后端获取 IP、基础限流同一 IP 1 分钟最多 3 条、XSS 输出转义）
+
+  * [x] SubTask 36.4: 实现公开留言查询接口 `GET /api/v1/feedback?page=N&size=M`（返回 status=visible 的留言倒序分页、含 admin_reply/reply_at、XSS 转义防护）
+
+  * [x] SubTask 36.5: 编写单元测试与集成测试（提交成功、内容校验失败、频率限制、公开查询分页、隐藏留言不展示）
+
+  * [x] SubTask 36.6: 前端顶部导航在"关于我们"后新增"意见反馈"入口（PC 端 AppHeader 与移动端 MobileHeader/MobileBottomNav）
+
+  * [x] SubTask 36.7: 实现 `/feedback` 留言板页面（留言提交表单 content 必填+nickname/contact 可选、基础校验与成功提示、公开留言列表时间倒序分页、每条展示内容/时间/昵称/站长回复）
+
+  * [x] SubTask 36.8: 实现移动端 `/mobile/feedback` 留言板页面（复用 PC 端 API 与逻辑，移动端布局）
+
+  * [x] SubTask 36.9: 留言板页面 SEO（title/description）与隐私说明（留言公开展示提示）
+
+  * 验证：留言提交成功并展示、空内容/超长内容校验失败、频率限制生效、隐藏/删除留言不展示、分页正常 ✅
+
+### 里程碑 M2：站长管理后台（登录+回复+内容治理）
+
+> 设计参考：`panzitool-extension/pages/admin-login.html`（登录页）、`admin-messages.html`（列表页）、`admin-message-detail.html`（详情与回复页）。
+> 技术选型：后端无 Spring Security 依赖，采用**轻量级自实现方案**（环境变量凭据 + BCrypt 比对 + HandlerInterceptor 鉴权 + 内存会话/限流），避免引入新框架。
+> 包路径：`com.panzipool.api.web.admin.*`（entity/dto/service/controller）+ `com.panzipool.api.config.AdminAuthInterceptor`。
+
+* [ ] Task 37: 实现站长管理后台（登录+回复+内容治理）
+
+#### 阶段一：后端认证与鉴权基础设施
+
+  * [x] SubTask 37.1: 管理员凭据配置与会话存储
+    - 在 `application.yml` 新增 `admin.username`、`admin.password-hash`（BCrypt 哈希值）配置项；`.env.example` / `docker-compose.yml` 补充 `ADMIN_USERNAME`、`ADMIN_PASSWORD_HASH` 环境变量
+    - 创建 `backend/src/main/java/com/panzipool/api/web/admin/config/AdminProperties.java`（`@ConfigurationProperties(prefix = "admin")`，字段 username、passwordHash、sessionTimeoutMinutes=120）
+    - 创建 `backend/src/main/java/com/panzipool/api/web/admin/session/AdminSessionStore.java`：内存会话存储（`ConcurrentHashMap<String, AdminSession>`），session token 用 `UUID.randomUUID()` 生成；AdminSession 含 token、username、expireAt；提供 create/get/remove/cleanup 方法；过期自动清理
+    - 在 `pom.xml` 确认 `spring-security-crypto` 依赖（BCryptPasswordEncoder），若无需新增 `<dependency>`（`org.springframework.security:spring-security-crypto`，无需完整 spring-security）
+
+  * [x] SubTask 37.2: 管理员登录接口 `POST /api/v1/admin/login`
+    - 创建 `backend/src/main/java/com/panzipool/api/web/admin/controller/AdminAuthController.java`（`@Tag(name = "Admin Auth")`、`@RequestMapping("/admin")`）
+    - 创建 DTO：`AdminLoginRequest`（username、password，均 @NotBlank）、`AdminLoginResponse`（token、username、expireAt）
+    - 创建 `AdminAuthService`：`login(username, password, ip)` 方法——校验用户名匹配 + BCrypt 比对密码哈希；成功则通过 AdminSessionStore 创建会话并返回 token；失败抛 BusinessException(401, "账号或密码错误")
+    - 登录失败限流：同一 IP 5 分钟内最多 5 次失败（复用 FeedbackService 的滑动窗口模式，`ConcurrentHashMap<String, Deque<Long>>`），超限返回 429
+    - 登录成功时清除该 IP 的失败计数
+    - 接口返回 `ApiResponse<AdminLoginResponse>`，同时通过 `ResponseCookie` 设置 `admin_token` cookie（HttpOnly、SameSite=Strict、Path=/api/v1/admin、Max-Age=7200、Secure 根据 profile 决定）
+
+  * [x] SubTask 37.3: 管理员鉴权拦截器
+    - 创建 `backend/src/main/java/com/panzipool/api/config/AdminAuthInterceptor.java` 实现 `HandlerInterceptor`
+    - `preHandle`：从 cookie 读取 `admin_token`（缺失则从 `Authorization: Bearer <token>` 头读取），通过 AdminSessionStore 校验有效性；无效返回 401 JSON（`ApiResponse.error(401, "未登录或会话已过期")`）
+    - 注册拦截器：在 `WebMvcConfigurer`（若不存在则创建 `com.panzipool.api.config.WebMvcConfig`）的 `addInterceptors` 中注册，路径模式 `/**` 作用于 `com.panzipool.api.web.admin.controller` 包下的所有控制器
+    - 排除登录接口 `/admin/login` 本身
+    - 将当前管理员用户名存入 `request.setAttribute("adminUser", username)` 供 controller 读取
+
+  * [x] SubTask 37.4: 登出接口 `POST /api/v1/admin/logout`
+    - 在 `AdminAuthController` 新增 `POST /admin/logout`：从 cookie/header 读取 token，调用 `AdminSessionStore.remove(token)`，清除 cookie（Max-Age=0），返回 `ApiResponse.success(null)`
+
+  * [x] SubTask 37.5: 当前管理员信息接口 `GET /api/v1/admin/me`（可选，供前端校验登录态）
+    - 返回 `{ username, expireAt }`，用于前端路由守卫判断是否已登录
+
+  * [x] SubTask 37.6: CSRF 防护（SameSite cookie 方案）
+    - 由于采用 SameSite=Strict cookie，天然防范 CSRF，无需额外 token 机制
+    - 在 AdminAuthInterceptor 的 preHandle 中校验 `Origin`/`Referer` 头（可选加固）：若请求来源域名与配置的允许域名不匹配则拒绝
+
+#### 阶段二：后端留言管理 API
+
+  * [x] SubTask 37.7: 管理员留言管理 Service
+    - 创建 `backend/src/main/java/com/panzipool/api/web/admin/service/AdminFeedbackService.java`
+    - 方法：
+      - `listFeedback(page, size, status, keyword)`：支持按 status 筛选（visible/hidden/deleted/null=全部）+ keyword 内容模糊搜索（`contentContaining`），按 createdAt 倒序分页；返回 `Page<AdminFeedbackItem>`（含完整字段：id/content/nickname/contact/ip/status/adminReply/replyAt/replyBy/createdAt）
+      - `getFeedbackDetail(id)`：按 id 查询，不存在抛 404
+      - `replyFeedback(id, replyContent, adminUser)`：更新 adminReply、replyAt=now、replyBy=adminUser；不存在抛 404
+      - `updateStatus(id, newStatus)`：切换 visible↔hidden↔deleted；不存在抛 404
+    - 扩展 `FeedbackMessageRepository`：新增 `findByStatusAndContentContainingOrderByCreatedAtDesc`、`findByContentContainingOrderByCreatedAtDesc`
+
+  * [x] SubTask 37.8: 管理员留言管理 Controller
+    - 创建 `backend/src/main/java/com/panzipool/api/web/admin/controller/AdminFeedbackController.java`（`@Tag(name = "Admin Feedback")`、`@RequestMapping("/admin/feedback")`）
+    - `GET /admin/feedback`：参数 page(默认0)、size(默认10)、status(可选)、keyword(可选)；返回 `ApiResponse<Page<AdminFeedbackItem>>`
+    - `GET /admin/feedback/{id}`：返回 `ApiResponse<AdminFeedbackDetail>`
+    - `PUT /admin/feedback/{id}/reply`：`@RequestBody AdminReplyRequest{reply: @NotBlank @Size(max=1000)}`；从 request attribute 读取 adminUser；返回 `ApiResponse<AdminFeedbackDetail>`
+    - `PUT /admin/feedback/{id}/status`：`@RequestBody AdminStatusRequest{status: @Pattern("visible|hidden|deleted")}`；返回 `ApiResponse<AdminFeedbackDetail>`
+    - 创建 DTO：`AdminFeedbackItem`、`AdminFeedbackDetail`、`AdminReplyRequest`、`AdminStatusRequest`
+
+#### 阶段三：前端后台页面（参考 panzitool-extension 设计）
+
+  * [x] SubTask 37.9: 创建后台布局与路由守卫
+    - 创建 `frontend/layouts/admin.vue`：参考 `admin-messages.html` 的 header（深色 slate-900 背景、shield 图标、标题"盘子工具站 管理后台"、退出登录按钮）
+    - 创建 `frontend/middleware/admin-auth.ts`：检查 cookie/localStorage 中的 admin_token，无则重定向到 `/admin/login`；可通过调用 `GET /api/v1/admin/me` 校验会话有效性
+    - 在 `nuxt.config.ts` 的 `runtimeConfig.public` 中无需新增（复用 apiBase）
+
+  * [x] SubTask 37.10: 实现 `/admin/login` 登录页
+    - 创建 `frontend/pages/admin/login.vue`：参考 `admin-login.html` 设计
+    - 布局：深色 header（shield 图标 + "盘子工具站 管理后台" + 返回首页链接）+ 居中登录卡片 + footer
+    - 登录表单：账号输入框、密码输入框、错误提示区（隐藏，红色背景）、登录按钮（主色背景）
+    - 提交逻辑：`POST /api/v1/admin/login`（credentials: 'include' 以接收 cookie），成功后 `navigateTo('/admin/feedback')`；失败展示错误提示
+    - 表单校验：账号/密码非空
+    - useHead 设置 title "站长登录 - 盘子工具站"
+
+  * [x] SubTask 37.11: 实现 `/admin/feedback` 留言管理列表页
+    - 创建 `frontend/pages/admin/feedback.vue`：参考 `admin-messages.html` 设计
+    - 设置 `definePageMeta({ layout: 'admin', middleware: 'admin-auth' })`
+    - 左侧侧边栏：留言管理（高亮）、广告管理（预留 disabled）
+    - 顶部工具栏：搜索框（搜索留言内容或昵称）+ 状态下拉筛选（全部/已回复/待回复/已隐藏）+ 刷新按钮
+    - 留言表格：列 = 留言内容(max-w-md truncate)/昵称/时间/状态(标签：待回复=黄、已回复=绿、已隐藏=灰)/操作(查看/回复/隐藏|恢复)
+    - 分页：总数显示 + 上一页/页码/下一页按钮
+    - API：`GET /api/v1/admin/feedback?page&size&status&keyword`，SSR 用 useAsyncData 获取
+    - 状态筛选/搜索/分页变化时重新请求（watch + refresh）
+    - 点击"查看"跳转 `/admin/feedback/[id]`；点击"回复"跳转详情页；点击"隐藏/恢复"直接调用 `PUT /admin/feedback/{id}/status` 并刷新
+    - useHead 设置 title "留言管理 - 管理后台"
+
+  * [x] SubTask 37.12: 实现 `/admin/feedback/[id]` 留言详情与回复页
+    - 创建 `frontend/pages/admin/feedback/[id].vue`：参考 `admin-message-detail.html` 设计
+    - 设置 `definePageMeta({ layout: 'admin', middleware: 'admin-auth' })`
+    - 返回链接："返回留言列表"
+    - 留言详情卡片：状态标签 + 时间 + 留言者 + 联系方式 + 留言内容（whitespace-pre-wrap 保留换行）
+    - 操作栏：隐藏留言按钮（eye-off 图标）、删除按钮（trash-2 图标，红色）
+    - 回复编辑卡片：标题"站长回复" + textarea（rows=5，placeholder"输入回复内容..."）+ 保存回复按钮（send 图标，主色）
+    - 历史回复卡片（若已有回复）：展示回复内容 + 回复时间 + 删除回复按钮（清空 adminReply）
+    - API：`GET /api/v1/admin/feedback/{id}` 获取详情；`PUT /admin/feedback/{id}/reply` 保存回复；`PUT /admin/feedback/{id}/status` 更新状态
+    - 操作成功后展示 toast/提示并刷新数据
+    - useHead 设置 title "留言详情 - 管理后台"
+
+  * [x] SubTask 37.13: 实现登出功能
+    - 在 admin layout 的"退出登录"按钮调用 `POST /api/v1/admin/logout`，成功后跳转 `/admin/login`
+    - 前端清理 localStorage 中的 admin 状态（如有）
+    - 按钮 Loading 态禁用 + try/catch 保证 API 失败时仍可清理本地状态
+
+#### 阶段四：测试与联调
+
+  * [x] SubTask 37.14: 后端单元测试与集成测试
+    - 测试 AdminAuthService.login：正确凭据返回 token、错误密码抛 401、错误用户名抛 401
+    - 测试 AdminAuthInterceptor：无 token 返回 401、无效 token 返回 401、有效 token 通过
+    - 测试 AdminFeedbackService.listFeedback：status 筛选、keyword 搜索、分页
+    - 测试 AdminFeedbackService.replyFeedback：更新 adminReply/replyAt/replyBy 正确
+    - 测试 AdminFeedbackService.updateStatus：visible→hidden→deleted→visible 状态流转正确
+    - 测试登录失败限流：同一 IP 5 次失败后第 6 次返回 429
+
+  * 验证：管理员登录成功/失败、未认证访问 401、留言列表筛选/分页/搜索、回复保存并同步前台、隐藏/删除/恢复生效、登录失败限流、登出后会话失效 ✅
+
+### 里程碑 M3：Cron 表达式工具
+
+* [x] Task 38: 实现 Cron 表达式工具（开发者工具新增）
+
+  * [x] SubTask 38.1: 实现工具纯函数（Cron 解析与校验、中文解释生成、未来触发时间计算）并提取至 `utils/tools/cron.ts`，编写 Vitest 单元测试
+
+  * [x] SubTask 38.2: 实现 Cron 工具 UI（表达式输入区、5段/6段格式切换、字段含义提示与示例、校验结果/错误提示区）
+
+  * [x] SubTask 38.3: 实现人类可读中文解释输出区（覆盖通配符/列表/范围/步长/特殊字符语法）
+
+  * [x] SubTask 38.4: 实现未来触发时间预览（默认 10 次可配置、基于当前时间计算、时区标注、复制/下载可选）
+
+  * [x] SubTask 38.5: 实现常用模板区（每分钟/每小时整点/每天凌晨/每周一/每月1日/工作日9点等，一键填入并触发校验/解释/预览）
+
+  * [x] SubTask 38.6: 实现一键复制 Cron 表达式与解释文本（复用 CopyButton 原子组件）
+
+  * [x] SubTask 38.7: toolRegistry 注册 cron 工具（slug=cron）、后端 tools 表插入元数据种子数据（Flyway）
+
+  * [x] SubTask 38.8: 工具页 SEO（title/description、说明、示例、FAQ、JSON-LD）+ 接入统计/点赞（核心操作触发 tool_use、复制触发 copy）
+
+  * [x] SubTask 38.9: 实现移动端 Cron 工具组件 `components/mobile/tools/MobileCron.vue`（复用 PC 端 utils/tools/cron.ts 业务逻辑、移动端布局、接入移动端 toolRegistry）
+
+  * 验证：5段/6段切换正常、合法/非法表达式校验、中文解释准确、触发时间预览正确、模板一键填入、复制正常、单测通过 ✅
+
+# Task Dependencies（新增里程碑）
+
+* Task 36（意见反馈前台）依赖 Task 2（后端骨架含 API 规范）、Task 7（前端骨架含 ToolLayout/导航）
+
+* Task 37（管理后台）依赖 Task 36（留言数据模型与 API）
+
+* Task 38（Cron 工具）独立，可与 Task 36、Task 37 并行；依赖 Task 7（前端骨架含 toolRegistry）
+

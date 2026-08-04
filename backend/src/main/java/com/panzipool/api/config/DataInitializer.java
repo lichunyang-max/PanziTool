@@ -2,6 +2,8 @@ package com.panzipool.api.config;
 
 import com.panzipool.api.web.ad.entity.AdPromotion;
 import com.panzipool.api.web.ad.dao.AdPromotionRepository;
+import com.panzipool.api.web.admin.dao.AdminUserRepository;
+import com.panzipool.api.web.admin.entity.AdminUser;
 import com.panzipool.api.web.tool.entity.Tool;
 import com.panzipool.api.web.tool.dao.ToolRepository;
 import org.slf4j.Logger;
@@ -9,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -57,6 +60,24 @@ public class DataInitializer {
             log.info("ad_promotion 表为空，开始初始化 3 条种子广告");
             adPromotionRepository.saveAll(buildSeedAds());
             log.info("广告种子数据初始化完成，共 {} 条", adPromotionRepository.count());
+        };
+    }
+
+    @Bean
+    public ApplicationRunner adminUserInitializer(AdminUserRepository adminUserRepository) {
+        return args -> {
+            if (adminUserRepository.existsByUsername("admin")) {
+                log.debug("admin_users 表已存在 admin 账号，跳过初始化");
+                return;
+            }
+            log.info("admin_users 表为空，创建默认管理员账号");
+            AdminUser admin = new AdminUser();
+            admin.setUsername("admin");
+            admin.setPasswordHash(new BCryptPasswordEncoder().encode("admin@0923!"));
+            admin.setDisplayName("超级管理员");
+            admin.setEnabled(true);
+            adminUserRepository.save(admin);
+            log.info("默认管理员账号已创建: admin / admin@0923!");
         };
     }
 

@@ -77,6 +77,15 @@ panzipool:
     allow-credentials: true
     max-age: 3600
 
+# 管理员后台配置
+# ----------------------------------------------------------------------------
+# 管理员账号信息存储在数据库 admin_users 表中，首次启动自动创建默认账号 admin/admin123
+# 密码修改请通过管理后台或直接操作数据库
+# ----------------------------------------------------------------------------
+admin:
+  session-timeout-minutes: 120
+  secure-cookie: false
+
 logging:
   level:
     com.panzipool.api: INFO

@@ -37,6 +37,13 @@ panzipool:
     # 生产环境仅允许主站域名
     allowed-origins: ${CORS_ORIGINS:https://tool.panzipool.com,https://www.panzipool.com,http://localhost:3000,http://localhost:8080}
 
+# 生产环境管理员配置：务必通过 ADMIN_PASSWORD_HASH 设置 BCrypt 哈希，并启用 Secure Cookie
+admin:
+  username: ${ADMIN_USERNAME:admin}
+  password-hash: ${ADMIN_PASSWORD_HASH:}
+  session-timeout-minutes: 120
+  secure-cookie: true
+
 logging:
   level:
     com.panzipool.api: INFO

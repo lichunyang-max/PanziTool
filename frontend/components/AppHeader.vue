@@ -17,6 +17,7 @@ const navItems: NavItem[] = [
   { label: '首页', to: '/', key: 'home' },
   { label: '开发者工具', to: '/category/developer', key: 'dev-tools' },
   { label: '关于我们', to: '/about', key: 'about' },
+  { label: '意见反馈', to: '/feedback', key: 'feedback' },
   { label: '隐私政策', to: '/privacy', key: 'privacy' },
 ]
 

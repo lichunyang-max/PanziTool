@@ -16,6 +16,9 @@
 - **广告位集成（预留+可配置）**：首页/分类页/工具页广告位规划；可配置广告组件（开关、广告位 key）；异步注入第三方脚本不阻塞首屏；未配置或加载失败时降级不影响布局；隐私/免责声明链接。
 - **统计分析接入**：接入百度统计（hm.js?id=06c8d960aee8a68f0a9a229ff4a18ceb）**仅用于运营分析**（PV/UV、用户行为路径）；自建后端统计**仅用于站内展示**（工具使用次数、点赞次数）；单页应用路由切换 PV 统计；关键事件埋点（格式化/转换/下载/复制）；隐私政策分别说明统计用途。
 - **部署交付**：Docker 容器化（docker-compose：nginx 反代 + nuxt 前端 + Java API + postgres）；腾讯云部署；域名 www.panzipool.com 主站，裸域 panzipool.com 301 跳转、强制 HTTPS；PostgreSQL 定期备份；后端结构化日志。
+- **意见反馈公开留言板（前台）**：顶部导航在"关于我们"后新增"意见反馈"入口；公开留言板页面支持用户提交留言（内容必填、昵称/联系方式可选）；留言与站长回复在公开页面展示（时间倒序、分页）；基础安全（同 IP 限流、内容长度限制、XSS 输出转义）。
+- **站长管理后台（留言管理与回复）**：新增 `/admin` 后台入口与基础布局；管理员登录认证（账号密码、环境变量配置、单管理员、会话管理 cookie/token）；留言管理列表（搜索/筛选）；回复功能（新增/更新回复、记录回复时间与回复人）；内容治理（软删除/隐藏/恢复不当内容）；基础鉴权与安全（接口鉴权、防 CSRF、登录失败限流）。
+- **Cron 表达式工具（开发者工具新增）**：开发者工具列表/导航新增 Cron 表达式入口；支持 5 段（分 时 日 月 周）与 6 段（秒 分 时 日 月 周）格式切换；表达式解析与合法性校验（范围、特殊字符、步长、列表）；人类可读中文解释（如"每周一到周五 09:30 执行"）；未来触发时间预览（默认 10 次，可配置）；常用模板与一键复制。
 
 技术栈：前端 Nuxt3（Vue3 + TypeScript，SSR/SEO）；后端 Spring Boot 3.x + JDK 17；ORM Spring Data JPA + Flyway 迁移；数据库 PostgreSQL；Docker 部署。
 
@@ -25,8 +28,8 @@
 
 - Affected specs: 无（Greenfield 项目，本 spec 为初始规格基线）
 - Affected code: 全新代码库
-  - 前端：`frontend/`（Nuxt3 应用，工具页面、ToolLayout 通用布局、toolRegistry 注册表、useApi 统一客户端、runtimeConfig 配置、统计/广告组件、SSR 数据获取层、错误边界、通用 UI 原子组件）
-  - 后端：`backend/`（Spring Boot 应用，统计/点赞 API、Flyway 迁移、统一响应/异常处理、输入校验、OpenAPI 文档）
+  - 前端：`frontend/`（Nuxt3 应用，工具页面、ToolLayout 通用布局、toolRegistry 注册表、useApi 统一客户端、runtimeConfig 配置、统计/广告组件、SSR 数据获取层、错误边界、通用 UI 原子组件、**意见反馈留言板页面、管理后台页面、Cron 表达式工具页面**）
+  - 后端：`backend/`（Spring Boot 应用，统计/点赞 API、Flyway 迁移、统一响应/异常处理、输入校验、OpenAPI 文档、**留言/回复 API、管理员认证与鉴权、留言管理 API**）
   - 部署：`docker-compose.yml`、`nginx/`、`Dockerfile`（前端/后端）
 - 外部依赖：百度统计（hm.js?id=06c8d960aee8a68f0a9a229ff4a18ceb）、第三方广告平台（待定）、腾讯云基础设施、域名 www.panzipool.com
 
@@ -718,3 +721,202 @@
 - **Then**: 内容不溢出、不截断
 - **Then**: 滚动流畅，无横向滚动条
 - **Verification**: `human-judgment`
+
+### Requirement: 意见反馈留言与回复数据模型
+
+系统 SHALL 设计并维护留言与回复数据模型，迁移通过 Flyway 管理：
+
+- `feedback_messages`：留言表（id、content 留言内容、nickname 昵称可空、contact 联系方式可空、ip 提交者 IP、status 状态 visible/hidden/deleted、admin_reply 站长回复可空、reply_at 回复时间、reply_by 回复人可空、created_at、updated_at）
+  - status 字段支持软删除与隐藏（visible=公开展示、hidden=隐藏不展示、deleted=软删除）
+  - admin_reply 采用单字段存储回复（MVP 简化方案，一条留言一条回复）；如需多条回复可后续拆为 reply 表
+  - 索引：(status, created_at) 复合索引支持公开列表查询、created_at 索引支持后台排序
+
+关键约束：
+- content 必填，长度限制（如 1-1000 字符）
+- nickname 可选，长度限制（如 1-30 字符）
+- contact 可选，长度限制（如 1-100 字符）
+- ip 由后端从请求中获取，前端不传
+
+#### Scenario: 数据库迁移
+- **WHEN** 后端应用启动
+- **THEN** Flyway 自动执行迁移脚本创建 feedback_messages 表与索引
+
+#### Scenario: 留言状态流转
+- **WHEN** 用户提交留言
+- **THEN** 留言状态默认为 visible，可在公开列表展示
+- **WHEN** 站长隐藏留言
+- **THEN** 状态变为 hidden，公开列表不展示但后台可见
+- **WHEN** 站长删除留言
+- **THEN** 状态变为 deleted（软删除），公开与后台默认列表不展示
+
+### Requirement: 留言提交 API
+
+系统 SHALL 提供留言提交接口 `POST /api/v1/feedback`，接收 content（必填）、nickname（可选）、contact（可选），后端从请求获取 IP 地址。接口 SHALL 做基础频率限制（同一 IP 短时间内提交限制，如 1 分钟内最多 3 条）与内容长度校验。接口 SHALL 对输出做 XSS 防护（存储原值，输出时转义）。
+
+#### Scenario: 提交留言成功
+- **WHEN** 用户提交合法留言（content 必填、长度合规）
+- **THEN** 留言存入 feedback_messages 表，状态为 visible，返回成功
+
+#### Scenario: 内容校验失败
+- **WHEN** 用户提交空内容或超长内容
+- **THEN** 返回校验错误，拒绝存储
+
+#### Scenario: 频率限制
+- **WHEN** 同一 IP 在短时间内（如 1 分钟）提交超过限制（如 3 条）
+- **THEN** 返回频率限制错误，拒绝存储
+
+### Requirement: 公开留言查询 API
+
+系统 SHALL 提供公开留言查询接口 `GET /api/v1/feedback?page=N&size=M`，返回状态为 visible 的留言列表（按 created_at 倒序、分页），每条留言包含 content、nickname、created_at、admin_reply、reply_at。接口 SHALL 对输出做 XSS 转义防护。
+
+#### Scenario: 查询公开留言列表
+- **WHEN** 用户访问公开留言板页面
+- **THEN** 接口返回 visible 状态的留言列表（倒序、分页），包含站长回复内容
+
+#### Scenario: 隐藏留言不展示
+- **WHEN** 留言状态为 hidden 或 deleted
+- **THEN** 公开查询接口不返回该留言
+
+### Requirement: 意见反馈公开留言板（前台）
+
+系统 SHALL 在顶部导航"关于我们"后新增"意见反馈"入口，指向公开留言板页面 `/feedback`。留言板页面 SHALL 提供留言提交表单（content 必填、nickname/contact 可选）与公开留言列表展示（时间倒序、分页）。每条留言展示留言内容、时间、昵称（如有）、站长回复（如有）。提交成功后 SHALL 展示成功提示。页面 SHALL 保持现有站点风格一致。
+
+#### Scenario: 顶部导航入口
+- **WHEN** 用户查看顶部导航
+- **THEN** "关于我们"后展示"意见反馈"入口，指向 `/feedback`
+
+#### Scenario: 提交留言
+- **WHEN** 用户填写留言内容（必填）并可选填写昵称/联系方式后提交
+- **THEN** 表单校验通过后调用 API 提交，成功后展示成功提示并刷新列表
+
+#### Scenario: 留言列表展示
+- **WHEN** 用户访问留言板页面
+- **THEN** 展示公开留言列表（时间倒序），每条显示内容、时间、昵称（如有）、站长回复（如有）
+
+#### Scenario: 分页加载
+- **WHEN** 留言数量超过单页
+- **THEN** 提供分页或"加载更多"机制
+
+### Requirement: 管理员认证与会话管理
+
+系统 SHALL 实现管理员登录认证（最简方案：账号密码、环境变量配置、单管理员）。管理员凭据通过环境变量配置（如 `ADMIN_USERNAME`、`ADMIN_PASSWORD`），密码 SHALL 做哈希存储/比对（如 BCrypt）。登录成功后 SHALL 创建会话（cookie 或 token），会话 SHALL 有过期时间。后台接口 SHALL 校验会话有效性。系统 SHALL 实现登录失败限流（如同一 IP 短时间多次失败后限制）。系统 SHALL 防范 CSRF（按技术栈选择方案，如 token 或 SameSite cookie）。
+
+#### Scenario: 管理员登录成功
+- **WHEN** 管理员输入正确账号密码
+- **THEN** 创建会话（cookie/token），重定向到后台首页
+
+#### Scenario: 管理员登录失败
+- **WHEN** 管理员输入错误账号密码
+- **THEN** 返回错误提示，不创建会话
+
+#### Scenario: 未认证访问后台接口
+- **WHEN** 未登录用户访问后台 API
+- **THEN** 返回 401 Unauthorized
+
+#### Scenario: 登录失败限流
+- **WHEN** 同一 IP 短时间内多次登录失败
+- **THEN** 限制后续登录尝试
+
+### Requirement: 留言管理与回复 API
+
+系统 SHALL 提供后台留言管理 API（需管理员鉴权）：
+- `GET /api/v1/admin/feedback?page=N&size=M&status=X`：后台留言列表（支持按状态筛选、搜索可选）
+- `GET /api/v1/admin/feedback/{id}`：留言详情
+- `PUT /api/v1/admin/feedback/{id}/reply`：新增/更新回复（接收 reply 内容、记录 reply_at、reply_by）
+- `PUT /api/v1/admin/feedback/{id}/status`：更新留言状态（visible/hidden/deleted）
+
+#### Scenario: 后台查看留言列表
+- **WHEN** 管理员访问后台留言列表
+- **THEN** 返回留言列表（支持状态筛选、分页），包含所有状态
+
+#### Scenario: 回复留言
+- **WHEN** 管理员对某留言提交回复内容
+- **THEN** 更新 admin_reply、reply_at、reply_by 字段，公开列表同步展示回复
+
+#### Scenario: 隐藏留言
+- **WHEN** 管理员将留言状态改为 hidden
+- **THEN** 公开列表不再展示该留言，后台仍可见
+
+#### Scenario: 删除留言（软删除）
+- **WHEN** 管理员将留言状态改为 deleted
+- **THEN** 公开列表与后台默认列表不展示，数据保留
+
+### Requirement: 管理后台前端
+
+系统 SHALL 新增 `/admin` 后台入口与基础布局页面。后台 SHALL 包含：登录页、留言管理列表页（搜索/筛选/分页）、留言详情与回复页。后台页面 SHALL 与前台风格保持一致但区分布局（管理操作导向）。后台 SHALL 在移动端适配（或标注仅 PC 端使用）。
+
+#### Scenario: 访问后台登录页
+- **WHEN** 未登录用户访问 `/admin`
+- **THEN** 展示管理员登录表单
+
+#### Scenario: 后台留言管理列表
+- **WHEN** 管理员登录后访问留言管理页
+- **THEN** 展示留言列表（支持状态筛选、分页），可进入详情或直接回复
+
+#### Scenario: 回复操作
+- **WHEN** 管理员在详情页或列表中回复留言
+- **THEN** 回复内容保存并同步展示到前台
+
+#### Scenario: 内容治理操作
+- **WHEN** 管理员对不当留言执行隐藏/删除
+- **THEN** 留言状态更新，前台同步调整展示
+
+### Requirement: Cron 表达式工具入口与页面
+
+系统 SHALL 在开发者工具列表/导航中新增 Cron 表达式工具入口，实现工具页面路由（如 `/tools/cron`）与基础布局，保持现有站点风格一致。工具 SHALL 通过 toolRegistry 注册，后端 tools 表插入元数据。工具 SHALL 接入统计/点赞（与其他工具一致）。SHALL 提供移动端版本（MobileCronTool）。
+
+#### Scenario: 新增 Cron 工具入口
+- **WHEN** 用户访问开发者工具列表
+- **THEN** 展示 Cron 表达式工具卡片，点击进入工具页
+
+#### Scenario: Cron 工具页渲染
+- **WHEN** 用户访问 `/tools/cron`
+- **THEN** 展示 Cron 工具交互界面，接入 ToolLayout 与统计/点赞
+
+### Requirement: Cron 格式切换与解析校验
+
+系统 SHALL 实现 5 段（分 时 日 月 周）与 6 段（秒 分 时 日 月 周）两种 Cron 格式切换；切换时 SHALL 提示字段含义与示例。系统 SHALL 对输入 Cron 表达式进行解析与合法性校验（范围、特殊字符 `* - , / ? L W #`、步长、列表等），输出友好的错误提示。
+
+#### Scenario: 切换 Cron 格式
+- **WHEN** 用户在 5 段与 6 段格式间切换
+- **THEN** 输入区字段数与标签相应变化，展示字段含义与示例
+
+#### Scenario: 校验合法表达式
+- **WHEN** 用户输入合法 Cron 表达式
+- **THEN** 校验通过，无错误提示，可继续解释与预览
+
+#### Scenario: 校验非法表达式
+- **WHEN** 用户输入非法 Cron 表达式（如字段越界、非法字符）
+- **THEN** 输出友好的错误提示（指出错误字段与原因）
+
+### Requirement: Cron 人类可读解释
+
+系统 SHALL 将 Cron 表达式翻译为自然语言描述（中文），例如"每周一到周五 09:30 执行"、"每 5 分钟执行一次"、"每月 1 日 00:00 执行"等。解释 SHALL 覆盖常见 Cron 语法（通配符、列表、范围、步长、特殊字符）。
+
+#### Scenario: 生成中文解释
+- **WHEN** 用户输入合法 Cron 表达式
+- **THEN** 输出对应的中文自然语言描述
+
+### Requirement: Cron 未来触发时间预览
+
+系统 SHALL 展示 Cron 表达式的未来触发时间（默认 10 次，可配置次数）。触发时间 SHALL 基于当前时间计算，考虑时区（使用浏览器本地时区或标注 UTC）。SHALL 支持复制/下载（可选）。
+
+#### Scenario: 预览触发时间
+- **WHEN** 用户输入合法 Cron 表达式
+- **THEN** 展示未来 N 次触发时间（默认 10 次），按时间顺序排列
+
+#### Scenario: 配置预览次数
+- **WHEN** 用户调整预览次数
+- **THEN** 触发时间列表相应更新
+
+### Requirement: Cron 常用模板与复制
+
+系统 SHALL 提供常见 Cron 示例模板（如"每分钟"、"每小时整点"、"每天凌晨"、"每周一"、"每月 1 日"、"工作日 9 点"等），支持一键填入表达式。SHALL 支持一键复制 Cron 表达式与解释文本。
+
+#### Scenario: 使用模板
+- **WHEN** 用户点击某常用模板
+- **THEN** 自动填入对应 Cron 表达式，触发校验、解释与预览
+
+#### Scenario: 复制表达式与解释
+- **WHEN** 用户点击复制按钮
+- **THEN** 复制 Cron 表达式或解释文本到剪贴板

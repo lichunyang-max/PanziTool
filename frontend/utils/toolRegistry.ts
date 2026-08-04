@@ -50,6 +50,9 @@ export const toolRegistry: Record<string, () => Promise<Component>> = {
   // Task 14: 哈希计算工具
   hash: () =>
     import('~/components/tool/HashTool.vue').then((m) => m.default || m),
+  // Task 38: Cron 表达式工具
+  cron: () =>
+    import('~/components/tool/CronTool.vue').then((m) => m.default || m),
   // Task 16: 图片压缩工具
   'image-compress': () =>
     import('~/components/tool/ImageCompressTool.vue').then(

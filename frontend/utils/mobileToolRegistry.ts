@@ -52,6 +52,11 @@ export const mobileToolRegistry: Record<string, () => Promise<Component>> = {
       (m) => m.default || m,
     ),
 
+  cron: () =>
+    import('~/components/mobile/tools/MobileCron.vue').then(
+      (m) => m.default || m,
+    ),
+
   'image-compress': () =>
     import('~/components/mobile/tools/MobileImageCompress.vue').then(
       (m) => m.default || m,
