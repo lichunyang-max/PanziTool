@@ -37,13 +37,20 @@ public class DataInitializer {
     @Bean
     public ApplicationRunner toolDataInitializer(ToolRepository toolRepository) {
         return args -> {
-            if (toolRepository.count() > 0) {
-                log.debug("tools 表已有数据，跳过种子数据初始化 (count={})", toolRepository.count());
+            if (toolRepository.count() == 0) {
+                log.info("tools 表为空，开始初始化种子工具");
+                toolRepository.saveAll(buildSeedTools());
+                log.info("工具种子数据初始化完成，共 {} 个", toolRepository.count());
                 return;
             }
-            log.info("tools 表为空，开始初始化 10 个种子工具");
-            toolRepository.saveAll(buildSeedTools());
-            log.info("工具种子数据初始化完成，共 {} 个", toolRepository.count());
+            // 按 slug 逐个检查，补充缺失的种子工具
+            List<Tool> seedTools = buildSeedTools();
+            for (Tool seedTool : seedTools) {
+                if (toolRepository.findBySlug(seedTool.getSlug()).isEmpty()) {
+                    log.info("补充缺失的种子工具: {}", seedTool.getSlug());
+                    toolRepository.save(seedTool);
+                }
+            }
         };
     }
 
@@ -84,6 +91,9 @@ public class DataInitializer {
     private List<Tool> buildSeedTools() {
         LocalDateTime now = LocalDateTime.now();
         return List.of(
+                tool("cron", "Cron表达式工具", "developer",
+                        "cron,定时,表达式,任务调度",
+                        "Cron表达式解析、校验、中文解释与触发时间预览工具", true, 0L, 0L, now),
                 tool("json-formatter", "JSON格式化", "developer",
                         "json,format,beautify,minify,validate",
                         "JSON美化、压缩、语法校验，错误定位提示", true, 12300L, 892L, now),

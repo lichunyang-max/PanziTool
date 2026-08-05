@@ -11,13 +11,14 @@ interface NavItem {
   label: string
   to: string
   key: string
+  isNew?: boolean
 }
 
 const navItems: NavItem[] = [
   { label: '首页', to: '/', key: 'home' },
   { label: '开发者工具', to: '/category/developer', key: 'dev-tools' },
   { label: '关于我们', to: '/about', key: 'about' },
-  { label: '意见反馈', to: '/feedback', key: 'feedback' },
+  { label: '意见反馈', to: '/feedback', key: 'feedback', isNew: true },
   { label: '隐私政策', to: '/privacy', key: 'privacy' },
 ]
 
@@ -115,6 +116,20 @@ async function onSearchEnter() {
             :data-active="isActive(item.to)"
             :aria-current="isActive(item.to) ? 'page' : undefined"
           >
+            <span
+              v-if="item.isNew"
+              class="inline-block align-middle mr-1 px-1 leading-none"
+              style="
+                font-size: 10px;
+                font-weight: 700;
+                color: #fff;
+                background-color: var(--pz-color-primary);
+                border-radius: 4px;
+                padding-top: 2px;
+                padding-bottom: 2px;
+              "
+              aria-label="新上架"
+            >NEW</span>
             {{ item.label }}
           </NuxtLink>
         </nav>

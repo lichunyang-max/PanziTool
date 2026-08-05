@@ -5,9 +5,9 @@
  * 严格参照 panzitool-extension/pages/cron-tool.html 的交互区结构：
  * 1. 格式选择卡片（5 段 / 6 段切换）
  * 2. 表达式输入卡片（输入 + 校验按钮 + 错误提示）
- * 3. 中文解释卡片
- * 4. 未来触发时间预览卡片（默认 10 次，可配置）
- * 5. 常用模板卡片（一键填入）
+ * 3. 常用模板卡片（一键填入）
+ * 4. 中文解释卡片
+ * 5. 未来触发时间预览卡片（默认 5 次，可配置）
  *
  * - 复用 utils/tools/cron.ts 纯函数业务逻辑
  * - 校验触发 reportEvent('tool_use')，复制触发 reportEvent('copy')
@@ -70,26 +70,32 @@ const { data: adData } = await useAsyncData<AdItem | null>(
 )
 
 useHead({
+  // 关闭全局标题模板，避免后缀重复拼接
   titleTemplate: null,
-  title: 'Cron 表达式工具 | 盘子工具站',
+  // 页面主标题
+  title: 'Cron表达式 | 盘子工具站',
   meta: [
+    // 页面描述
     {
       name: 'description',
       content:
-        '免费在线 Cron 表达式工具，支持 5 段与 6 段格式切换，提供表达式校验、中文解释与未来触发时间预览，覆盖通配符、列表、范围、步长及 L/W/# 特殊字符，免登录即用。',
+        '在线Cron表达式解析、合法性校验、中文释义、未来触发时间预览，支持5段/6段格式，适配Java、Linux定时任务调试，网页离线快速使用。',
     },
+    // 关键词
     {
       name: 'keywords',
-      content: 'Cron表达式,Cron校验,Cron解释,Quartz,定时任务,在线Cron工具',
+      content: 'Cron表达式,在线cron解析,定时任务校验,cron时间预览',
     },
+    // 社交分享标题
     {
       property: 'og:title',
-      content: 'Cron 表达式工具 | 盘子工具站',
+      content: 'Cron表达式 | 盘子工具站',
     },
+    // 社交分享描述
     {
       property: 'og:description',
       content:
-        '免费在线 Cron 表达式工具，支持 5 段与 6 段格式切换，提供表达式校验、中文解释与未来触发时间预览，免登录即用。',
+        '在线Cron表达式解析、合法性校验、中文释义、未来触发时间预览，支持5段/6段格式，适配Java、Linux定时任务调试，网页离线快速使用。',
     },
   ],
 })
@@ -125,7 +131,7 @@ function validate() {
 const explanation = ref('')
 
 // === 触发时间预览 ===
-const previewCount = ref(10)
+const previewCount = ref(5)
 const triggerTimes = ref<Date[]>([])
 
 function formatTriggerTime(d: Date): string {
@@ -383,7 +389,36 @@ const specialChars = [
       </div>
     </div>
 
-    <!-- ===== 3. 中文解释 ===== -->
+    <!-- ===== 3. 常用模板 ===== -->
+    <div class="pz-card p-5">
+      <div class="flex items-center gap-2 mb-4">
+        <LayoutGrid
+          class="w-[18px] h-[18px]"
+          style="color: var(--pz-color-primary)"
+          aria-hidden="true"
+        />
+        <h2
+          class="text-base font-semibold"
+          style="color: var(--pz-color-text-primary)"
+        >
+          常用模板
+        </h2>
+      </div>
+      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <button
+          v-for="t in TEMPLATES"
+          :key="t.label"
+          type="button"
+          class="pz-cron-template"
+          @click="applyTemplate(t)"
+        >
+          <span class="pz-cron-template-label">{{ t.label }}</span>
+          <code class="pz-cron-template-code">{{ t.expression }}</code>
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== 4. 中文解释 ===== -->
     <div class="pz-card p-5">
       <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-2">
@@ -424,7 +459,7 @@ const specialChars = [
       </div>
     </div>
 
-    <!-- ===== 4. 触发时间预览 ===== -->
+    <!-- ===== 5. 触发时间预览 ===== -->
     <div class="pz-card p-5">
       <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
         <div class="flex items-center gap-2">
@@ -497,7 +532,7 @@ const specialChars = [
       </div>
     </div>
 
-    <!-- ============ 广告位（中文解释与触发时间之间） ============ -->
+    <!-- ============ 广告位 ============ -->
     <StaticAdCard
       v-if="adData"
       id="cronMiddle"
@@ -505,35 +540,6 @@ const specialChars = [
       :image-url="adData.product_url"
       :link-url="adData.ad_url"
     />
-
-    <!-- ===== 5. 常用模板 ===== -->
-    <div class="pz-card p-5">
-      <div class="flex items-center gap-2 mb-4">
-        <LayoutGrid
-          class="w-[18px] h-[18px]"
-          style="color: var(--pz-color-primary)"
-          aria-hidden="true"
-        />
-        <h2
-          class="text-base font-semibold"
-          style="color: var(--pz-color-text-primary)"
-        >
-          常用模板
-        </h2>
-      </div>
-      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        <button
-          v-for="t in TEMPLATES"
-          :key="t.label"
-          type="button"
-          class="pz-cron-template"
-          @click="applyTemplate(t)"
-        >
-          <span class="pz-cron-template-label">{{ t.label }}</span>
-          <code class="pz-cron-template-code">{{ t.expression }}</code>
-        </button>
-      </div>
-    </div>
 
     <!-- ===== 6. 字段信息表 ===== -->
     <div class="pz-card p-5">

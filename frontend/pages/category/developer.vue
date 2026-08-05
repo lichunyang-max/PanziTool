@@ -261,21 +261,7 @@ function formatCount(count: number): string {
             class="w-7 h-7 flex items-center justify-center shrink-0"
             style="background-color: var(--pz-color-primary-light); border-radius: var(--pz-radius-md)"
           >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              style="color: var(--pz-color-primary)"
-              aria-hidden="true"
-            >
-              <polyline points="16 18 22 12 16 6" />
-              <polyline points="8 6 2 12 8 18" />
-            </svg>
+            <ToolIcon :slug="tool.slug" />
           </div>
           <h3
             class="text-base font-semibold truncate min-w-0"

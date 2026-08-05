@@ -14,26 +14,32 @@
  */
 
 useHead({
+  // 关闭全局标题模板，避免后缀重复拼接
   titleTemplate: null,
+  // 页面主标题
   title: '意见反馈 | 盘子工具站',
   meta: [
+    // 页面描述
     {
       name: 'description',
       content:
-        '盘子工具站意见反馈页面，提交你的建议或问题，公开留言板会展示留言与站长回复，欢迎反馈使用体验与功能建议。',
+        '盘子工具站意见反馈专区，可在线提交工具优化建议、使用问题留言，公开留言实时展示站长回复，助力工具箱持续迭代优化。',
     },
+    // 关键词
     {
       name: 'keywords',
-      content: '盘子工具站,意见反馈,留言板,问题反馈,功能建议',
+      content: '意见反馈,在线留言,工具建议提交,站长留言反馈',
     },
+    // 社交分享标题
     {
       property: 'og:title',
       content: '意见反馈 | 盘子工具站',
     },
+    // 社交分享描述
     {
       property: 'og:description',
       content:
-        '盘子工具站意见反馈页面，提交你的建议或问题，公开留言板会展示留言与站长回复，欢迎反馈使用体验与功能建议。',
+        '盘子工具站意见反馈专区，可在线提交工具优化建议、使用问题留言，公开留言实时展示站长回复，助力工具箱持续迭代优化。',
     },
   ],
 })
@@ -192,11 +198,16 @@ async function handleSubmit() {
     return
   }
 
+  const trimmedContact = contact.value.trim()
+  if (trimmedContact && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedContact)) {
+    errorMessage.value = '联系方式请输入正确的邮箱地址。'
+    return
+  }
+
   submitting.value = true
   try {
     const body: Record<string, unknown> = { content }
     const trimmedNickname = nickname.value.trim()
-    const trimmedContact = contact.value.trim()
     if (trimmedNickname) body.nickname = trimmedNickname
     if (trimmedContact) body.contact = trimmedContact
 
@@ -242,6 +253,13 @@ function onMessageInput() {
     errorMessage.value = ''
   }
 }
+
+/** 联系方式输入时清除错误提示 */
+function onContactInput() {
+  if (errorMessage.value && contact.value.trim()) {
+    errorMessage.value = ''
+  }
+}
 </script>
 
 <template>
@@ -284,7 +302,7 @@ function onMessageInput() {
     <p
       style="font-family: var(--pz-font-sans); font-size: var(--pz-text-base); color: var(--pz-color-text-secondary); line-height: var(--pz-leading-relaxed); margin-top: 0.5rem"
     >
-      提交你的建议或问题，公开留言板会展示留言与站长回复。
+      各位小伙伴好，为了给大家带来更好的使用体验，我们始终在持续优化本站所有工具。若你在使用过程中有任何想法：不满意的地方、想要新增的工具、觉得繁琐的操作、合理的改进意见，都欢迎尽情提交。每一条建议我们都会认真查看记录<b style="color: red;">（站长一般当天回复）</b>，期待和大家一同共建实用优质的工具网站。
     </p>
   </div>
 
@@ -349,11 +367,13 @@ function onMessageInput() {
             <input
               id="contact"
               v-model="contact"
-              type="text"
-              placeholder="邮箱或手机号"
+              type="email"
+              placeholder="请输入邮箱，如 example@mail.com"
               class="pz-input w-full"
               maxlength="100"
               autocomplete="email"
+              :style="errorMessage ? { borderColor: 'var(--pz-state-error)' } : {}"
+              @input="onContactInput"
             >
           </div>
 
@@ -373,7 +393,7 @@ function onMessageInput() {
               rows="5"
               minlength="5"
               required
-              placeholder="请输入至少 5 个字符..."
+              placeholder="请输入您的建议或者问题，若是涉及到现有工具的请加上工具名称，建议或问题尽量描述清晰，不然站长可能不理解哟，谢谢！"
               class="pz-textarea w-full"
               style="min-height: 120px; resize: vertical"
               :style="errorMessage ? { borderColor: 'var(--pz-state-error)' } : {}"

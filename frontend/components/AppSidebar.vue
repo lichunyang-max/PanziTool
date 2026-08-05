@@ -11,11 +11,12 @@ const route = useRoute()
 interface SidebarLink {
   label: string
   to: string
+  isNew?: boolean
 }
 
 const devToolsLinks: SidebarLink[] = [
   { label: 'JSON格式化', to: '/tools/json-formatter' },
-  { label: 'Cron表达式', to: '/tools/cron' },
+  { label: 'Cron表达式', to: '/tools/cron', isNew: true },
   { label: '正则测试', to: '/tools/regex-tester' },
   { label: '时间戳转换', to: '/tools/timestamp' },
   { label: 'URL编码解码', to: '/tools/url-encode' },
@@ -149,6 +150,20 @@ function onSectionKeydown(e: KeyboardEvent, sectionId: string) {
               :aria-current="isLinkActive(link.to) ? 'page' : undefined"
             >
               {{ link.label }}
+              <span
+                v-if="link.isNew"
+                class="inline-block align-middle ml-1 px-1 leading-none"
+                style="
+                  font-size: 10px;
+                  font-weight: 700;
+                  color: #fff;
+                  background-color: var(--pz-color-primary);
+                  border-radius: 4px;
+                  padding-top: 2px;
+                  padding-bottom: 2px;
+                "
+                aria-label="新上架"
+              >NEW</span>
             </NuxtLink>
           </div>
         </div>
