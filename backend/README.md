@@ -2,7 +2,7 @@
 
 盘子工具（PanziTool）在线工具聚合站后端 API。提供匿名使用统计上报、点赞、工具元数据查询等接口。
 
-- 技术栈：Spring Boot 3.2.5 + JDK 17 + Spring Data JPA + Flyway + PostgreSQL
+- 技术栈：Spring Boot 3.x + JDK 17 + Spring Data JPA + PostgreSQL
 - 文档：OpenAPI / Swagger UI
 - 规范：统一响应信封、JSR-303 校验、全局异常处理、CORS
 
@@ -29,7 +29,6 @@ backend/
 │   │       ├── application.yml             # 基础配置（默认 H2 内存库，可独立启动）
 │   │       ├── application-dev.yml         # 开发环境（PostgreSQL localhost）
 │   │       ├── application-prod.yml        # 生产环境（PostgreSQL 环境变量）
-│   │       └── db/migration/               # Flyway 迁移脚本（Task 3 填充）
 │   └── test/java/com/panzipool/api/
 │       ├── PanziPoolApplicationTests.java  # 上下文启动冒烟测试
 │       └── controller/PingControllerTest.java  # 基础设施集成测试

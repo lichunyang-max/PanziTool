@@ -157,8 +157,8 @@ async function onSearchEnter() {
           v-model="searchKeyword"
           type="text"
           placeholder="搜索工具..."
-          class="pz-input w-full pl-9"
-          style="max-width: 240px"
+          class="pz-input w-full"
+          style="max-width: 240px; padding-left: 2.25rem"
           aria-label="搜索工具"
           @keydown.enter="onSearchEnter"
         >
