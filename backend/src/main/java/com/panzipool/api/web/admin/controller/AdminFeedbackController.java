@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -88,5 +89,17 @@ public class AdminFeedbackController {
             @Parameter(description = "留言ID") @PathVariable Long id,
             @Valid @RequestBody AdminStatusRequest body) {
         return ApiResponse.success(service.updateStatus(id, body.getStatus()));
+    }
+
+    @Operation(summary = "删除留言", description = "物理删除一条留言，删除后不可恢复")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "删除成功"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "留言不存在")
+    })
+    @DeleteMapping("/{id}")
+    public ApiResponse<Void> deleteFeedback(
+            @Parameter(description = "留言ID") @PathVariable Long id) {
+        service.deleteFeedback(id);
+        return ApiResponse.success(null);
     }
 }

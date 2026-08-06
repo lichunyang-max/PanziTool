@@ -127,6 +127,33 @@ const { data: pageData, refresh: refreshList } = await useAsyncData<FeedbackPage
   },
 )
 
+// ============ 客户端挂载后拉取最新留言 ============
+// 预渲染模式下整页刷新会复用 payload，useAsyncData 不会重新请求。
+// 这里在客户端挂载后用 $fetch 直接发请求覆盖 pageData，
+// 绕开 useAsyncData 的 payload 复用 + dedupe 机制，确保每次刷新都真实发请求。
+const loadingList = ref(false)
+
+async function loadLatestList() {
+  loadingList.value = true
+  try {
+    const res = await $fetch<ApiResponse<FeedbackPage>>('/api/v1/feedback', {
+      baseURL,
+      params: { page: currentPage.value, size: pageSize },
+    })
+    if (res.code === 0) {
+      pageData.value = res.data
+    }
+  } catch {
+    // 忽略错误，保留预渲染时的数据
+  } finally {
+    loadingList.value = false
+  }
+}
+
+onMounted(() => {
+  loadLatestList()
+})
+
 // ============ 工具函数 ============
 
 /** 取昵称首字（无昵称返回"匿"） */

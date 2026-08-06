@@ -54,6 +54,8 @@ const filterStatus = ref<FilterStatus>('all')
 const toastMessage = ref('')
 const toastType = ref<'success' | 'error'>('success')
 const toggleLoading = ref<number | string | null>(null)
+const deleteLoading = ref<number | string | null>(null)
+const pendingDeleteId = ref<number | string | null>(null)
 
 function formatTime(timeStr?: string | null): string {
   if (!timeStr) return ''
@@ -198,6 +200,45 @@ async function handleToggleStatus(item: FeedbackItem) {
   } finally {
     toggleLoading.value = null
   }
+}
+
+async function handleDelete(item: FeedbackItem) {
+  if (deleteLoading.value !== null) return
+  pendingDeleteId.value = item.id
+}
+
+async function confirmDelete() {
+  const id = pendingDeleteId.value
+  if (id === null) return
+  deleteLoading.value = id
+  pendingDeleteId.value = null
+  try {
+    const res = await $fetch<ApiResponse<unknown>>(`/api/v1/admin/feedback/${id}`, {
+      baseURL,
+      method: 'DELETE',
+      credentials: 'include',
+    })
+    if (res.code === 0) {
+      showToast('删除成功', 'success')
+      await refresh()
+    } else {
+      showToast(res.message || '删除失败', 'error')
+    }
+  } catch (err) {
+    const error = err as { statusCode?: number; data?: { message?: string }; message?: string }
+    if (error?.statusCode === 401) {
+      if (import.meta.client) localStorage.removeItem('admin_logged_in')
+      await navigateTo('/admin/login')
+    } else {
+      showToast(error?.data?.message || error?.message || '删除失败', 'error')
+    }
+  } finally {
+    deleteLoading.value = null
+  }
+}
+
+function cancelDelete() {
+  pendingDeleteId.value = null
 }
 
 function goToPage(p: number) {
@@ -363,6 +404,25 @@ const pageNumbers = computed<(number | string)[]>(() => {
                     >
                       {{ item.status === 'hidden' ? '恢复' : '隐藏' }}
                     </a>
+                    <a
+                      v-if="deleteLoading === item.id"
+                      href="#"
+                      class="text-muted-foreground opacity-60 cursor-not-allowed"
+                      @click.prevent
+                    >
+                      <svg class="animate-spin inline" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                      </svg>
+                    </a>
+                    <a
+                      v-else
+                      href="#"
+                      class="hover:underline"
+                      style="color: var(--pz-state-error)"
+                      @click.prevent="handleDelete(item)"
+                    >
+                      删除
+                    </a>
                   </div>
                 </td>
               </tr>
@@ -412,6 +472,35 @@ const pageNumbers = computed<(number | string)[]>(() => {
             </svg>
           </button>
         </nav>
+      </div>
+
+      <!-- 删除确认弹窗 -->
+      <div
+        v-if="pendingDeleteId !== null"
+        class="fixed inset-0 z-50 flex items-center justify-center"
+        style="background-color: rgba(0, 0, 0, 0.5)"
+      >
+        <div class="bg-card border border-border rounded-lg p-6 max-w-sm w-full mx-4">
+          <h3 class="text-lg font-semibold text-foreground mb-2">确认删除</h3>
+          <p class="text-sm text-muted-foreground mb-6">删除后留言将无法恢复，确定要删除吗？</p>
+          <div class="flex justify-end gap-3">
+            <button
+              type="button"
+              class="px-4 py-2 text-sm border border-border rounded-md bg-card text-foreground hover:bg-muted"
+              @click="cancelDelete"
+            >
+              取消
+            </button>
+            <button
+              type="button"
+              class="px-4 py-2 text-sm rounded-md"
+              style="background-color: var(--pz-state-error); color: var(--pz-color-text-inverse); border: none"
+              @click="confirmDelete"
+            >
+              确认删除
+            </button>
+          </div>
+        </div>
       </div>
   </div>
 </template>

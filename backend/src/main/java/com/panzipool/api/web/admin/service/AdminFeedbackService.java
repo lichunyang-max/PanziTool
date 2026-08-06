@@ -85,4 +85,12 @@ public class AdminFeedbackService {
         FeedbackMessage saved = feedbackMessageRepository.save(entity);
         return AdminFeedbackDetail.from(saved);
     }
+
+    @Transactional
+    public void deleteFeedback(Long id) {
+        if (!feedbackMessageRepository.existsById(id)) {
+            throw new BusinessException(ApiConstants.CODE_NOT_FOUND, "留言不存在", HttpStatus.NOT_FOUND);
+        }
+        feedbackMessageRepository.deleteById(id);
+    }
 }
