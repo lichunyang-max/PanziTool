@@ -204,6 +204,19 @@ export const toolStaticMeta: Record<string, ToolStaticMeta> = {
       },
     ],
   },
+  'id-photo': {
+    slug: 'id-photo',
+    name: 'AI证件照',
+    description: '免费在线AI证件照制作工具，支持一键抠图换底色、九种标准尺寸规格（一寸/二寸等）300DPI高清输出，浏览器本地处理不上传，免登录即用，保护隐私安全。',
+    keywords: 'AI证件照,证件照制作,证件照换底色,一寸照,二寸照,在线证件照',
+    category: 'image',
+    faq: [
+      { question: 'AI证件照工具支持哪些底色？', answer: '支持白、浅蓝、深蓝、红色、渐变、浅灰六种常见证件照底色，制作后可随时切换实时预览。' },
+      { question: '支持哪些证件照尺寸？', answer: '支持一寸、小一寸、大一寸、二寸、小二寸、大二寸、三寸、四寸、五寸共九种标准规格，按300DPI换算像素输出。' },
+      { question: '照片会传到服务器吗？', answer: '不会。人像抠图与合成全部在浏览器本地使用AI模型完成，照片数据不会离开您的设备。' },
+      { question: '支持哪些图片格式？', answer: '支持JPG、JPEG、PNG格式上传，图片长宽需小于8000像素。' },
+    ],
+  },
 }
 
 /**

@@ -66,6 +66,9 @@ export const toolRegistry: Record<string, () => Promise<Component>> = {
     import('~/components/tool/ImageConvertTool.vue').then(
       (m) => m.default || m,
     ),
+  // AI 证件照工具
+  'id-photo': () =>
+    import('~/components/tool/IdPhotoTool.vue').then((m) => m.default || m),
 }
 
 /**

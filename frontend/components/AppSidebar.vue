@@ -29,6 +29,7 @@ const imageToolsLinks: SidebarLink[] = [
   { label: '图片压缩', to: '/tools/image-compress' },
   { label: '图片裁剪', to: '/tools/image-crop' },
   { label: '格式转换', to: '/tools/image-convert' },
+  { label: 'AI证件照', to: '/tools/id-photo', isNew: true },
 ]
 
 // 侧边栏折叠状态
@@ -226,6 +227,20 @@ function onSectionKeydown(e: KeyboardEvent, sectionId: string) {
               :aria-current="isLinkActive(link.to) ? 'page' : undefined"
             >
               {{ link.label }}
+              <span
+                v-if="link.isNew"
+                class="inline-block align-middle ml-1 px-1 leading-none"
+                style="
+                  font-size: 10px;
+                  font-weight: 700;
+                  color: #fff;
+                  background-color: var(--pz-color-primary);
+                  border-radius: 4px;
+                  padding-top: 2px;
+                  padding-bottom: 2px;
+                "
+                aria-label="新上架"
+              >NEW</span>
             </NuxtLink>
           </div>
         </div>
