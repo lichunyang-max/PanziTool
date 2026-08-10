@@ -124,6 +124,9 @@ public class DataInitializer {
                 tool("image-convert", "格式转换", "image",
                         "image,convert,转换,png,jpg,webp",
                         "PNG/JPG/WEBP互转，透明背景处理", true, 2300L, 187L, now),
+                tool("qr-code", "二维码生成器", "developer",
+                        "qr,二维码,生成,logo,在线二维码",
+                        "文本/链接/WiFi/邮箱二维码生成，支持自定义颜色、Logo嵌入与PNG/SVG导出", true, 0L, 0L, now),
                 tool("id-photo", "AI证件照", "image",
                         "id-photo,ai,证件照,换底色,一寸,二寸",
                         "AI智能抠图换底色生成标准证件照，本地处理不上传", true, 0L, 0L, now)

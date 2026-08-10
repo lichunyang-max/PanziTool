@@ -70,7 +70,12 @@ VALUES
     ('image-convert', '格式转换', 'image',
      'image,convert,转换,png,jpg,webp',
      'PNG/JPG/WEBP互转，透明背景处理',
-     TRUE, 2300, 187, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+     TRUE, 2300, 187, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+
+    ('qr-code', '二维码生成器', 'developer',
+     'qr,二维码,生成,logo,在线二维码',
+     '文本/链接/WiFi/邮箱二维码生成，支持自定义颜色、Logo嵌入与PNG/SVG导出',
+     TRUE, 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- 初始化广告种子数据
 INSERT INTO ad_promotion (ad_union, ad_union_symbol, ad_placement, pid, product_description, product_url, ad_url, ad_start, ad_end, ad_enabled, ad_location, ad_location_symbol, created_at, updated_at)

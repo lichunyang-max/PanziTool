@@ -69,6 +69,10 @@ export const toolRegistry: Record<string, () => Promise<Component>> = {
   // AI 证件照工具
   'id-photo': () =>
     import('~/components/tool/IdPhotoTool.vue').then((m) => m.default || m),
+
+  // 二维码生成工具
+  'qr-code': () =>
+    import('~/components/tool/QrCodeTool.vue').then((m) => m.default || m),
 }
 
 /**

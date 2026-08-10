@@ -177,7 +177,7 @@ function formatCount(count: number): string {
 
     <!-- ============ 广告位（动态数据源，无数据时静默隐藏） ============ -->
     <StaticAdCard
-      v-if="adData && !['regex-tester', 'timestamp', 'url-encode', 'jwt-decoder', 'hash', 'cron', 'image-crop', 'image-convert'].includes(tool.slug)"
+      v-if="adData && !['regex-tester', 'timestamp', 'url-encode', 'jwt-decoder', 'hash', 'cron', 'image-crop', 'image-convert', 'qr-code', 'id-photo'].includes(tool.slug)"
       id="toolFooter"
       :title="adData.product_description"
       :image-url="adData.product_url"

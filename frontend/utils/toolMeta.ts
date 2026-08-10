@@ -204,6 +204,31 @@ export const toolStaticMeta: Record<string, ToolStaticMeta> = {
       },
     ],
   },
+  'qr-code': {
+    slug: 'qr-code',
+    name: '二维码生成器',
+    description: '免费在线二维码生成工具，支持文本/链接/WiFi/邮箱内容、自定义颜色尺寸、纠错等级与 Logo 嵌入，本地生成不上传，免登录打开即用，隐私安全有保障。',
+    keywords: '二维码生成,二维码制作,在线二维码,WiFi二维码,二维码Logo',
+    category: 'developer',
+    faq: [
+      {
+        question: '二维码生成工具支持哪些内容类型？',
+        answer: '支持纯文本、网址链接、WiFi 信息和邮箱地址四种类型。WiFi 二维码扫描后可直接连接网络，邮箱二维码可预填收件人和主题。',
+      },
+      {
+        question: '数据是否安全？',
+        answer: '所有二维码均在浏览器本地生成，内容不会上传到服务器，隐私安全有保障。',
+      },
+      {
+        question: '如何选择纠错等级？',
+        answer: '纠错等级越高抗污损能力越强但数据密度越高。嵌入 Logo 时建议选择 Q 或 H 等级以保证可识别性。',
+      },
+      {
+        question: '可以自定义二维码样式吗？',
+        answer: '可自定义前景色、背景色、尺寸、边距，并支持上传 Logo 图片嵌入，保持深色前景配浅色背景可提高扫码成功率。',
+      },
+    ],
+  },
   'id-photo': {
     slug: 'id-photo',
     name: 'AI证件照',

@@ -17,6 +17,7 @@ interface SidebarLink {
 const devToolsLinks: SidebarLink[] = [
   { label: 'JSON格式化', to: '/tools/json-formatter' },
   { label: 'Cron表达式', to: '/tools/cron', isNew: true },
+  { label: '二维码生成器', to: '/tools/qr-code', isNew: true },
   { label: '正则测试', to: '/tools/regex-tester' },
   { label: '时间戳转换', to: '/tools/timestamp' },
   { label: 'URL编码解码', to: '/tools/url-encode' },

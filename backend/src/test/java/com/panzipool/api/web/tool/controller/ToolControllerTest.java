@@ -41,8 +41,8 @@ class ToolControllerTest {
         JsonNode data = body.get("data");
         JsonNode items = data.get("items");
         assertThat(items.isArray()).isTrue();
-        assertThat(items.size()).isEqualTo(10);
-        assertThat(data.get("total").asLong()).isEqualTo(10L);
+        assertThat(items.size()).isEqualTo(11);
+        assertThat(data.get("total").asLong()).isEqualTo(11L);
 
         assertThat(items.get(0).get("slug").asText()).isEqualTo("json-formatter");
         assertThat(items.get(0).get("use_count").asLong()).isEqualTo(12300L);
@@ -68,8 +68,8 @@ class ToolControllerTest {
 
         JsonNode data = body.get("data");
         JsonNode items = data.get("items");
-        assertThat(items.size()).isEqualTo(7);
-        assertThat(data.get("total").asLong()).isEqualTo(7L);
+        assertThat(items.size()).isEqualTo(8);
+        assertThat(data.get("total").asLong()).isEqualTo(8L);
 
         for (JsonNode item : items) {
             assertThat(item.get("category").asText()).isEqualTo("developer");
@@ -112,8 +112,8 @@ class ToolControllerTest {
         assertThat(body.get("code").asInt()).isZero();
 
         JsonNode items = body.get("data").get("items");
-        assertThat(items.size()).isEqualTo(10);
-        assertThat(body.get("data").get("total").asLong()).isEqualTo(10L);
+        assertThat(items.size()).isEqualTo(11);
+        assertThat(body.get("data").get("total").asLong()).isEqualTo(11L);
     }
 
     @Test
@@ -141,7 +141,7 @@ class ToolControllerTest {
         JsonNode data = objectMapper.readTree(resp.getBody()).get("data");
 
         assertThat(data.get("items").size()).isEqualTo(3);
-        assertThat(data.get("total").asLong()).isEqualTo(10L);
+        assertThat(data.get("total").asLong()).isEqualTo(11L);
 
         assertThat(data.get("items").get(0).get("slug").asText()).isEqualTo("json-formatter");
         assertThat(data.get("items").get(1).get("slug").asText()).isEqualTo("regex-tester");
@@ -157,7 +157,7 @@ class ToolControllerTest {
         JsonNode data = objectMapper.readTree(resp.getBody()).get("data");
 
         assertThat(data.get("items").size()).isEqualTo(3);
-        assertThat(data.get("total").asLong()).isEqualTo(10L);
+        assertThat(data.get("total").asLong()).isEqualTo(11L);
 
         assertThat(data.get("items").get(0).get("slug").asText()).isEqualTo("url-encode");
         assertThat(data.get("items").get(1).get("slug").asText()).isEqualTo("jwt-decoder");
@@ -173,7 +173,7 @@ class ToolControllerTest {
         JsonNode data = objectMapper.readTree(resp.getBody()).get("data");
 
         assertThat(data.get("items").size()).isZero();
-        assertThat(data.get("total").asLong()).isEqualTo(10L);
+        assertThat(data.get("total").asLong()).isEqualTo(11L);
     }
 
     @Test

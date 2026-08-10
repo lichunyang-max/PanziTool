@@ -8,14 +8,14 @@
  * 功能：
  * 1. 图片上传（点击 / 拖拽 / 粘贴），JPG/JPEG/PNG，长或宽 < 8000px
  * 2. 画布预览：缩放（0.25~4）、按住拖动平移、重置、重新上传
- * 3. 配置面板：6 种照片底色 + 9 种证件照尺寸（mm 规格），开始制作状态机
+ * 3. 配置面板：7 种照片底色 + 9 种证件照尺寸（mm 规格），开始制作状态机
  * 4. 智能抠图：MediaPipe Tasks Vision ImageSegmenter（浏览器本地分割，
- *    不处理不上传），降采样 1024px 分割，person 置信度 mask 按 getLabels
+ *    不处理不上传），降采样 1400px 分割，person 置信度 mask 按 getLabels
  *    解析索引（该模型版本仅返回 1 个 person mask，取索引 0），阈值 0.5，
  *    destination-in 生成全尺寸透明人像图层并缓存
  * 5. 证件照合成：按 300DPI 换算目标像素，填充底色 + 等比居中叠加人像；
  *    底色/尺寸变更实时重合成（TR-5.1）
- * 6. 成品导出：PNG 下载（id-photo-{sizeSlug}.png）与剪贴板复制
+ * 6. 成品导出：PNG / JPG 下载（id-photo-{sizeSlug}.png|.jpg）与剪贴板复制
  *
  * 交互事件（useAnalytics 上报）：开始制作 → tool_use；下载 → download；复制 → copy
  */
@@ -75,6 +75,38 @@ const effectiveSlug = computed(
   () => props.slug || (route.params.slug as string) || 'id-photo',
 )
 
+/** 广告数据（与图片裁剪工具一致：img_tool_middle） */
+interface AdItem {
+  product_description: string
+  product_url: string
+  ad_url: string
+}
+const { data: adData } = await useAsyncData<AdItem | null>(
+  'id-photo-middle-ad',
+  async () => {
+    const config = useRuntimeConfig()
+    const baseURL = import.meta.server
+      ? (config.apiBase as string)
+      : (config.public.apiBase as string)
+    try {
+      const response = await $fetch<{
+        code: number
+        data: AdItem[]
+      }>('/api/v1/ads', {
+        baseURL,
+        params: { locationSymbol: 'img_tool_middle' },
+      })
+      if (response.code === 0 && response.data && response.data.length > 0) {
+        return response.data[0]
+      }
+      return null
+    } catch {
+      return null
+    }
+  },
+  { default: () => null },
+)
+
 // === 常量与选项 ===
 /** 允许的图片 MIME / 扩展名 */
 const ACCEPTED_TYPES = ['image/jpeg', 'image/jpg', 'image/png']
@@ -82,13 +114,15 @@ const ACCEPTED_TYPES = ['image/jpeg', 'image/jpg', 'image/png']
 const MAX_DIMENSION = 8000
 /** 毫米 → 像素换算（300DPI） */
 const MM_TO_PX = 300 / 25.4
-/** 分割降采样最长边 */
-const SEGMENT_MAX_SIDE = 1024
+/** 分割降采样最长边（提升至1400保留发丝细节） */
+const SEGMENT_MAX_SIDE = 1400
 
 /** MediaPipe Tasks Vision CDN（仅客户端动态加载） */
 const VISION_CDN = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14'
 const VISION_WASM_DIR = `${VISION_CDN}/wasm`
-const SEGMENTER_MODEL_URL =
+/** 分割模型：优先站内本地文件（国内可访问），失败时回退官方源 */
+const SEGMENTER_MODEL_URL = '/models/selfie_segmenter.tflite'
+const SEGMENTER_MODEL_URL_FALLBACK =
   'https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter/float16/latest/selfie_segmenter.tflite'
 
 interface SizeOption {
@@ -120,18 +154,13 @@ interface BgOption {
   colors?: [string, string]
 }
 
-/** 6 种照片底色 */
+/** 7 种照片底色 */
 const bgOptions: BgOption[] = [
-  { key: 'white', label: '白', type: 'solid', color: '#ffffff' },
-  { key: 'light-blue', label: '浅蓝', type: 'solid', color: '#e0f2fe' },
-  { key: 'dark-blue', label: '深蓝', type: 'solid', color: '#1e3a8a' },
-  { key: 'red', label: '红色', type: 'solid', color: '#ef4444' },
-  {
-    key: 'gradient',
-    label: '渐变',
-    type: 'gradient',
-    colors: ['#e0f2fe', '#2563eb'],
-  },
+  { key: 'white', label: '纯白(护照/身份证)', type: 'solid', color: '#ffffff' },
+  { key: 'light-blue', label: '标准浅蓝(简历/毕业证)', type: 'solid', color: '#4393d8' },
+  { key: 'dark-blue', label: '深蓝(签证/公考)', type: 'solid', color: '#0f4c81' },
+  { key: 'red', label: '标准证件红(入党/结婚证)', type: 'solid', color: '#DB2622' },
+  { key: 'deep-red', label: '深红(国考/教资)', type: 'solid', color: '#EE1C25' },
   { key: 'light-gray', label: '浅灰', type: 'solid', color: '#f1f5f9' },
 ]
 
@@ -414,10 +443,16 @@ function resetToUpload() {
   if (fileInputRef.value) fileInputRef.value.value = ''
 }
 
-/** 重新上传：清空回上传态并唤起文件选择 */
-function reupload() {
+/** 重置视图：清空所有状态回到页面初始态 */
+function resetView() {
   resetToUpload()
-  triggerFileInput()
+  bgKey.value = 'white'
+  sizeKey.value = ''
+  originalFileName.value = ''
+  generating.value = false
+  genStep.value = 0
+  segmenterPromise = null
+  toastMsg.value = ''
 }
 
 // === 画布缩放 / 平移 ===
@@ -426,11 +461,6 @@ function zoomIn() {
 }
 function zoomOut() {
   zoom.value = clamp(zoom.value / 1.25, 0.25, 4)
-}
-function resetView() {
-  zoom.value = 1
-  panX.value = 0
-  panY.value = 0
 }
 
 function getClientPos(e: MouseEvent | TouchEvent): { x: number; y: number } {
@@ -484,7 +514,7 @@ function selectSize(key: string) {
 }
 
 // === 智能抠图（MediaPipe ImageSegmenter，浏览器本地） ===
-/** 懒加载并缓存 segmenter（单例） */
+/** 懒加载并缓存 segmenter（单例，本地模型优先，失败回退官方源） */
 function getSegmenter(): Promise<unknown> {
   if (!segmenterPromise) {
     segmenterPromise = (async () => {
@@ -493,12 +523,21 @@ function getSegmenter(): Promise<unknown> {
       const fileset = await vision.FilesetResolver.forVisionTasks(
         VISION_WASM_DIR,
       )
-      return vision.ImageSegmenter.createFromOptions(fileset, {
-        baseOptions: { modelAssetPath: SEGMENTER_MODEL_URL },
-        runningMode: 'IMAGE',
-        outputCategoryMask: true,
-        outputConfidenceMasks: true,
-      })
+      const createWith = (url: string) =>
+        vision.ImageSegmenter.createFromOptions(fileset, {
+          baseOptions: { modelAssetPath: url },
+          runningMode: 'IMAGE',
+          outputCategoryMask: true,
+          outputConfidenceMasks: true,
+        })
+      try {
+        // 优先站内本地模型（国内网络可访问）
+        return await createWith(SEGMENTER_MODEL_URL)
+      } catch (localErr) {
+        // 本地模型不可用时回退官方源
+        console.warn('本地分割模型加载失败，回退官方源：', localErr)
+        return await createWith(SEGMENTER_MODEL_URL_FALLBACK)
+      }
     })()
   }
   return segmenterPromise
@@ -536,14 +575,19 @@ function resolvePersonIndex(segmenter: unknown, maskCount: number): number {
  */
 function erodeAlpha(alpha: Float32Array, w: number, h: number, radius: number): Float32Array {
   const out = new Float32Array(w * h)
+  // 支持小数半径（1.5 / 0.8）：实际按 ceil(radius) 映射为整数偏移邻域采样，
+  // 且始终包含中心像素 (0,0)。原实现对非整数半径直接步进会导致中心像素缺失、
+  // 非整数索引被截断造成像素错位，从而出现全透明回归。
+  const r = Math.max(1, Math.ceil(radius))
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
       let minA = alpha[y * w + x]
-      for (let dy = -radius; dy <= radius; dy++) {
-        for (let dx = -radius; dx <= radius; dx++) {
-          const ny = y + dy
+      for (let dy = -r; dy <= r; dy++) {
+        const ny = y + dy
+        if (ny < 0 || ny >= h) continue
+        for (let dx = -r; dx <= r; dx++) {
           const nx = x + dx
-          if (ny >= 0 && ny < h && nx >= 0 && nx < w) {
+          if (nx >= 0 && nx < w) {
             minA = Math.min(minA, alpha[ny * w + nx])
           }
         }
@@ -552,6 +596,64 @@ function erodeAlpha(alpha: Float32Array, w: number, h: number, radius: number): 
     }
   }
   return out
+}
+
+/**
+ * 一维高斯模糊处理Alpha通道，用于发丝边缘羽化
+ * @param imgData 掩码ImageData
+ * @param radius 模糊半径 2~4
+ */
+function gaussianBlurAlpha(imgData: ImageData, radius: number) {
+  const w = imgData.width
+  const h = imgData.height
+  const data = imgData.data
+  const temp = new Uint8ClampedArray(data)
+  const kernelSize = radius * 2 + 1
+  const kernel: number[] = []
+  let sum = 0
+  // 缩小 sigma（radius/1.2），过渡更自然、不过度糊化发丝
+  const sigma = radius / 1.2
+  // 生成高斯核
+  for (let i = -radius; i <= radius; i++) {
+    const g = Math.exp(-(i * i) / (2 * sigma * sigma))
+    kernel.push(g)
+    sum += g
+  }
+  // 归一化
+  for (let i = 0; i < kernel.length; i++) kernel[i] /= sum
+
+  // 水平模糊
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      let a = 0
+      let kSum = 0
+      for (let k = 0; k < kernelSize; k++) {
+        const nx = x + k - radius
+        if (nx >= 0 && nx < w) {
+          const idx = (y * w + nx) * 4 + 3
+          a += temp[idx] * kernel[k]
+          kSum += kernel[k]
+        }
+      }
+      data[(y * w + x) * 4 + 3] = a / kSum
+    }
+  }
+  // 垂直模糊
+  for (let x = 0; x < w; x++) {
+    for (let y = 0; y < h; y++) {
+      let a = 0
+      let kSum = 0
+      for (let k = 0; k < kernelSize; k++) {
+        const ny = y + k - radius
+        if (ny >= 0 && ny < h) {
+          const idx = (ny * w + x) * 4 + 3
+          a += data[idx] * kernel[k]
+          kSum += kernel[k]
+        }
+      }
+      data[(y * w + x) * 4 + 3] = a / kSum
+    }
+  }
 }
 
 /**
@@ -599,32 +701,66 @@ function estimateBackgroundColor(canvas: HTMLCanvasElement): { r: number; g: num
  * 对带透明通道的人像图层做边缘颜色去 contamination：
  * 半透明边缘像素的颜色由原背景色与前景色混合而成，通过 C = F*a + B*(1-a)
  * 反解 F 并替换，可显著削弱白边/原背景色毛边。
- * 仅处理 alpha 在 [15, 254] 的边缘像素，避免全透明或全不透明区域失真。
+ * 仅处理 alpha 在 (10, 245) 的边缘像素，避免全透明或全不透明区域失真。
  */
 function decontaminateEdges(canvas: HTMLCanvasElement, bg: { r: number; g: number; b: number }) {
   const ctx = canvas.getContext('2d', { willReadFrequently: true })
   if (!ctx) return
-
   const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height)
   const data = imgData.data
-
+  // 去色强度系数：适度放大校正力度，抑制原背景色渗透
+  const DECONTAMINATE_STRENGTH = 1.15
   for (let i = 0; i < data.length; i += 4) {
     const a = data[i + 3]
-    if (a <= 15 || a >= 254) continue
-
+    // 扩大处理区间 10~245，覆盖更多半透明边缘
+    if (a <= 10 || a >= 245) continue
     const alpha = a / 255
     const invAlpha = 1 - alpha
-    data[i] = Math.max(0, Math.min(255, Math.round((data[i] - bg.r * invAlpha) / alpha)))
-    data[i + 1] = Math.max(0, Math.min(255, Math.round((data[i + 1] - bg.g * invAlpha) / alpha)))
-    data[i + 2] = Math.max(0, Math.min(255, Math.round((data[i + 2] - bg.b * invAlpha) / alpha)))
+    const factor = DECONTAMINATE_STRENGTH
+    data[i] = Math.max(0, Math.min(255, Math.round((data[i] - bg.r * invAlpha * factor) / alpha)))
+    data[i + 1] = Math.max(0, Math.min(255, Math.round((data[i + 1] - bg.g * invAlpha * factor) / alpha)))
+    data[i + 2] = Math.max(0, Math.min(255, Math.round((data[i + 2] - bg.b * invAlpha * factor) / alpha)))
   }
+  ctx.putImageData(imgData, 0, 0)
+}
 
+/** 轻度USM锐化，提升证件照打印清晰度 */
+function sharpenCanvas(canvas: HTMLCanvasElement, amount = 0.4) {
+  const ctx = canvas.getContext('2d', { willReadFrequently: true })
+  if (!ctx) return
+  const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+  const w = canvas.width
+  const h = canvas.height
+  const data = imgData.data
+  const copy = new Uint8ClampedArray(data)
+  for (let y = 1; y < h - 1; y++) {
+    for (let x = 1; x < w - 1; x++) {
+      const i = (y * w + x) * 4
+      for (let c = 0; c < 3; c++) {
+        const center = copy[i + c]
+        let surround = 0
+        // 3x3邻域均值
+        surround += copy[((y-1)*w + x-1)*4 + c]
+        surround += copy[((y-1)*w + x)*4 + c]
+        surround += copy[((y-1)*w + x+1)*4 + c]
+        surround += copy[(y*w + x-1)*4 + c]
+        surround += copy[(y*w + x+1)*4 + c]
+        surround += copy[((y+1)*w + x-1)*4 + c]
+        surround += copy[((y+1)*w + x)*4 + c]
+        surround += copy[((y+1)*w + x+1)*4 + c]
+        surround /= 8
+        // USM锐化公式
+        const val = center + amount * (center - surround)
+        data[i + c] = Math.max(0, Math.min(255, val))
+      }
+    }
+  }
   ctx.putImageData(imgData, 0, 0)
 }
 
 /**
  * 人像分割：
- * 1. sourceCanvas 降采样到最长边 1024px
+ * 1. sourceCanvas 降采样到最长边 1400px
  * 2. 优先取 person 置信度 mask（resolvePersonIndex 定位，该模型版本为索引 0）
  *    将置信度直接作为平滑 alpha，并做 1 像素腐蚀去毛边；不可用则回退 categoryMask
  * 3. 生成全尺寸透明人像图层（RGBA mask + destination-in 平滑边缘）并缓存
@@ -682,19 +818,26 @@ async function runSegmentation() {
 
   // 生成 RGBA mask：
   // 1) 将置信度/类别结果转为 0~1 的 alpha；
-  // 2) 做 1 像素腐蚀，去除人像边缘残留的原背景色毛边；
-  // 3) 最终 mask 保留平滑透明度，与 destination-in 合成实现自然过渡。
+  // 2) 软阈值过滤低透明度噪点（置信度<0.4 直接归零），消除细碎毛刺；
+  // 3) 做 1.5 像素腐蚀，收紧轮廓、去除人像边缘残留的原背景色毛边；
+  // 4) 最终 mask 保留平滑透明度，与 destination-in 合成实现自然过渡。
   const rawAlpha = new Float32Array(mw * mh)
+  // 新增：软阈值 0.4，置信度低于 0.4 直接归零，去除边缘微弱噪点
+  const ALPHA_THRESHOLD = 0.4
   for (let i = 0; i < mw * mh; i++) {
     // 实测该版本 categoryMask 语义为：背景=255、人像=0（与标准标签索引相反），
     // 因此回退分支按「=== 0」判定人像
-    rawAlpha[i] = useConfidence
+    let alphaVal = useConfidence
       ? alphaArray[i]
       : (alphaArray as Uint8Array)[i] === 0
         ? 1
         : 0
+    // 软阈值过滤：低于阈值直接置 0，消除细碎毛刺
+    if (alphaVal < ALPHA_THRESHOLD) alphaVal = 0
+    rawAlpha[i] = alphaVal
   }
-  const erodedAlpha = erodeAlpha(rawAlpha, mw, mh, 1)
+  // 腐蚀半径从 1 → 1.5，收紧轮廓，消除外层混合像素
+  const erodedAlpha = erodeAlpha(rawAlpha, mw, mh, 1.5)
 
   const maskCanvas = document.createElement('canvas')
   maskCanvas.width = mw
@@ -711,6 +854,8 @@ async function runSegmentation() {
     px[o + 2] = 255
     px[o + 3] = a
   }
+  // 高斯模糊羽化边缘（半径 4，发丝过渡自然、去白边锯齿）
+  gaussianBlurAlpha(imgData, 4)
   mctx.putImageData(imgData, 0, 0)
 
   // 全尺寸透明人像图层：先画原图，再用 mask 做 destination-in
@@ -728,15 +873,35 @@ async function runSegmentation() {
   const bgColor = estimateBackgroundColor(src)
   decontaminateEdges(out, bgColor)
 
+  // 兜底轻微腐蚀（半径 0.8 → 实际 3x3 邻域）：对 alpha 通道做最小值腐蚀，
+  // 彻底清除最外层残留混合像素。
+  // 注意：不能直接用 finalImg.data.buffer 构造 Float32Array（会把 RGBA 字节误解释为浮点），
+  // 需先提取 0~1 的 alpha 数组再腐蚀、后写回。
+  const finalAlphaCtx = out.getContext('2d', { willReadFrequently: true })
+  if (finalAlphaCtx) {
+    const finalImg = finalAlphaCtx.getImageData(0, 0, out.width, out.height)
+    const alphaArr = new Float32Array(out.width * out.height)
+    for (let i = 0; i < alphaArr.length; i++) {
+      alphaArr[i] = finalImg.data[i * 4 + 3] / 255
+    }
+    const tinyErode = erodeAlpha(alphaArr, out.width, out.height, 0.8)
+    for (let i = 0; i < tinyErode.length; i++) {
+      finalImg.data[i * 4 + 3] = Math.round(tinyErode[i] * 255)
+    }
+    finalAlphaCtx.putImageData(finalImg, 0, 0)
+  }
+
   personLayer.value = out
 }
 
 // === 证件照合成 ===
-/** 构图参数：头顶留白占画面高比例、人物可见内容占画面高比例 */
-const COMPOSE_TOP_RATIO = 0.05
-const COMPOSE_CONTENT_RATIO = 0.95
-/** 人物过窄时的最小宽度占比（兜底，防止瘦长图人物过小） */
-const COMPOSE_MIN_WIDTH_RATIO = 0.80
+/** 国标构图参数：头顶留白 8% 画面高度，比例更紧凑 */
+const COMPOSE_TOP_RATIO = 0.08
+/** 人像头部+身体可见区域占画面 92% 高度，顶部 8% + 内容 92% = 100%，
+ *  让衣服下沿贴近画布底，杜绝底部留白/背景色条 */
+const COMPOSE_CONTENT_RATIO = 0.92
+/** 人物最小宽度占画面 82%，避免过窄 */
+const COMPOSE_MIN_WIDTH_RATIO = 0.82
 
 /**
  * 计算透明人像图层的可见内容包围盒与水平质心（降采样分析，速度快）。
@@ -790,7 +955,7 @@ function getVisibleBounds(
 /**
  * 填充底色 + 按证件照标准构图叠加人像，生成目标尺寸 canvas。
  * 构图策略（与页面示例证件照一致）：
- * - 以可见内容（非透明）包围盒为基准，头顶留白约 5%、内容高约占画面 95%
+ * - 以可见内容（非透明）包围盒为基准，头顶留白约 10%、内容高约占画面 75%
  * - 以人像可见像素质心水平居中；允许肩部撑满/略超画布（画布自动裁剪外侧）
  * - 最后按人像可见内容底边裁剪底部多余纯色背景，避免生成结果下方出现背景色条
  */
@@ -832,7 +997,7 @@ function composeResult() {
   const contentH = bounds.bottomY - bounds.topY
   const contentW = bounds.rightX - bounds.leftX
 
-  // 高度主导：可见内容占画面约 95%（头顶留白 5%，肩下不留多余背景）
+  // 高度主导：可见内容占画面约 82%（头顶留白 10%，底边贴近画布杜绝底部留白）
   let s = (h * COMPOSE_CONTENT_RATIO) / contentH
   // 兜底：人物过窄时（如瘦长全身照）保证最小宽度
   if (contentW * s < w * COMPOSE_MIN_WIDTH_RATIO) {
@@ -844,26 +1009,17 @@ function composeResult() {
   // 以人像质心水平居中，不受原图左右偏移影响；垂直方向按头顶留白定位
   const dx = w / 2 - bounds.centerX * s
   const dy = h * COMPOSE_TOP_RATIO - bounds.topY * s
+  // 新增：人像底部柔和投影，弱化拼接感
+  ctx.save()
+  ctx.shadowColor = 'rgba(0,0,0,0.22)'
+  ctx.shadowBlur = 8
+  ctx.shadowOffsetY = 6
+  ctx.globalCompositeOperation = 'source-over'
   ctx.drawImage(layer, dx, dy, dw, dh)
+  ctx.restore()
 
-  // 3. 裁剪底部多余纯色背景：以人像可见内容底边为基准精确裁切，
-  //    不保留底部背景边距，彻底移除人像下方的纯色背景条。
-  const contentBottomY = Math.min(h, Math.ceil(dy + bounds.bottomY * s))
-  const cropH = Math.min(h, Math.max(1, contentBottomY))
-  if (cropH < h) {
-    const cropped = document.createElement('canvas')
-    cropped.width = w
-    cropped.height = cropH
-    const cctx = cropped.getContext('2d')
-    if (cctx) {
-      cctx.drawImage(canvas, 0, 0, w, cropH, 0, 0, w, cropH)
-      resultCanvas.value = cropped
-      resultPixelText.value = `${w}×${cropH}px`
-      resultDataUrl.value = makePreviewUrl(cropped)
-      return
-    }
-  }
-
+  // 合成完成后轻度锐化，提升打印清晰度
+  sharpenCanvas(canvas, 0.35)
   resultCanvas.value = canvas
   resultPixelText.value = `${w}×${h}px`
   resultDataUrl.value = makePreviewUrl(canvas)
@@ -937,13 +1093,18 @@ function retryModel() {
 }
 
 // === 成品导出 ===
-/** 下载 PNG（文件名含规格 slug） */
-async function downloadResult() {
+/** 下载成品（PNG 默认 / JPG 质量 0.85，适配报名系统文件限制） */
+async function downloadResult(isJpg = false) {
   if (!resultCanvas.value) return
   try {
-    const blob = await canvasToBlob(resultCanvas.value, 'image/png')
     const slug = selectedSize.value?.slug ?? 'id'
-    downloadBlob(blob, `id-photo-${slug}.png`)
+    if (isJpg) {
+      const blob = await canvasToBlob(resultCanvas.value, 'image/jpeg', 0.85)
+      downloadBlob(blob, `id-photo-${slug}.jpg`)
+    } else {
+      const blob = await canvasToBlob(resultCanvas.value, 'image/png')
+      downloadBlob(blob, `id-photo-${slug}.png`)
+    }
     reportEvent('download', effectiveSlug.value)
   } catch {
     errorMsg.value = '下载失败，请重试。'
@@ -1118,15 +1279,7 @@ onUnmounted(() => {
                 >
                   <RotateCcw class="w-4 h-4" aria-hidden="true" />
                 </button>
-                <button
-                  type="button"
-                  class="idp-tool-btn"
-                  title="重新上传"
-                  aria-label="重新上传"
-                  @click="reupload"
-                >
-                  <Upload class="w-4 h-4" aria-hidden="true" />
-                </button>
+
               </div>
               <span class="idp-preview-status">
                 当前：{{ selectedBg.label }}底 · {{ selectedSize ? selectedSize.label : '未选尺寸' }}
@@ -1305,6 +1458,14 @@ onUnmounted(() => {
               </button>
               <button
                 type="button"
+                class="pz-btn-secondary w-full justify-center"
+                @click="downloadResult(true)"
+              >
+                <Download class="w-4 h-4" aria-hidden="true" />
+                下载JPG(报名用)
+              </button>
+              <button
+                type="button"
                 class="pz-btn-primary w-full justify-center"
                 @click="downloadResult"
               >
@@ -1350,6 +1511,17 @@ onUnmounted(() => {
           <span class="idp-sample-label">{{ sample.label }}</span>
         </button>
       </div>
+    </div>
+
+    <!-- ============ 广告位（试试这些示例和常见问题之间） ============ -->
+    <div class="my-6">
+      <StaticAdCard
+        v-if="adData"
+        id="idPhotoMiddle"
+        :title="adData.product_description"
+        :image-url="adData.product_url"
+        :link-url="adData.ad_url"
+      />
     </div>
 
     <!-- ============ 轻量 toast ============ -->
@@ -1739,6 +1911,8 @@ onUnmounted(() => {
   font-family: var(--pz-font-sans);
   font-size: var(--pz-text-xs);
   color: var(--pz-color-text-secondary);
+  text-align: center;
+  line-height: 1.3;
 }
 .idp-swatch--selected .idp-swatch-label {
   color: var(--pz-color-primary);
