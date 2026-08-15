@@ -149,6 +149,27 @@ export const toolStaticMeta: Record<string, ToolStaticMeta> = {
       },
     ],
   },
+  cron: {
+    slug: 'cron',
+    name: 'Cron表达式生成器',
+    description: '免费在线Cron表达式生成与解析工具，支持5段/6段格式互转、中文解释、未来触发时间预览、常用模板一键填入，免登录打开即用，本地计算精准高效。',
+    keywords: 'Cron表达式,Cron生成器,Cron解析,定时任务,crontab',
+    category: 'developer',
+    faq: [
+      {
+        question: 'Cron表达式工具支持5段和6段格式吗？',
+        answer: '支持标准5段（分 时 日 月 周）和6段（秒 分 时 日 月 周）格式切换，自动适配解析逻辑。',
+      },
+      {
+        question: '有常用Cron模板吗？',
+        answer: '内置每分钟、每小时、每天凌晨、每周一、每月1号等常用定时任务模板，点击即可一键填入。',
+      },
+      {
+        question: '能预览未来触发时间吗？',
+        answer: '支持预览未来5次（可配置）触发时间，方便验证Cron表达式是否正确。',
+      },
+    ],
+  },
   'image-compress': {
     slug: 'image-compress',
     name: '图片压缩',
