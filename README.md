@@ -1,6 +1,6 @@
 # PanziPool Tools (盘子工具站)
 
-> 面向中文开发者的免费在线工具站 —— 无需安装、免登录、隐私优先
+> 盘子工具站致力于为中文开发者提供便捷的在线工具集合。我们聚焦开发者日常工作中的格式化、编码解码、正则测试、时间转换等高频需求，同时提供图片压缩、格式转换等轻量图片处理工具。所有工具无需安装、免登录、隐私优先，打开即用。
 
 [![Website](https://img.shields.io/website?up_message=online&down_message=offline&url=https://tool.panzipool.com&label=website&style=flat-square)](https://tool.panzipool.com)
 [![GitHub stars](https://img.shields.io/github/stars/lichunyang-max/PanziTool?style=flat-square&label=stars)](https://github.com/lichunyang-max/PanziTool/stargazers)
