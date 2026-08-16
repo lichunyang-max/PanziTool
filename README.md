@@ -2,11 +2,20 @@
 
 > 面向中文开发者的免费在线工具站 —— 无需安装、免登录、隐私优先
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Nuxt](https://img.shields.io/badge/Nuxt-3.21-00DC82.svg)](https://nuxt.com)
-[![Vue](https://img.shields.io/badge/Vue-3-42b883.svg)](https://vuejs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6.svg)](https://www.typescriptlang.org)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-06B6D4.svg)](https://tailwindcss.com)
+[![Website](https://img.shields.io/website?up_message=online&down_message=offline&url=https://tool.panzipool.com&label=website&style=flat-square)](https://tool.panzipool.com)
+[![GitHub stars](https://img.shields.io/github/stars/lichunyang-max/PanziTool?style=flat-square&label=stars)](https://github.com/lichunyang-max/PanziTool/stargazers)
+[![GitHub last commit](https://img.shields.io/github/last-commit/lichunyang-max/PanziTool?style=flat-square)](https://github.com/lichunyang-max/PanziTool/commits)
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/lichunyang-max/PanziTool?style=flat-square)](https://github.com/lichunyang-max/PanziTool/commits)
+[![GitHub repo size](https://img.shields.io/github/repo-size/lichunyang-max/PanziTool?style=flat-square)](https://github.com/lichunyang-max/PanziTool)
+[![GitHub issues](https://img.shields.io/github/issues/lichunyang-max/PanziTool?style=flat-square)](https://github.com/lichunyang-max/PanziTool/issues)
+[![GitHub license](https://img.shields.io/github/license/lichunyang-max/PanziTool?style=flat-square)](https://github.com/lichunyang-max/PanziTool/blob/main/LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](https://github.com/lichunyang-max/PanziTool/pulls)
+
+[![Nuxt](https://img.shields.io/badge/Nuxt-3-00DC82?style=flat-square&logo=nuxtdotjs&logoColor=white)](https://nuxt.com)
+[![Vue](https://img.shields.io/badge/Vue-3-42b883?style=flat-square&logo=vuedotjs&logoColor=white)](https://vuejs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev)
 
 ## 项目介绍
 
@@ -101,7 +110,7 @@ PanziTool/
 ├── frontend/                  # Nuxt 3 前端
 │   ├── components/tool/       # 工具交互组件
 │   ├── composables/           # 组合式函数（分析、设备检测、API）
-│   ├── layouts/               # 布布组件（默认/移动端/管理后台）
+│   ├── layouts/               # 布局组件（默认/移动端/管理后台）
 │   ├── pages/                 # 页面路由
 │   │   ├── tools/[slug].vue   # 工具详情页动态路由
 │   │   ├── category/          # 分类页
