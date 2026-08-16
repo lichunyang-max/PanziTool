@@ -80,11 +80,11 @@ public class DataInitializer {
             log.info("admin_users 表为空，创建默认管理员账号");
             AdminUser admin = new AdminUser();
             admin.setUsername("admin");
-            admin.setPasswordHash(new BCryptPasswordEncoder().encode("admin@0923!"));
+            admin.setPasswordHash(new BCryptPasswordEncoder().encode("123456"));
             admin.setDisplayName("超级管理员");
             admin.setEnabled(true);
             adminUserRepository.save(admin);
-            log.info("默认管理员账号已创建: admin / admin@0923!");
+            log.info("默认管理员账号已创建: admin / 123456");
         };
     }
 

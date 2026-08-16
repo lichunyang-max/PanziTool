@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * 管理后台集成测试（Task 37.14）。
  *
  * <p>使用真实 HTTP 调用验证管理员认证、拦截器鉴权、留言管理 CRUD 与登录限流。
- * 管理员账号由 {@code DataInitializer} 自动创建（admin / admin@0923！）。
+ * 管理员账号由 {@code DataInitializer} 自动创建（admin / 123456）。
  * 使用 {@code @DirtiesContext(AFTER_EACH_TEST_METHOD)} 隔离登录限流状态。</p>
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -62,7 +62,7 @@ class AdminIntegrationTest {
     private String loginAsAdmin() throws Exception {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        String body = objectMapper.writeValueAsString(Map.of("username", "admin", "password", "admin@0923！"));
+        String body = objectMapper.writeValueAsString(Map.of("username", "admin", "password", "123456"));
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
         ResponseEntity<String> resp = restTemplate.postForEntity(url("/api/v1/admin/login"), entity, String.class);
         assertThat(resp.getStatusCode().is2xxSuccessful()).isTrue();
@@ -87,7 +87,7 @@ class AdminIntegrationTest {
     void login_correctCredentials_returnsToken() throws Exception {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        String body = objectMapper.writeValueAsString(Map.of("username", "admin", "password", "admin@0923！"));
+        String body = objectMapper.writeValueAsString(Map.of("username", "admin", "password", "123456"));
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
 
         ResponseEntity<String> resp = restTemplate.postForEntity(url("/api/v1/admin/login"), entity, String.class);
@@ -125,7 +125,7 @@ class AdminIntegrationTest {
         assertThat(root.get("code").asInt()).isEqualTo(401);
 
         // 错误用户名
-        String body2 = objectMapper.writeValueAsString(Map.of("username", "nonexistent", "password", "admin@0923！"));
+        String body2 = objectMapper.writeValueAsString(Map.of("username", "nonexistent", "password", "123456"));
         HttpEntity<String> entity2 = new HttpEntity<>(body2, headers);
 
         ResponseEntity<String> resp2 = restTemplate.postForEntity(url("/api/v1/admin/login"), entity2, String.class);
