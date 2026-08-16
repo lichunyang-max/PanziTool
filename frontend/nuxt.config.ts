@@ -12,6 +12,10 @@ export default defineNuxtConfig({
   // Vite 开发服务器配置
   vite: {
     plugins: [tailwindcss()],
+    // 预构建 qrcode-generator（动态 import 在构建时需 Rollup 能解析）
+    optimizeDeps: {
+      include: ['qrcode-generator'],
+    },
     // 开发环境代理：将 /api/ 转发到后端（模拟生产 Nginx 反代，避免跨域）
     server: {
       proxy: {
