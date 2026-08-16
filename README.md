@@ -1,6 +1,6 @@
 # PanziPool Tools (盘子工具站)
 
-> 盘子工具站（https://tool.panzipool.com）致力于为中文开发者提供便捷的在线工具集合。我们聚焦开发者日常工作中的格式化、编码解码、正则测试、时间转换等高频需求，同时提供图片压缩、格式转换等轻量图片处理工具。所有工具无需安装、免登录、隐私优先，打开即用。
+> 盘子工具站致力于为中文开发者提供便捷的在线工具集合。我们聚焦开发者日常工作中的格式化、编码解码、正则测试、时间转换等高频需求，同时提供图片压缩、格式转换等轻量图片处理工具。所有工具无需安装、免登录、隐私优先，打开即用。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Nuxt](https://img.shields.io/badge/Nuxt-3.21-00DC82.svg)](https://nuxt.com)
