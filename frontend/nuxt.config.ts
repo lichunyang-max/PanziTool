@@ -16,6 +16,10 @@ export default defineNuxtConfig({
   vite: {
     plugins: [tailwindcss()],
     cacheDir: process.env.VITE_CACHE_DIR || 'node_modules/.cache/vite',
+    // 预构建 qrcode-generator（动态 import 在构建时需 Rollup 能解析）
+    optimizeDeps: {
+      include: ['qrcode-generator'],
+    },
     // 开发环境代理：将 /api/ 转发到后端（模拟生产 Nginx 反代，避免跨域）
     server: {
       proxy: {
@@ -99,6 +103,7 @@ export default defineNuxtConfig({
   },
 
   // Nitro 配置：静态预渲染（构建时生成所有路由的完整 HTML，利于 SEO / 百度收录）
+  // dev 模式下 nuxt dev 会忽略此预设，使用内置开发服务器
   nitro: {
     preset: 'static',
     routeRules: {
