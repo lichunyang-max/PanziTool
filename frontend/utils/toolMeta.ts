@@ -41,6 +41,14 @@ export const toolStaticMeta: Record<string, ToolStaticMeta> = {
         question: '支持多大的JSON文件？',
         answer: '支持处理1MB以内的JSON文本，超过1MB会显示警告提示，建议缩减输入以获得更好性能。',
       },
+      {
+        question: 'JSON和JSONP有什么区别？',
+        answer: 'JSON是一种轻量级数据交换格式，JSONP（JSON with Padding）是一种跨域数据传输方案，通过动态script标签包裹JSON数据实现跨域请求。JSONP已被CORS取代，现代开发中推荐使用JSON+CORS。',
+      },
+      {
+        question: 'JSON支持注释吗？',
+        answer: '标准JSON不支持注释。如需在配置文件中使用注释，可考虑JSONC（VS Code支持）或JSON5格式。本工具遵循标准JSON规范，不支持注释解析。',
+      },
     ],
   },
   'regex-tester': {
@@ -62,6 +70,14 @@ export const toolStaticMeta: Record<string, ToolStaticMeta> = {
         question: '是否有 ReDoS 防护？',
         answer: '工具使用 try-catch 包裹执行，最大匹配数限制为 10000，防止灾难性回溯导致浏览器卡死。',
       },
+      {
+        question: '贪婪匹配和非贪婪匹配有什么区别？',
+        answer: '贪婪匹配（如 .*）尽可能匹配更多字符，非贪婪匹配（如 .*?）尽可能匹配更少字符。例如对字符串 "a(b)c(d)e"，\\(.*\\) 贪婪匹配整个 "(b)c(d)"，而 \\(.*?\\) 非贪婪匹配 "(b)"。',
+      },
+      {
+        question: '如何匹配中文？',
+        answer: '使用 Unicode 属性转义 \\p{Han} 可匹配所有汉字，或使用 [\\u4e00-\\u9fa5] 匹配常用汉字。需开启 u 标志位。',
+      },
     ],
   },
   timestamp: {
@@ -78,6 +94,14 @@ export const toolStaticMeta: Record<string, ToolStaticMeta> = {
       {
         question: '支持哪些时区？',
         answer: '支持UTC、北京时间（UTC+8）等常用时区切换，方便不同地区的开发者使用。',
+      },
+      {
+        question: '什么是Unix时间戳？',
+        answer: 'Unix时间戳是从1970年1月1日00:00:00 UTC开始经过的秒数（或毫秒数），是跨平台最通用的时间表示方式。32位系统的时间戳将在2038年溢出。',
+      },
+      {
+        question: '如何获取当前时间戳？',
+        answer: 'JavaScript中使用 Date.now() 获取毫秒级时间戳，Math.floor(Date.now()/1000) 获取秒级时间戳。Python中使用 import time; time.time() 获取秒级时间戳。',
       },
     ],
   },
@@ -96,6 +120,14 @@ export const toolStaticMeta: Record<string, ToolStaticMeta> = {
         question: '有特殊字符对照表吗？',
         answer: '内置常用特殊字符的编码对照表，方便快速查询空格、中文、符号等字符的编码结果。',
       },
+      {
+        question: 'encodeURI和encodeURIComponent有什么区别？',
+        answer: 'encodeURI用于编码完整URL，不编码保留字符（如 :/?#@!$&\'()*+,;=）；encodeURIComponent用于编码URL参数，会编码所有特殊字符。构建查询字符串时应使用encodeURIComponent。',
+      },
+      {
+        question: 'URL中的中文如何编码？',
+        answer: 'URL中的中文使用UTF-8编码后再进行百分号编码，例如"中"字编码为%E4%B8%AD。现代浏览器和服务器通常自动处理中文URL编码。',
+      },
     ],
   },
   'jwt-decoder': {
@@ -112,6 +144,14 @@ export const toolStaticMeta: Record<string, ToolStaticMeta> = {
       {
         question: '支持哪些JWT算法？',
         answer: '支持解析HS256、HS384、HS512、RS256等常见算法的JWT Token，展示Header和Payload详情。',
+      },
+      {
+        question: 'JWT的Payload是加密的吗？',
+        answer: '不是。JWT的Header和Payload使用Base64URL编码，任何人都可以解码查看。JWT的安全性依赖Signature签名验证，不要在Payload中放置密码等敏感信息。',
+      },
+      {
+        question: 'JWT和Session有什么区别？',
+        answer: 'Session存储在服务端，通过Cookie中的Session ID关联，适合传统Web应用。JWT存储在客户端，自带用户信息，无需服务端查询，适合API和微服务架构。JWT是无状态的，更易于水平扩展。',
       },
     ],
   },
@@ -130,6 +170,14 @@ export const toolStaticMeta: Record<string, ToolStaticMeta> = {
         question: '兼容中文编码吗？',
         answer: '完全兼容UTF-8编码，中文文本可正确进行Base64编解码。',
       },
+      {
+        question: 'Base64是加密吗？',
+        answer: 'Base64是编码而非加密，任何人都可以解码，不具备安全性。Base64用于在文本协议中传输二进制数据，如邮件附件、Data URI图片等场景。',
+      },
+      {
+        question: 'Base64编码后数据会变大吗？',
+        answer: '会。Base64编码后的数据比原始数据大约33%（每3字节编码为4个字符）。对于大文件，Base64编码会增加传输和存储开销。',
+      },
     ],
   },
   hash: {
@@ -146,6 +194,14 @@ export const toolStaticMeta: Record<string, ToolStaticMeta> = {
       {
         question: '可以计算文件的哈希值吗？',
         answer: '支持拖拽或选择文件计算哈希值，文件在浏览器本地读取，不上传服务器。',
+      },
+      {
+        question: 'MD5和SHA256有什么区别？',
+        answer: 'MD5输出128位（32位十六进制），已被证明存在碰撞漏洞，不适合安全场景。SHA256输出256位（64位十六进制），目前安全可靠，推荐用于密码存储和数字签名。',
+      },
+      {
+        question: '哈希可以逆向解密吗？',
+        answer: '哈希是单向函数，不可逆向解密。相同输入始终产生相同输出，但无法从输出反推输入。所谓"MD5解密"是通过彩虹表暴力匹配，而非真正的解密。',
       },
     ],
   },
@@ -168,6 +224,14 @@ export const toolStaticMeta: Record<string, ToolStaticMeta> = {
         question: '能预览未来触发时间吗？',
         answer: '支持预览未来5次（可配置）触发时间，方便验证Cron表达式是否正确。',
       },
+      {
+        question: 'Cron表达式中的特殊字符是什么意思？',
+        answer: '* 表示任意值，, 列举多个值（如 1,3,5），- 表示范围（如 1-5），/ 表示步进（如 */5 表示每5个单位），? 仅在日或周字段使用，表示不指定。',
+      },
+      {
+        question: 'Cron和Quartz Cron有什么区别？',
+        answer: '标准Unix Cron为5段格式（分 时 日 月 周），Quartz Cron为6-7段格式（秒 分 时 日 月 周 年），支持更多特性如L（最后一天）、W（最近工作日）、#（第几周）等扩展字符。',
+      },
     ],
   },
   'image-compress': {
@@ -189,6 +253,14 @@ export const toolStaticMeta: Record<string, ToolStaticMeta> = {
         question: '支持批量压缩吗？',
         answer: '支持批量上传多张图片同时压缩，一键下载压缩后的图片。',
       },
+      {
+        question: '压缩后画质损失大吗？',
+        answer: 'JPG质量设为75-85时肉眼几乎无差异，可减小60-70%文件体积。PNG使用无损压缩，不丢失任何信息。建议根据使用场景选择合适的质量参数。',
+      },
+      {
+        question: 'PNG转WEBP能减小多少体积？',
+        answer: 'PNG转WEBP无损模式通常可减小26%体积，有损模式可减小更多。WEBP同时支持透明通道，是现代网站图片优化的首选格式。',
+      },
     ],
   },
   'image-crop': {
@@ -206,6 +278,14 @@ export const toolStaticMeta: Record<string, ToolStaticMeta> = {
         question: '可以旋转和翻转图片吗？',
         answer: '支持90度旋转和水平/垂直翻转，方便调整图片方向后再裁剪。',
       },
+      {
+        question: '裁剪后画质会降低吗？',
+        answer: '不会。裁剪使用Canvas API直接处理原始像素数据，导出为PNG时无损，导出为JPG时可自定义质量参数。裁剪不涉及缩放，不会降低画质。',
+      },
+      {
+        question: '支持哪些社交平台的标准尺寸？',
+        answer: '内置微信头像640x640、公众号封面900x383、微博配图1080x1080、Instagram 1080x1080、YouTube缩略图1280x720等常用尺寸，可直接选择使用。',
+      },
     ],
   },
   'image-convert': {
@@ -222,6 +302,14 @@ export const toolStaticMeta: Record<string, ToolStaticMeta> = {
       {
         question: 'PNG转JPG会丢失透明背景吗？',
         answer: 'PNG转JPG时透明背景会变为白色，如需保留透明背景请使用WEBP或PNG格式输出。',
+      },
+      {
+        question: '转换后画质会损失吗？',
+        answer: '转PNG和WEBP无损模式不会损失画质。转JPG为有损压缩，建议质量设为85以上。格式转换在浏览器本地使用Canvas API完成，原图不上传服务器。',
+      },
+      {
+        question: 'WEBP格式兼容性如何？',
+        answer: 'WEBP已被Chrome、Firefox、Safari、Edge等主流浏览器支持，覆盖率超过97%。如需兼容老旧浏览器，建议提供JPG/PNG回退方案，使用<picture>标签实现格式协商。',
       },
     ],
   },
@@ -248,6 +336,10 @@ export const toolStaticMeta: Record<string, ToolStaticMeta> = {
         question: '可以自定义二维码样式吗？',
         answer: '可自定义前景色、背景色、尺寸、边距，并支持上传 Logo 图片嵌入，保持深色前景配浅色背景可提高扫码成功率。',
       },
+      {
+        question: '二维码能容纳多少数据？',
+        answer: '二维码容量取决于版本（1-40）和纠错等级。版本10-L最大可编码约1700位数字或约400个汉字。建议长链接先缩短再生成二维码，避免过于密集影响识别。',
+      },
     ],
   },
   'id-photo': {
@@ -261,6 +353,7 @@ export const toolStaticMeta: Record<string, ToolStaticMeta> = {
       { question: '支持哪些证件照尺寸？', answer: '支持一寸、小一寸、大一寸、二寸、小二寸、大二寸、三寸、四寸、五寸共九种标准规格，按300DPI换算像素输出。' },
       { question: '照片会传到服务器吗？', answer: '不会。人像抠图与合成全部在浏览器本地使用AI模型完成，照片数据不会离开您的设备。' },
       { question: '支持哪些图片格式？', answer: '支持JPG、JPEG、PNG格式上传，图片长宽需小于8000像素。' },
+      { question: 'AI抠图效果不理想怎么办？', answer: '抠图效果取决于原图背景复杂度和光线条件。建议使用纯色背景拍摄的正面照片，光线均匀无阴影。复杂背景下抠图可能需要多次尝试。' },
     ],
   },
 }

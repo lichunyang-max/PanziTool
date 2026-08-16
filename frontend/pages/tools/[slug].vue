@@ -8,9 +8,11 @@
  * - 使用 ToolLayout 渲染
  * - 通过 toolRegistry 懒加载对应工具交互组件
  * - JSON-LD 结构化数据：WebApplication + FAQPage，增强搜索引擎收录
+ * - 知识科普内容：速查表、语法参考、原理科普，增加页面文字量和长尾关键词覆盖
  */
 import { hasTool, toolRegistry } from '~/utils/toolRegistry'
 import { getToolStaticMeta, type ToolFaqItem } from '~/utils/toolMeta'
+import { getToolKnowledge } from '~/utils/toolKnowledge'
 import type { ToolMeta } from '~/components/tool/ToolLayout.vue'
 
 interface ToolData {
@@ -84,6 +86,7 @@ const { data: toolData } = await useAsyncData<ToolData | null>(
 
 // 基础 ToolMeta（来自 API 数据，降级使用静态元数据）
 const staticMeta = computed(() => getToolStaticMeta(slug.value))
+const knowledgeSections = computed(() => getToolKnowledge(slug.value))
 const baseToolMeta = computed<ToolMeta>(() => {
   if (toolData.value) {
     return {
@@ -268,7 +271,86 @@ async function handleLike() {
         </template>
 
         <template #faq>
-          <!-- FAQ 区：静态元数据提供，保证预渲染有文字内容 -->
+          <!-- ============ 知识科普区域 ============ -->
+          <section
+            v-if="knowledgeSections?.length"
+            class="mt-8"
+            aria-label="知识科普"
+          >
+            <section
+              v-for="(section, idx) in knowledgeSections"
+              :key="idx"
+              class="mb-6"
+            >
+              <h2
+                class="text-lg font-semibold mb-3"
+                style="color: var(--pz-color-text-primary); font-family: var(--pz-font-display)"
+              >
+                {{ section.title }}
+              </h2>
+
+              <!-- 段落内容 -->
+              <div v-if="section.paragraphs?.length" class="mb-3">
+                <p
+                  v-for="(para, pIdx) in section.paragraphs"
+                  :key="pIdx"
+                  class="text-sm mb-2"
+                  style="color: var(--pz-color-text-secondary); line-height: 1.7"
+                >
+                  {{ para }}
+                </p>
+              </div>
+
+              <!-- 表格内容 -->
+              <div v-if="section.table" class="overflow-x-auto pz-card p-0">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr style="background: var(--pz-color-surface-2)">
+                      <th
+                        v-for="(header, hIdx) in section.table.headers"
+                        :key="hIdx"
+                        class="text-left px-4 py-2 font-medium"
+                        style="color: var(--pz-color-text-primary)"
+                      >
+                        {{ header }}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="(row, rIdx) in section.table.rows"
+                      :key="rIdx"
+                      style="border-top: 1px solid var(--pz-color-border)"
+                    >
+                      <td
+                        v-for="(cell, cIdx) in row"
+                        :key="cIdx"
+                        class="px-4 py-2"
+                        :style="cIdx === 0 ? 'color: var(--pz-color-text-primary); font-weight: 500; white-space: nowrap;' : 'color: var(--pz-color-text-secondary)'"
+                      >
+                        <code v-if="cIdx === 1" class="pz-mono text-xs" style="color: var(--pz-color-primary)">{{ cell }}</code>
+                        <template v-else>{{ cell }}</template>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- 列表内容 -->
+              <ul v-if="section.list?.length" class="ml-4">
+                <li
+                  v-for="(item, lIdx) in section.list"
+                  :key="lIdx"
+                  class="text-sm mb-1 list-disc"
+                  style="color: var(--pz-color-text-secondary); line-height: 1.6"
+                >
+                  {{ item }}
+                </li>
+              </ul>
+            </section>
+          </section>
+
+          <!-- ============ FAQ 区域 ============ -->
           <section
             v-if="staticMeta?.faq?.length"
             class="mt-8"

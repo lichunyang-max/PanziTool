@@ -6,7 +6,7 @@
  * 1. 上传区（拖拽 / 点击，支持批量）— pz-conv-upload-zone
  * 2. 转换设置（目标格式 JPG/PNG/WebP、质量滑块、背景色、调整尺寸）— pz-conv-settings
  * 3. 文件列表与转换结果（缩略图、原格式→目标格式、状态、下载/移除）— pz-conv-file-list
- * 4. 隐私提示 / 格式参考表 / FAQ
+ * 4. 隐私提示
  *
  * 核心能力（SubTask 18.1-18.3）：
  * - 18.1 转换 UI：上传、选择目标格式 jpeg/png/webp、预览、下载
@@ -21,7 +21,6 @@ import {
   AlertTriangle,
   ArrowRight,
   Check,
-  ChevronDown,
   Download,
   FileImage,
   Lock,
@@ -990,144 +989,8 @@ const refRows: RefRow[] = [
       </div>
     </div>
 
-    <!-- 6. FAQ -->
-    <section class="py-8">
-      <h2
-        class="text-xl font-semibold mb-4"
-        style="
-          color: var(--pz-color-text-primary);
-          font-family: var(--pz-font-display);
-          text-wrap: balance;
-        "
-      >
-        常见问题
-      </h2>
-      <div class="flex flex-col gap-3">
-        <details class="pz-faq pz-card pz-card-hover p-4" open>
-          <summary class="flex items-center justify-between cursor-pointer">
-            <span
-              class="text-sm font-medium"
-              style="color: var(--pz-color-text-primary)"
-            >支持哪些图片格式互转？</span>
-            <ChevronDown
-              class="w-4 h-4 pz-faq-chevron shrink-0"
-              style="color: var(--pz-color-text-tertiary)"
-              aria-hidden="true"
-            />
-          </summary>
-          <p
-            class="text-sm mt-3"
-            style="color: var(--pz-color-text-secondary); line-height: 1.6"
-          >
-            支持 JPG、PNG、WebP、GIF、BMP 五种常见格式作为输入，输出目标格式为 JPG、PNG、WebP 三种。例如将 PNG 转为 JPG 以减小文件体积，或将 JPG 转为 WebP 以获得更好的网页加载性能。所有转换均在浏览器本地通过 Canvas API 完成。
-          </p>
-        </details>
-        <details class="pz-faq pz-card pz-card-hover p-4">
-          <summary class="flex items-center justify-between cursor-pointer">
-            <span
-              class="text-sm font-medium"
-              style="color: var(--pz-color-text-primary)"
-            >转换后图片质量会下降吗？</span>
-            <ChevronDown
-              class="w-4 h-4 pz-faq-chevron shrink-0"
-              style="color: var(--pz-color-text-tertiary)"
-              aria-hidden="true"
-            />
-          </summary>
-          <div
-            class="text-sm mt-3 flex flex-col gap-2"
-            style="color: var(--pz-color-text-secondary); line-height: 1.6"
-          >
-            <p>取决于目标格式和压缩设置。JPG 和 WebP 为有损格式，可通过质量滑块控制压缩率（1% - 100%），推荐设置在 80%-95% 之间以平衡质量与体积。</p>
-            <p><strong style="color: var(--pz-color-text-primary)">PNG：</strong>无损格式，转换后不会损失画质，但文件体积可能较大。</p>
-            <p><strong style="color: var(--pz-color-text-primary)">WebP：</strong>同时支持有损和无损压缩，是现代网页的最佳选择。</p>
-          </div>
-        </details>
-        <details class="pz-faq pz-card pz-card-hover p-4">
-          <summary class="flex items-center justify-between cursor-pointer">
-            <span
-              class="text-sm font-medium"
-              style="color: var(--pz-color-text-primary)"
-            >为什么转 JPG 后背景变白了？</span>
-            <ChevronDown
-              class="w-4 h-4 pz-faq-chevron shrink-0"
-              style="color: var(--pz-color-text-tertiary)"
-              aria-hidden="true"
-            />
-          </summary>
-          <div
-            class="text-sm mt-3 flex flex-col gap-2"
-            style="color: var(--pz-color-text-secondary); line-height: 1.6"
-          >
-            <p>JPG 格式不支持透明通道（Alpha 通道），转换时透明区域会填充为背景色（默认白色）。</p>
-            <p>如果您希望保留透明背景，请将目标格式选择为 <strong style="color: var(--pz-color-primary)">PNG</strong> 或 <strong style="color: var(--pz-color-primary)">WebP</strong>，这两种格式均支持透明通道。</p>
-            <p>如需自定义背景色，可在"调整选项"中通过颜色选择器设置任意颜色，透明区域将填充为您选择的颜色。</p>
-          </div>
-        </details>
-        <details class="pz-faq pz-card pz-card-hover p-4">
-          <summary class="flex items-center justify-between cursor-pointer">
-            <span
-              class="text-sm font-medium"
-              style="color: var(--pz-color-text-primary)"
-            >可以批量转换吗？</span>
-            <ChevronDown
-              class="w-4 h-4 pz-faq-chevron shrink-0"
-              style="color: var(--pz-color-text-tertiary)"
-              aria-hidden="true"
-            />
-          </summary>
-          <div
-            class="text-sm mt-3 flex flex-col gap-2"
-            style="color: var(--pz-color-text-secondary); line-height: 1.6"
-          >
-            <p>可以。支持一次上传多张图片，统一设置目标格式和质量，批量转换并分别下载。</p>
-            <p>上传时可在文件选择对话框中按住 Ctrl（Windows）或 Cmd（Mac）多选文件，也可直接拖拽多个文件到上传区域。转换完成后，可点击"全部下载"依次下载所有转换后的图片，或点击每个文件右侧的下载按钮单独下载。</p>
-          </div>
-        </details>
-        <details class="pz-faq pz-card pz-card-hover p-4">
-          <summary class="flex items-center justify-between cursor-pointer">
-            <span
-              class="text-sm font-medium"
-              style="color: var(--pz-color-text-primary)"
-            >会保留照片的拍摄方向吗？</span>
-            <ChevronDown
-              class="w-4 h-4 pz-faq-chevron shrink-0"
-              style="color: var(--pz-color-text-tertiary)"
-              aria-hidden="true"
-            />
-          </summary>
-          <div
-            class="text-sm mt-3 flex flex-col gap-2"
-            style="color: var(--pz-color-text-secondary); line-height: 1.6"
-          >
-            <p>会。工具会自动读取 JPEG 照片的 EXIF Orientation 方向标签，并在转换时通过 Canvas 修正旋转方向，确保转换后的图片方向与拍摄时一致，不会出现横倒或翻转。</p>
-            <p>对于不含 EXIF 方向信息或非 JPEG 源文件，将按原始方向处理。</p>
-          </div>
-        </details>
-        <details class="pz-faq pz-card pz-card-hover p-4">
-          <summary class="flex items-center justify-between cursor-pointer">
-            <span
-              class="text-sm font-medium"
-              style="color: var(--pz-color-text-primary)"
-            >WebP 格式有什么优势？</span>
-            <ChevronDown
-              class="w-4 h-4 pz-faq-chevron shrink-0"
-              style="color: var(--pz-color-text-tertiary)"
-              aria-hidden="true"
-            />
-          </summary>
-          <div
-            class="text-sm mt-3 flex flex-col gap-2"
-            style="color: var(--pz-color-text-secondary); line-height: 1.6"
-          >
-            <p>WebP 是 Google 推出的现代图片格式，相比 JPG 体积更小，同时支持有损/无损压缩和透明通道，是目前网页图片的最优选择。</p>
-            <p><strong style="color: var(--pz-color-text-primary)">体积更小：</strong>同等画质下，WebP 比 JPG 小 25%-35%，能显著提升网页加载速度。</p>
-            <p><strong style="color: var(--pz-color-text-primary)">功能更全：</strong>支持透明通道（替代 PNG）和动画（替代 GIF），一种格式满足多种需求。</p>
-            <p><strong style="color: var(--pz-color-text-primary)">兼容性好：</strong>所有现代浏览器（Chrome、Firefox、Edge、Safari 14+）均已支持。</p>
-          </div>
-        </details>
-      </div>
-    </section>
+    
+
   </div>
 </template>
 

@@ -24,13 +24,11 @@ import {
   Check,
   CheckCircle2,
   AlertCircle,
-  Clock,
 } from 'lucide-vue-next'
 import {
   validateCron,
   explainCron,
   getNextTriggerTimes,
-  getFieldInfos,
   type CronMode,
   type CronValidationResult,
 } from '~/utils/tools/cron'
@@ -108,8 +106,6 @@ const { reportEvent } = useAnalytics()
 
 // === 模式切换 ===
 const mode = ref<CronMode>('6-field')
-
-const fieldInfos = computed(() => getFieldInfos(mode.value))
 
 // === 表达式输入 ===
 const expression = ref('0 30 9 ? * MON-FRI')
@@ -232,10 +228,6 @@ function copyTriggerTimes() {
 
 function copyExplanation() {
   copyToClipboard(explanation.value, 'explanation')
-}
-
-function copyExpression() {
-  copyToClipboard(expression.value, 'expression')
 }
 
 // 初始校验与计算（客户端水合后）
@@ -541,59 +533,7 @@ const specialChars = [
       :link-url="adData.ad_url"
     />
 
-    <!-- ===== 6. 字段信息表 ===== -->
-    <div class="pz-card p-5">
-      <div class="flex items-center gap-2 mb-4">
-        <Clock
-          class="w-[18px] h-[18px]"
-          style="color: var(--pz-color-primary)"
-          aria-hidden="true"
-        />
-        <h2
-          class="text-base font-semibold"
-          style="color: var(--pz-color-text-primary)"
-        >
-          字段信息（{{ mode === '5-field' ? '5 段' : '6 段' }}模式）
-        </h2>
-        <button
-          type="button"
-          class="pz-btn-secondary pz-cron-copy-btn ml-auto"
-          @click="copyExpression"
-        >
-          <Check
-            v-if="copiedKey === 'expression'"
-            class="w-3.5 h-3.5"
-            aria-hidden="true"
-          />
-          <Copy v-else class="w-3.5 h-3.5" aria-hidden="true" />
-          {{ copiedKey === 'expression' ? '已复制' : '复制表达式' }}
-        </button>
-      </div>
-      <div class="overflow-x-auto">
-        <table class="pz-cron-table">
-          <thead>
-            <tr>
-              <th>字段</th>
-              <th>最小值</th>
-              <th>最大值</th>
-              <th>示例</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(f, i) in fieldInfos" :key="i">
-              <td style="color: var(--pz-color-text-primary); font-weight: 500">
-                {{ f.label }}
-              </td>
-              <td class="pz-cron-mono-cell">{{ f.min }}</td>
-              <td class="pz-cron-mono-cell">{{ f.max }}</td>
-              <td class="pz-cron-mono-cell" style="color: var(--pz-color-text-secondary)">
-                {{ fieldExamples[i]?.example || '-' }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+
   </div>
 </template>
 
