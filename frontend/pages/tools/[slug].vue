@@ -4,9 +4,10 @@
  *
  * - 从路由 params.slug 获取工具 slug
  * - SSR 阶段获取工具详情（GET /api/v1/tools/{slug}）
- * - 降级策略：后端不可用时计数显示 "-"
+ * - 降级策略：后端不可用时使用静态元数据
  * - 使用 ToolLayout 渲染
  * - 通过 toolRegistry 懒加载对应工具交互组件
+ * - JSON-LD 结构化数据：WebApplication + FAQPage，增强搜索引擎收录
  */
 import { hasTool, toolRegistry } from '~/utils/toolRegistry'
 import { getToolStaticMeta, type ToolFaqItem } from '~/utils/toolMeta'
@@ -125,22 +126,17 @@ const toolMeta = computed<ToolMeta>(() => ({
 // SEO 元数据（API 不可用时降级到静态元数据）
 const seoTitle = computed(() => toolMeta.value.name || staticMeta.value?.name || slug.value)
 const seoDescription = computed(() => toolMeta.value.description || staticMeta.value?.description || `${seoTitle.value} - 盘子工具站在线工具`)
+const seoKeywords = computed(() => staticMeta.value?.keywords || '')
 
 useSeoMeta({
-  title: seoTitle.value,
-  ogTitle: seoTitle.value,
-  description: seoDescription.value,
-  ogDescription: seoDescription.value,
+  title: () => seoTitle.value,
+  ogTitle: () => seoTitle.value,
+  description: () => seoDescription.value,
+  ogDescription: () => seoDescription.value,
   ogType: 'website',
   ogUrl: () => `https://tool.panzipool.com/tools/${slug.value}`,
+  keywords: () => seoKeywords.value,
 })
-
-// keywords（静态元数据提供）
-if (staticMeta.value?.keywords) {
-  useHead({
-    meta: [{ name: 'keywords', content: staticMeta.value.keywords }],
-  })
-}
 
 // canonical URL
 useHead({
@@ -152,21 +148,63 @@ useHead({
   ],
 })
 
-// JSON-LD 结构化数据
+// JSON-LD 结构化数据：WebApplication + FAQPage
+// 使用函数式返回确保响应式，搜索引擎可读取完整结构化数据
 useHead({
-  script: () => [
-    {
+  script: () => {
+    const scripts: Array<{ type: string; innerHTML: string }> = []
+
+    // WebApplication 结构化数据
+    const webAppSchema: Record<string, unknown> = {
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: toolMeta.value.name,
+      description: toolMeta.value.description,
+      applicationCategory: toolMeta.value.category === 'image' ? 'MultimediaApplication' : 'DeveloperApplication',
+      url: `https://tool.panzipool.com/tools/${slug.value}`,
+      operatingSystem: 'Any',
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'CNY',
+      },
+      isAccessibleForFree: true,
+      inLanguage: 'zh-CN',
+    }
+
+    // 添加关键词作为关键词属性
+    if (staticMeta.value?.keywords) {
+      webAppSchema.keywords = staticMeta.value.keywords
+    }
+
+    scripts.push({
       type: 'application/ld+json',
-      innerHTML: JSON.stringify({
+      innerHTML: JSON.stringify(webAppSchema),
+    })
+
+    // FAQPage 结构化数据（有 FAQ 时才添加）
+    const faqItems = staticMeta.value?.faq
+    if (faqItems && faqItems.length > 0) {
+      const faqSchema = {
         '@context': 'https://schema.org',
-        '@type': 'WebApplication',
-        name: toolMeta.value.name,
-        description: toolMeta.value.description,
-        applicationCategory: 'DeveloperApplication',
-        url: `https://tool.panzipool.com/tools/${slug.value}`,
-      }),
-    },
-  ],
+        '@type': 'FAQPage',
+        mainEntity: faqItems.map((item) => ({
+          '@type': 'Question',
+          name: item.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: item.answer,
+          },
+        })),
+      }
+      scripts.push({
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify(faqSchema),
+      })
+    }
+
+    return scripts
+  },
 })
 
 // 工具组件懒加载
