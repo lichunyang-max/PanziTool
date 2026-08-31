@@ -82,3 +82,7 @@ $RECYCLE.BIN/
 # Maven wrapper jar (keep the properties file)
 # ============================================================
 !.mvn/wrapper/maven-wrapper.jar
+*.txt
+*.md
+*.gitignore
+$null

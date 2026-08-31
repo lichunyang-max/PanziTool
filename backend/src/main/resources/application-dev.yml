@@ -30,8 +30,15 @@ management:
 
 panzipool:
   cors:
-    # 开发环境允许 localhost（可多个，逗号分隔）
-    allowed-origins: ${CORS_ORIGINS:http://localhost:3000,http://localhost:5173,http://localhost:8080}
+    # 开发环境允许 localhost（可多个，逗号分隔；5173 为资源站 Vue 项目 dev 端口）
+    allowed-origins: ${CORS_ORIGINS:http://localhost:3000,http://localhost:5173,http://localhost:5174,http://localhost:8080}
+  minio:
+    # 本地 MinIO：API 端口默认 9000（控制台 9001）
+    endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+    access-key: ${MINIO_ACCESS_KEY:admin}
+    secret-key: ${MINIO_SECRET_KEY:DYGdyg123}
+    bucket: ${MINIO_BUCKET:panzipool}
+    public-url: ${MINIO_PUBLIC_URL:http://localhost:9000/panzipool}
 
 logging:
   level:

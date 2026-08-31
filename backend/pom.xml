@@ -49,6 +49,13 @@
             <artifactId>spring-security-crypto</artifactId>
         </dependency>
 
+        <!-- MinIO 对象存储客户端：资源站图片上传 -->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>8.5.10</version>
+        </dependency>
+
         <!-- Actuator (健康检查) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -20,6 +20,7 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   { label: '留言管理', to: '/admin/feedback', icon: 'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z' },
+  { label: '资源管理', to: '/admin/resources', icon: 'M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z' },
   { label: '广告管理', icon: 'M3 11v2a1 1 0 0 0 1 1h3l4 4V6L7 10H4a1 1 0 0 0-1 1zm13.94-4.06l-1.41 1.41a8 8 0 0 1 0 11.31l1.41 1.41a10 10 0 0 0 0-14.13zM18.36 8.64l-1.41 1.41a4 4 0 0 1 0 5.9l1.41 1.41a6 6 0 0 0 0-8.72z', disabled: true },
 ]
 

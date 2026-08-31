@@ -34,8 +34,16 @@ management:
 
 panzipool:
   cors:
-    # 生产环境仅允许主站域名
-    allowed-origins: ${CORS_ORIGINS:https://tool.panzipool.com,https://www.panzipool.com,http://localhost:3000,http://localhost:8080}
+    # 生产环境允许的源：主站 + 资源站域名（resource 前端经同域 Nginx 反代 API，此处用于直连场景）
+    allowed-origins: ${CORS_ORIGINS:https://tool.panzipool.com,https://www.panzipool.com,https://resource.panzi.com,http://localhost:3000,http://localhost:8080}
+  minio:
+    # 生产 MinIO：若 MinIO S3 API 端口为 9001 请调整 endpoint；
+    # public-url 推荐配置为经 Nginx 反代的公网地址（见 nginx resource 站配置 /minio/）
+    endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+    access-key: ${MINIO_ACCESS_KEY:admin}
+    secret-key: ${MINIO_SECRET_KEY:DYGdyg123}
+    bucket: ${MINIO_BUCKET:panzipool}
+    public-url: ${MINIO_PUBLIC_URL:https://resource.panzipool.com/minio/panzipool}
 
 # 生产环境管理员配置：务必通过 ADMIN_PASSWORD_HASH 设置 BCrypt 哈希，并启用 Secure Cookie
 admin:
