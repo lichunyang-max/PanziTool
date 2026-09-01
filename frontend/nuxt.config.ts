@@ -39,8 +39,10 @@ export default defineNuxtConfig({
 
   // 运行时配置：环境相关配置，避免硬编码
   runtimeConfig: {
-    apiBase: '',
+    apiBase: process.env.NUXT_API_BASE || '',
     public: {
+      // 生产构建时空字符串 = 相对路径，自动跟随当前域名
+      // 本地开发时通过 .env 设置为 http://localhost:8080
       apiBase: process.env.NUXT_PUBLIC_API_BASE || '',
       // 百度统计 ID（国内用户分析）
       baiduTongjiId: '06c8d960aee8a68f0a9a229ff4a18ceb',

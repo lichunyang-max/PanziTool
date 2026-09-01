@@ -21,6 +21,11 @@ spring:
     # 部署时通过环境变量 SPRING_PROFILES_ACTIVE 切换 dev/prod；
     # 默认不激活任何 profile，使用本文件中的 H2 内存库配置（便于本地启动与单元测试）
     active: ${SPRING_PROFILES_ACTIVE:}
+  servlet:
+    multipart:
+      # 管理后台图片上传大小限制（业务层限制 5MB，此处留出余量）
+      max-file-size: 10MB
+      max-request-size: 10MB
   datasource:
     # 默认 H2 内存库 + PostgreSQL 兼容模式，无需外部依赖即可启动
     # DATABASE_TO_LOWER=TRUE：将未加引号的标识符折叠为小写，与 PostgreSQL 行为一致，
@@ -76,6 +81,16 @@ panzipool:
     allowed-headers: Authorization,Content-Type
     allow-credentials: true
     max-age: 3600
+  minio:
+    # MinIO 对象存储（资源站图片上传）
+    # endpoint：MinIO S3 API 地址（默认 9000 为 API 端口，9001 为控制台端口）
+    # public-url：生成公开访问 URL 的前缀；线上推荐经 Nginx 反代 MinIO，
+    #             如 https://resource.panzi.com/minio/panzipool
+    endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+    access-key: ${MINIO_ACCESS_KEY:admin}
+    secret-key: ${MINIO_SECRET_KEY:DYGdyg123}
+    bucket: ${MINIO_BUCKET:panzipool}
+    public-url: ${MINIO_PUBLIC_URL:http://localhost:9000/panzipool}
 
 # 管理员后台配置
 # ----------------------------------------------------------------------------
@@ -85,20 +100,6 @@ panzipool:
 admin:
   session-timeout-minutes: 120
   secure-cookie: false
-
-# MinIO 对象存储（资源站图片上传）
-# ----------------------------------------------------------------------------
-# endpoint：MinIO S3 API 地址（默认 9000 为 API 端口，9001 为控制台端口）
-# public-url：生成公开访问 URL 的前缀；线上推荐经 Nginx 反代 MinIO，
-#             如 https://resource.panzi.com/minio/panzipool
-# ----------------------------------------------------------------------------
-panzipool:
-  minio:
-    endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
-    access-key: ${MINIO_ACCESS_KEY:admin}
-    secret-key: ${MINIO_SECRET_KEY:DYGdyg123}
-    bucket: ${MINIO_BUCKET:panzipool}
-    public-url: ${MINIO_PUBLIC_URL:http://localhost:9000/panzipool}
 
 logging:
   level:

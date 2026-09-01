@@ -17,6 +17,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.stream.Collectors;
@@ -116,6 +117,16 @@ public class GlobalExceptionHandler {
         log.warn("请求体解析失败: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ApiResponse.error(ApiConstants.CODE_BAD_REQUEST, "请求体格式错误或不可读"));
+    }
+
+    /**
+     * 上传文件超过 multipart 大小限制（spring.servlet.multipart.max-file-size）→ 400 + code=400。
+     */
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiResponse<Void>> handleMaxUploadSize(MaxUploadSizeExceededException ex) {
+        log.warn("上传文件超过大小限制: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error(ApiConstants.CODE_BAD_REQUEST, "文件大小超过限制（最大 5MB）"));
     }
 
     /**

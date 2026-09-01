@@ -17,6 +17,17 @@ const imageFailed = ref(false)
 
 const showImage = (): boolean => Boolean(props.item.image) && !imageFailed.value
 
+/**
+ * 补全链接协议：后台配置可能填 "www.baidu.com" 这类无协议地址，
+ * 直接放进 href 会被当作站内相对路径，需自动补 https://
+ */
+function normalizeUrl(url: string): string {
+  if (/^https?:\/\//i.test(url)) {
+    return url
+  }
+  return `https://${url}`
+}
+
 function onImageError() {
   imageFailed.value = true
 }
@@ -25,7 +36,7 @@ function onImageError() {
 <template>
   <a
     class="resource-card"
-    :href="item.url"
+    :href="normalizeUrl(item.url)"
     target="_blank"
     rel="noopener noreferrer"
     :title="item.name"

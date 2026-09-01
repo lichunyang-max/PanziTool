@@ -48,11 +48,19 @@ const groups = computed(() => {
     kw ? list.filter((it) => it.name.toLowerCase().includes(kw)) : list
 
   if (node.parentId === null && node.children.length > 0) {
-    // 一级目录：按二级目录分组
-    return node.children.map((child) => ({
-      group: child,
-      items: filterItems(child.items),
-    }))
+    // 一级目录：直属资源（不分组展示在最前）+ 非空二级目录分组
+    const result: { group: ResourceCategoryNode | null; items: ResourceCategoryNode['items'] }[] = []
+    const direct = filterItems(node.items)
+    if (direct.length > 0) {
+      result.push({ group: null, items: direct })
+    }
+    for (const child of node.children) {
+      const childItems = filterItems(child.items)
+      if (childItems.length > 0) {
+        result.push({ group: child, items: childItems })
+      }
+    }
+    return result
   }
   return [{ group: null, items: filterItems(node.items) }]
 })
