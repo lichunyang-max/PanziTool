@@ -33,6 +33,10 @@ public class ResourceItemRequest {
     @Size(max = 500, message = "图片 URL 不能超过 500 字")
     private String image;
 
+    @Schema(description = "资源描述，悬停展示与详情页展示", example = "精选 20 套简历模板，涵盖各行业")
+    @Size(max = 500, message = "资源描述不能超过 500 字")
+    private String description;
+
     @Schema(description = "排序号，越小越靠前，默认 0", example = "0")
     private Integer sortOrder = 0;
 }

@@ -3,6 +3,8 @@ package com.panzipool.api.web.resource.service;
 import com.panzipool.api.common.BusinessException;
 import com.panzipool.api.web.resource.dao.ResourceCategoryRepository;
 import com.panzipool.api.web.resource.dao.ResourceItemRepository;
+import com.panzipool.api.web.resource.dao.ResourceLikeRepository;
+import com.panzipool.api.web.resource.dto.ResourceItemDetail;
 import com.panzipool.api.web.resource.dto.ResourceTreeNode;
 import com.panzipool.api.web.resource.entity.ResourceCategory;
 import com.panzipool.api.web.resource.entity.ResourceItem;
@@ -22,7 +24,8 @@ import java.util.stream.Collectors;
 /**
  * 资源目录与条目服务。
  *
- * <p>前台提供两级目录树 + 资源的完整树查询；后台提供目录与资源的增删改。
+ * <p>前台提供两级目录树 + 资源的完整树查询（资源默认按下载次数降序）、
+ * 资源详情、下载计数与点赞（anon_id 防重复）；后台提供目录与资源的增删改。
  * 删除一级目录时级联删除其下二级目录与资源。</p>
  */
 @Service
@@ -32,11 +35,14 @@ public class ResourceService {
 
     private final ResourceCategoryRepository categoryRepository;
     private final ResourceItemRepository itemRepository;
+    private final ResourceLikeRepository likeRepository;
 
     public ResourceService(ResourceCategoryRepository categoryRepository,
-                           ResourceItemRepository itemRepository) {
+                           ResourceItemRepository itemRepository,
+                           ResourceLikeRepository likeRepository) {
         this.categoryRepository = categoryRepository;
         this.itemRepository = itemRepository;
+        this.likeRepository = likeRepository;
     }
 
     // =========================================================================
@@ -45,6 +51,9 @@ public class ResourceService {
 
     /**
      * 查询完整资源树（一级目录 → 二级目录 + 资源）。
+     *
+     * <p>目录按 sortOrder 升序；资源按下载次数降序（下载最多的排最前），
+     * 下载次数相同再按 sortOrder、id 兜底。</p>
      */
     @Transactional(readOnly = true)
     public List<ResourceTreeNode> getTree() {
@@ -83,7 +92,7 @@ public class ResourceService {
             }
         }
 
-        // 排序：一级、二级、资源均按 sortOrder 升序
+        // 排序：目录按 sortOrder 升序，资源按下载次数降序
         roots.sort(Comparator.comparing(ResourceTreeNode::getSortOrder,
                 Comparator.nullsLast(Comparator.naturalOrder())));
         for (ResourceTreeNode root : roots) {
@@ -115,14 +124,101 @@ public class ResourceService {
         vo.setName(item.getName());
         vo.setUrl(item.getUrl());
         vo.setImage(item.getImage());
+        vo.setDescription(item.getDescription());
+        vo.setDownloadCount(item.getDownloadCount());
+        vo.setLikeCount(item.getLikeCount());
         vo.setSortOrder(item.getSortOrder());
         return vo;
     }
 
+    /** 资源排序：下载次数降序 → sortOrder 升序 → id 升序 */
     private void sortItems(ResourceTreeNode node) {
-        node.getItems().sort(Comparator.comparing(
-                ResourceTreeNode.ResourceItemVO::getSortOrder,
-                Comparator.nullsLast(Comparator.naturalOrder())));
+        node.getItems().sort(Comparator
+                .comparing(ResourceTreeNode.ResourceItemVO::getDownloadCount,
+                        Comparator.nullsLast(Comparator.reverseOrder()))
+                .thenComparing(ResourceTreeNode.ResourceItemVO::getSortOrder,
+                        Comparator.nullsLast(Comparator.naturalOrder()))
+                .thenComparing(ResourceTreeNode.ResourceItemVO::getId));
+    }
+
+    // =========================================================================
+    // 前台：详情 / 下载 / 点赞
+    // =========================================================================
+
+    /**
+     * 查询资源详情（含所属目录名称面包屑）。
+     */
+    @Transactional(readOnly = true)
+    public ResourceItemDetail getItemDetail(Long id) {
+        ResourceItem item = itemRepository.findById(id)
+                .orElseThrow(() -> notFound("资源不存在"));
+
+        ResourceItemDetail detail = new ResourceItemDetail();
+        detail.setId(item.getId());
+        detail.setCategoryId(item.getCategoryId());
+        detail.setName(item.getName());
+        detail.setUrl(item.getUrl());
+        detail.setImage(item.getImage());
+        detail.setDescription(item.getDescription());
+        detail.setDownloadCount(item.getDownloadCount());
+        detail.setLikeCount(item.getLikeCount());
+
+        // 组装目录名称面包屑（一级 / 二级）
+        categoryRepository.findById(item.getCategoryId()).ifPresent(cat -> {
+            detail.setCategoryName(cat.getName());
+            if (cat.getParentId() != null) {
+                categoryRepository.findById(cat.getParentId())
+                        .ifPresent(root -> detail.setRootCategoryName(root.getName()));
+            }
+        });
+        return detail;
+    }
+
+    /**
+     * 记录一次下载（原子递增）。
+     */
+    @Transactional
+    public void recordDownload(Long id) {
+        if (!itemRepository.existsById(id)) {
+            throw notFound("资源不存在");
+        }
+        itemRepository.incrementDownloadCount(id);
+    }
+
+    /**
+     * 点赞资源（同一 anon_id 仅一次，不可取消）。
+     *
+     * @return 点赞结果：liked=true 表示首次点赞成功；liked=false 表示重复点赞
+     */
+    @Transactional
+    public LikeResult like(Long id, String anonId) {
+        ResourceItem item = itemRepository.findById(id)
+                .orElseThrow(() -> notFound("资源不存在"));
+
+        if (likeRepository.existsByItemIdAndAnonId(id, anonId)) {
+            // 重复点赞：返回当前次数，由 Controller 映射 409
+            return new LikeResult(false, item.getLikeCount());
+        }
+        com.panzipool.api.web.resource.entity.ResourceLike like =
+                new com.panzipool.api.web.resource.entity.ResourceLike();
+        like.setItemId(id);
+        like.setAnonId(anonId);
+        try {
+            likeRepository.saveAndFlush(like);
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            // 并发兜底：唯一约束冲突视为重复点赞
+            return new LikeResult(false, item.getLikeCount());
+        }
+        itemRepository.incrementLikeCount(id);
+        Long latest = item.getLikeCount() + 1;
+        log.info("资源点赞成功: itemId={}, anon_id={}, like_count={}", id, anonId, latest);
+        return new LikeResult(true, latest);
+    }
+
+    /**
+     * 点赞结果载荷。
+     */
+    public record LikeResult(boolean liked, Long likeCount) {
     }
 
     // =========================================================================
@@ -210,7 +306,7 @@ public class ResourceService {
      */
     @Transactional
     public ResourceItem createItem(Long categoryId, String name, String url,
-                                   String image, Integer sortOrder) {
+                                   String image, String description, Integer sortOrder) {
         ResourceCategory category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> notFound("所属目录不存在"));
         ResourceItem item = new ResourceItem();
@@ -218,16 +314,17 @@ public class ResourceService {
         item.setName(name.trim());
         item.setUrl(url.trim());
         item.setImage(image == null || image.isBlank() ? null : image.trim());
+        item.setDescription(description == null || description.isBlank() ? null : description.trim());
         item.setSortOrder(sortOrder == null ? 0 : sortOrder);
         return itemRepository.save(item);
     }
 
     /**
-     * 更新资源（名称 / 链接 / 图片 / 排序号）。
+     * 更新资源（名称 / 链接 / 图片 / 描述 / 排序号）。
      */
     @Transactional
     public ResourceItem updateItem(Long id, Long categoryId, String name, String url,
-                                   String image, Integer sortOrder) {
+                                   String image, String description, Integer sortOrder) {
         ResourceItem item = itemRepository.findById(id)
                 .orElseThrow(() -> notFound("资源不存在"));
         if (categoryId != null) {
@@ -243,6 +340,9 @@ public class ResourceService {
         }
         if (image != null) {
             item.setImage(image.isBlank() ? null : image.trim());
+        }
+        if (description != null) {
+            item.setDescription(description.isBlank() ? null : description.trim());
         }
         if (sortOrder != null) {
             item.setSortOrder(sortOrder);

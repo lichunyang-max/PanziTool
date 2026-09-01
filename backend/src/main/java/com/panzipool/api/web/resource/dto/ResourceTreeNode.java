@@ -51,6 +51,15 @@ public class ResourceTreeNode {
         @Schema(description = "图标 URL，空表示使用默认图标")
         private String image;
 
+        @Schema(description = "资源描述")
+        private String description;
+
+        @Schema(description = "下载次数")
+        private Long downloadCount;
+
+        @Schema(description = "点赞次数")
+        private Long likeCount;
+
         @Schema(description = "排序号")
         private Integer sortOrder;
     }

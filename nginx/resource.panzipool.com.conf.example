@@ -1,0 +1,74 @@
+# ============================================================================
+# 资源站 resource.panzipool.com Nginx 配置
+# ----------------------------------------------------------------------------
+# 用途：部署 Vue3 资源展示站（frontend-resource 构建产物 dist/）
+# 放置：服务器 nginx 配置目录（conf.d 或 vhost include 目录）
+# 前置条件：
+#   1. DNS 已将 resource.panzipool.com 解析到本服务器
+#   2. 已签发 SSL 证书
+# ============================================================================
+
+# HTTP 80：申请证书期可用，签发后 301 跳转 HTTPS
+server {
+    listen 80;
+    server_name resource.panzipool.com;
+
+    # certbot 续期验证路径（如使用 certbot）
+    location /.well-known/ {
+        root /var/www/certbot;
+    }
+
+    location / {
+        return 301 https://resource.panzipool.com$request_uri;
+    }
+}
+
+# HTTPS 443：资源站主配置
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name resource.panzipool.com;
+
+    # SSL 证书路径（按实际路径调整）
+    ssl_certificate     /app/panzipool/crt/resource.panzipool.com/fullchain.pem;
+    ssl_certificate_key /app/panzipool/crt/resource.panzipool.com/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+
+    # ========================================================================
+    # 前端静态资源（frontend-resource 构建产物 dist/ 上传至此目录）
+    # ========================================================================
+    location / {
+        root /app/panzipool/web/resource;
+        index index.html;
+        # SPA 路由回退：所有未命中文件/目录的请求返回 index.html
+        try_files $uri $uri/ /index.html;
+    }
+
+    # ========================================================================
+    # 后端 API 反代：/api/ → Spring Boot（context-path=/api/v1，路径透传）
+    # ========================================================================
+    location /api/ {
+        proxy_pass http://localhost:8080/api/;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_connect_timeout 30s;
+        proxy_read_timeout    60s;
+        # 图片上传大小限制（与后端 spring.servlet.multipart 配置一致：10MB）
+        client_max_body_size 10m;
+    }
+
+    # ========================================================================
+    # MinIO 图片反代：/minio/ → MinIO S3 API 端口 9002（9001 为控制台端口）
+    # 后端 MINIO_PUBLIC_URL 需配置为 https://resource.panzipool.com/minio/panzipool
+    # ========================================================================
+    location /minio/ {
+        proxy_pass http://localhost:9002/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 60s;
+    }
+}

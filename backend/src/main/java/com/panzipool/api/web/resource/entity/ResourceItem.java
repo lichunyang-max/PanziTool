@@ -54,6 +54,18 @@ public class ResourceItem {
     @Column(name = "image", length = 500)
     private String image;
 
+    @Schema(description = "资源描述，鼠标悬停卡片时展示", example = "精选 20 套简历模板，涵盖各行业")
+    @Column(name = "description", length = 500)
+    private String description;
+
+    @Schema(description = "下载次数（点击跳转即计一次）", example = "0")
+    @Column(name = "download_count", nullable = false)
+    private Long downloadCount = 0L;
+
+    @Schema(description = "点赞次数（同一匿名用户仅一次）", example = "0")
+    @Column(name = "like_count", nullable = false)
+    private Long likeCount = 0L;
+
     @Schema(description = "排序号，越小越靠前", example = "0")
     @Column(name = "sort_order", nullable = false)
     private Integer sortOrder = 0;

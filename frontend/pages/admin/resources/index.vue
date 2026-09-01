@@ -55,6 +55,9 @@ interface ResourceItemAdmin {
   name: string
   url: string
   image: string | null
+  description: string | null
+  downloadCount: number
+  likeCount: number
   sortOrder: number
   createdAt: string
   updatedAt: string
@@ -294,11 +297,12 @@ interface ItemForm {
   name: string
   url: string
   image: string
+  description: string
   sortOrder: number
 }
 
 const showItemModal = ref(false)
-const itemForm = ref<ItemForm>({ id: null, name: '', url: '', image: '', sortOrder: 0 })
+const itemForm = ref<ItemForm>({ id: null, name: '', url: '', image: '', description: '', sortOrder: 0 })
 const itemSaving = ref(false)
 const isEditMode = computed(() => itemForm.value.id != null)
 
@@ -307,7 +311,7 @@ function openCreateItem() {
     showToast('请先在左侧选择一个目录', 'error')
     return
   }
-  itemForm.value = { id: null, name: '', url: '', image: '', sortOrder: 0 }
+  itemForm.value = { id: null, name: '', url: '', image: '', description: '', sortOrder: 0 }
   showItemModal.value = true
 }
 
@@ -317,6 +321,7 @@ function openEditItem(item: ResourceItemAdmin) {
     name: item.name,
     url: item.url,
     image: item.image ?? '',
+    description: item.description ?? '',
     sortOrder: item.sortOrder,
   }
   showItemModal.value = true
@@ -343,6 +348,7 @@ async function submitItem() {
       name: form.name.trim(),
       url: form.url.trim(),
       image: form.image.trim() || null,
+      description: form.description.trim() || null,
       sortOrder: form.sortOrder,
     }
     if (isEditMode.value) {
@@ -635,6 +641,10 @@ onMounted(() => {
                   <span class="text-xs font-normal ml-2" style="color: var(--pz-color-text-muted)">排序 {{ item.sortOrder }}</span>
                 </div>
                 <div class="text-xs truncate" style="color: var(--pz-color-text-muted)">{{ item.url }}</div>
+                <div class="flex items-center gap-3 mt-1 text-xs" style="color: var(--pz-color-text-muted)">
+                  <span title="下载次数">↓ {{ item.downloadCount ?? 0 }}</span>
+                  <span title="点赞次数">♥ {{ item.likeCount ?? 0 }}</span>
+                </div>
               </div>
 
               <!-- 操作 -->
@@ -664,6 +674,15 @@ onMounted(() => {
           <div>
             <label class="block text-sm mb-1.5" style="color: var(--pz-color-text-primary)">跳转链接 *</label>
             <input v-model="itemForm.url" class="pz-input w-full" placeholder="https://..." maxlength="500" />
+          </div>
+
+          <!-- 描述 -->
+          <div>
+            <label class="block text-sm mb-1.5" style="color: var(--pz-color-text-primary)">
+              资源描述
+              <span class="text-xs font-normal" style="color: var(--pz-color-text-muted)">（悬停卡片与详情页展示，可空）</span>
+            </label>
+            <textarea v-model="itemForm.description" class="pz-input w-full" rows="3" placeholder="如：精选 20 套简历模板，涵盖各行业" maxlength="500" style="resize: vertical" />
           </div>
 
           <!-- 图片 -->

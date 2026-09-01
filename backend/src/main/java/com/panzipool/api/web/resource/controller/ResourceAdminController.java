@@ -81,22 +81,22 @@ public class ResourceAdminController {
         return ApiResponse.success(resourceService.listItems(categoryId));
     }
 
-    @Operation(summary = "创建资源", description = "名称、链接必填，图片可选（空则前端展示默认图标）")
+    @Operation(summary = "创建资源", description = "名称、链接必填，图片/描述可选（图片空则前端展示默认图标）")
     @PostMapping("/items")
     public ApiResponse<ResourceItem> createItem(@Valid @RequestBody ResourceItemRequest body) {
         return ApiResponse.success(resourceService.createItem(
                 body.getCategoryId(), body.getName(), body.getUrl(),
-                body.getImage(), body.getSortOrder()));
+                body.getImage(), body.getDescription(), body.getSortOrder()));
     }
 
-    @Operation(summary = "更新资源", description = "更新资源名称 / 链接 / 图片 / 排序号")
+    @Operation(summary = "更新资源", description = "更新资源名称 / 链接 / 图片 / 描述 / 排序号")
     @PutMapping("/items/{id}")
     public ApiResponse<ResourceItem> updateItem(
             @Parameter(description = "资源 ID") @PathVariable Long id,
             @Valid @RequestBody ResourceItemRequest body) {
         return ApiResponse.success(resourceService.updateItem(
                 id, body.getCategoryId(), body.getName(), body.getUrl(),
-                body.getImage(), body.getSortOrder()));
+                body.getImage(), body.getDescription(), body.getSortOrder()));
     }
 
     @Operation(summary = "删除资源")

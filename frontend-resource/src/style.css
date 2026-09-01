@@ -4,8 +4,11 @@
 
 :root {
   --color-primary: #2563eb;
+  --color-primary-dark: #1d4ed8;
   --color-primary-light: #dbeafe;
   --color-primary-border: #bfdbfe;
+  --color-like: #f43f5e;
+  --color-like-light: #ffe4e6;
   --color-bg: #f6f8fb;
   --color-surface: #ffffff;
   --color-border: #e5e9f0;
@@ -85,8 +88,9 @@ input {
   color: var(--color-primary);
 }
 
+/* ============ 搜索框 ============ */
+
 .site-search {
-  margin-left: auto;
   position: relative;
   width: 260px;
 }
@@ -240,6 +244,14 @@ input {
   min-width: 0;
 }
 
+.content-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 4px;
+}
+
 .content-loading,
 .content-empty {
   display: flex;
@@ -261,7 +273,7 @@ input {
   gap: 6px;
   font-size: 13px;
   color: var(--color-text-muted);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .content-title {
@@ -304,18 +316,20 @@ input {
 
 .resource-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 14px;
 }
 
 .resource-card {
+  position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
-  padding: 14px 16px;
+  padding: 16px 16px 30px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
+  cursor: pointer;
   transition:
     transform 0.15s,
     box-shadow 0.15s,
@@ -326,6 +340,11 @@ input {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
   border-color: var(--color-primary-border);
+}
+
+.resource-card:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 .resource-icon {
@@ -350,6 +369,18 @@ input {
   color: var(--color-primary);
 }
 
+/* 卡片主体：名称 + 描述 */
+
+.resource-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  /* 右侧留出点赞按钮空间 */
+  padding-right: 44px;
+}
+
 .resource-name {
   font-size: 14px;
   font-weight: 600;
@@ -361,6 +392,295 @@ input {
 
 .resource-card:hover .resource-name {
   color: var(--color-primary);
+}
+
+.resource-desc {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* 固定单行，超出省略号 */
+  max-width: 100%;
+}
+
+/* 右上角点赞按钮 */
+
+.card-like {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  background: var(--color-bg);
+  border: 1px solid transparent;
+  transition: color 0.15s, background 0.15s, border-color 0.15s, transform 0.1s;
+}
+
+.card-like:hover:not(:disabled) {
+  color: var(--color-like);
+  background: var(--color-like-light);
+}
+
+.card-like:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.card-like.liked {
+  color: var(--color-like);
+  background: var(--color-like-light);
+}
+
+.card-like:disabled {
+  cursor: default;
+}
+
+/* 右下角下载次数 */
+
+.card-download {
+  position: absolute;
+  bottom: 9px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+/* ============ 详情页 ============ */
+
+.detail-page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 28px 24px 64px;
+}
+
+.detail-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: var(--shadow-md);
+}
+
+.detail-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.back-btn:hover {
+  color: var(--color-primary);
+  border-color: var(--color-primary-border);
+  background: var(--color-primary-light);
+}
+
+.detail-head {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.detail-icon {
+  width: 76px;
+  height: 76px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--color-primary-light), #eff6ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.detail-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detail-icon svg {
+  color: var(--color-primary);
+}
+
+.detail-head-info {
+  min-width: 0;
+}
+
+.detail-title {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 8px;
+  overflow-wrap: break-word;
+}
+
+.detail-stats {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.stat svg {
+  color: var(--color-primary);
+}
+
+.stat.like-stat svg {
+  color: var(--color-like);
+}
+
+.stat.like-stat.liked {
+  color: var(--color-like);
+  font-weight: 600;
+}
+
+.detail-section {
+  padding: 18px 0 4px;
+}
+
+.detail-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.detail-section-title::before {
+  content: '';
+  width: 4px;
+  height: 14px;
+  border-radius: 2px;
+  background: var(--color-primary);
+}
+
+.detail-desc {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+.detail-url {
+  font-size: 13px;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  border-radius: 8px;
+  padding: 8px 12px;
+  overflow-wrap: break-word;
+}
+
+.detail-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 22px;
+  border-top: 1px solid var(--color-border);
+}
+
+/* 主按钮（去下载） */
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 28px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.download-btn {
+  flex: 1;
+}
+
+/* 点赞按钮（详情页） */
+
+.like-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 24px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-like);
+  background: var(--color-surface);
+  border: 1px solid #fda4af;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.like-btn:hover:not(:disabled) {
+  background: var(--color-like-light);
+}
+
+.like-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.like-btn.liked {
+  background: var(--color-like-light);
+  border-color: var(--color-like-light);
+  cursor: default;
+}
+
+.like-btn:disabled {
+  cursor: default;
 }
 
 /* ============ 空状态 / 加载 ============ */
@@ -412,11 +732,46 @@ input {
     padding: 16px;
   }
 
+  .content-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .site-search {
-    width: 160px;
+    width: 100%;
   }
 
   .resource-grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+
+  .detail-page {
+    padding: 16px 14px 48px;
+  }
+
+  .detail-card {
+    padding: 18px;
+  }
+
+  .detail-head {
+    gap: 14px;
+  }
+
+  .detail-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+  }
+
+  .detail-title {
+    font-size: 19px;
+  }
+
+  .detail-actions {
+    flex-direction: column-reverse;
+  }
+
+  .like-btn {
+    width: 100%;
   }
 }
