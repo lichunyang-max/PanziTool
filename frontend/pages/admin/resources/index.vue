@@ -37,12 +37,18 @@ interface ResourceItemVO {
   name: string
   url: string
   image: string | null
+  icon: string | null
+  tags: string[]
+  description: string | null
+  downloadCount: number
+  likeCount: number
   sortOrder: number
 }
 
 interface CategoryNode {
   id: number
   name: string
+  icon: string | null
   parentId: number | null
   sortOrder: number
   children: CategoryNode[]
@@ -55,6 +61,8 @@ interface ResourceItemAdmin {
   name: string
   url: string
   image: string | null
+  icon: string | null
+  tags: string | null
   description: string | null
   downloadCount: number
   likeCount: number
@@ -138,16 +146,19 @@ function toggleExpand(id: number) {
 /** null = 关闭；'root' = 添加一级目录；数字 = 在该一级目录下添加二级目录 */
 const addingParent = ref<number | 'root' | null>(null)
 const newCategoryName = ref('')
+const newCategoryIcon = ref('')
 const addCategoryLoading = ref(false)
 
 function startAddCategory(parentId: number | 'root') {
   addingParent.value = parentId
   newCategoryName.value = ''
+  newCategoryIcon.value = ''
 }
 
 function cancelAddCategory() {
   addingParent.value = null
   newCategoryName.value = ''
+  newCategoryIcon.value = ''
 }
 
 async function submitAddCategory() {
@@ -161,7 +172,7 @@ async function submitAddCategory() {
   try {
     await api('/api/v1/admin/resources/categories', {
       method: 'POST',
-      body: { name, parentId },
+      body: { name, icon: newCategoryIcon.value.trim() || null, parentId },
     })
     showToast('目录创建成功')
     cancelAddCategory()
@@ -297,12 +308,25 @@ interface ItemForm {
   name: string
   url: string
   image: string
+  icon: string
+  tag1: string
+  tag2: string
   description: string
   sortOrder: number
 }
 
 const showItemModal = ref(false)
-const itemForm = ref<ItemForm>({ id: null, name: '', url: '', image: '', description: '', sortOrder: 0 })
+const itemForm = ref<ItemForm>({
+  id: null,
+  name: '',
+  url: '',
+  image: '',
+  icon: '',
+  tag1: '',
+  tag2: '',
+  description: '',
+  sortOrder: 0,
+})
 const itemSaving = ref(false)
 const isEditMode = computed(() => itemForm.value.id != null)
 
@@ -311,16 +335,30 @@ function openCreateItem() {
     showToast('请先在左侧选择一个目录', 'error')
     return
   }
-  itemForm.value = { id: null, name: '', url: '', image: '', description: '', sortOrder: 0 }
+  itemForm.value = {
+    id: null,
+    name: '',
+    url: '',
+    image: '',
+    icon: '',
+    tag1: '',
+    tag2: '',
+    description: '',
+    sortOrder: 0,
+  }
   showItemModal.value = true
 }
 
 function openEditItem(item: ResourceItemAdmin) {
+  const tags = (item.tags ?? '').split(',').map((t) => t.trim())
   itemForm.value = {
     id: item.id,
     name: item.name,
     url: item.url,
     image: item.image ?? '',
+    icon: item.icon ?? '',
+    tag1: tags[0] ?? '',
+    tag2: tags[1] ?? '',
     description: item.description ?? '',
     sortOrder: item.sortOrder,
   }
@@ -348,6 +386,8 @@ async function submitItem() {
       name: form.name.trim(),
       url: form.url.trim(),
       image: form.image.trim() || null,
+      icon: form.icon.trim() || null,
+      tags: [form.tag1.trim(), form.tag2.trim()].filter(Boolean).join(',') || null,
       description: form.description.trim() || null,
       sortOrder: form.sortOrder,
     }
@@ -474,7 +514,10 @@ onMounted(() => {
 
         <!-- 添加一级目录输入框 -->
         <div v-if="addingParent === 'root'" class="mb-3 p-2 rounded-md" style="background: var(--pz-color-bg)">
-          <input v-model="newCategoryName" class="pz-input w-full mb-2" placeholder="一级目录名称" @keyup.enter="submitAddCategory" />
+          <div class="flex gap-2 mb-2">
+            <input v-model="newCategoryIcon" class="pz-input" style="width: 64px; text-align: center" placeholder="📚" maxlength="4" />
+            <input v-model="newCategoryName" class="pz-input flex-1" placeholder="一级目录名称" @keyup.enter="submitAddCategory" />
+          </div>
           <div class="flex gap-2">
             <button type="button" class="pz-btn-primary text-xs px-3 py-1 flex-1" :disabled="addCategoryLoading" @click="submitAddCategory">
               确定
@@ -525,7 +568,7 @@ onMounted(() => {
                 <button type="button" class="pz-btn-ghost text-xs px-2 py-1" @click="cancelRename">否</button>
               </template>
               <button v-else type="button" class="flex-1 text-left text-sm font-medium truncate" style="color: var(--pz-color-text-primary)" @click="selectCategory(root)">
-                {{ root.name }}
+                <span v-if="root.icon" class="mr-1">{{ root.icon }}</span>{{ root.name }}
               </button>
 
               <!-- 操作按钮 -->
@@ -544,7 +587,10 @@ onMounted(() => {
 
             <!-- 添加二级目录输入框 -->
             <div v-if="addingParent === root.id" class="ml-6 my-1 p-2 rounded-md" style="background: var(--pz-color-bg)">
-              <input v-model="newCategoryName" class="pz-input w-full mb-2 text-sm" placeholder="二级目录名称（如 word / excel）" @keyup.enter="submitAddCategory" />
+              <div class="flex gap-2 mb-2">
+                <input v-model="newCategoryIcon" class="pz-input" style="width: 64px; text-align: center" placeholder="📘" maxlength="4" />
+                <input v-model="newCategoryName" class="pz-input flex-1 text-sm" placeholder="二级目录名称（如 word / excel）" @keyup.enter="submitAddCategory" />
+              </div>
               <div class="flex gap-2">
                 <button type="button" class="pz-btn-primary text-xs px-3 py-1 flex-1" :disabled="addCategoryLoading" @click="submitAddCategory">确定</button>
                 <button type="button" class="pz-btn-ghost text-xs px-3 py-1" @click="cancelAddCategory">取消</button>
@@ -567,7 +613,7 @@ onMounted(() => {
                 <template v-else>
                   <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background: var(--pz-color-text-muted)" />
                   <button type="button" class="flex-1 text-left text-sm truncate" style="color: var(--pz-color-text-secondary)" @click="selectCategory(child)">
-                    {{ child.name }}
+                    <span v-if="child.icon" class="mr-1">{{ child.icon }}</span>{{ child.name }}
                   </button>
                   <button type="button" title="重命名" class="p-1 rounded opacity-50 hover:opacity-100" style="color: var(--pz-color-text-secondary)" @click="startRename(child)">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" /></svg>
@@ -674,6 +720,25 @@ onMounted(() => {
           <div>
             <label class="block text-sm mb-1.5" style="color: var(--pz-color-text-primary)">跳转链接 *</label>
             <input v-model="itemForm.url" class="pz-input w-full" placeholder="https://..." maxlength="500" />
+          </div>
+
+          <!-- 图标 + 标签 -->
+          <div class="grid grid-cols-3 gap-3">
+            <div>
+              <label class="block text-sm mb-1.5" style="color: var(--pz-color-text-primary)">
+                图标
+                <span class="text-xs font-normal" style="color: var(--pz-color-text-muted)">（emoji，可直接粘贴）</span>
+              </label>
+              <input v-model="itemForm.icon" class="pz-input w-full" style="text-align: center; font-size: 18px" placeholder="🎯" maxlength="4" />
+            </div>
+            <div>
+              <label class="block text-sm mb-1.5" style="color: var(--pz-color-text-primary)">标签 1</label>
+              <input v-model="itemForm.tag1" class="pz-input w-full" placeholder="如：热门" maxlength="20" />
+            </div>
+            <div>
+              <label class="block text-sm mb-1.5" style="color: var(--pz-color-text-primary)">标签 2</label>
+              <input v-model="itemForm.tag2" class="pz-input w-full" placeholder="如：中级" maxlength="20" />
+            </div>
           </div>
 
           <!-- 描述 -->

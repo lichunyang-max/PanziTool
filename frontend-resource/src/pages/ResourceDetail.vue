@@ -37,7 +37,14 @@ const downloadCount = ref(0)
 /** 已点击去下载（当前会话内避免重复计数） */
 const downloaded = ref(false)
 
-const showImage = computed(() => Boolean(detail.value?.image) && !imageFailed.value)
+/** 图标展示模式：emoji > 图片 > 默认（与列表卡片一致） */
+const iconMode = computed(() => {
+  const d = detail.value
+  if (!d) return 'default'
+  if (d.icon) return 'emoji'
+  if (d.image && !imageFailed.value) return 'image'
+  return 'default'
+})
 
 const breadcrumb = computed(() => {
   const d = detail.value
@@ -155,8 +162,9 @@ onMounted(async () => {
 
       <!-- 头部：图标 + 名称 + 统计 -->
       <header class="detail-head">
-        <span class="detail-icon">
-          <img v-if="showImage" :src="detail.image!" :alt="detail.name" @error="imageFailed = true" />
+        <span class="detail-icon" :style="iconMode !== 'image' ? { background: 'linear-gradient(135deg, #4f7cff20, #6c5ce720)' } : undefined">
+          <span v-if="iconMode === 'emoji'">{{ detail.icon }}</span>
+          <img v-else-if="iconMode === 'image'" :src="detail.image!" :alt="detail.name" @error="imageFailed = true" />
           <svg v-else width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
             <polyline points="14 2 14 8 20 8" />
@@ -182,6 +190,15 @@ onMounted(async () => {
               </svg>
               {{ likeCount }} 人点赞
             </span>
+          </div>
+          <!-- 标签 -->
+          <div v-if="detail.tags && detail.tags.length > 0" class="detail-tags">
+            <span
+              v-for="(tag, i) in detail.tags"
+              :key="tag"
+              class="rc-tag"
+              :class="{ hot: i === 0, new: i === 1 }"
+            >{{ tag }}</span>
           </div>
         </div>
       </header>

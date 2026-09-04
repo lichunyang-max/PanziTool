@@ -17,6 +17,10 @@ public class CategoryRequest {
     @Size(max = 100, message = "目录名称不能超过 100 字")
     private String name;
 
+    @Schema(description = "目录图标（emoji），可空", example = "📘")
+    @Size(max = 32, message = "图标不能超过 32 字符")
+    private String icon;
+
     @Schema(description = "父目录 ID，空表示创建一级目录", example = "1")
     private Long parentId;
 

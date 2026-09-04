@@ -33,6 +33,14 @@ public class ResourceItemRequest {
     @Size(max = 500, message = "图片 URL 不能超过 500 字")
     private String image;
 
+    @Schema(description = "资源图标（emoji），可空；有值时优先于图片展示", example = "🎯")
+    @Size(max = 32, message = "图标不能超过 32 字符")
+    private String icon;
+
+    @Schema(description = "标签，逗号分隔，最多 2 个", example = "热门,中级")
+    @Size(max = 100, message = "标签不能超过 100 字符")
+    private String tags;
+
     @Schema(description = "资源描述，悬停展示与详情页展示", example = "精选 20 套简历模板，涵盖各行业")
     @Size(max = 500, message = "资源描述不能超过 500 字")
     private String description;

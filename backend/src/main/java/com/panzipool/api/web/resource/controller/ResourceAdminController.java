@@ -50,16 +50,16 @@ public class ResourceAdminController {
     @PostMapping("/categories")
     public ApiResponse<ResourceCategory> createCategory(@Valid @RequestBody CategoryRequest body) {
         return ApiResponse.success(
-                resourceService.createCategory(body.getName(), body.getParentId(), body.getSortOrder()));
+                resourceService.createCategory(body.getName(), body.getIcon(), body.getParentId(), body.getSortOrder()));
     }
 
-    @Operation(summary = "更新目录", description = "更新目录名称与排序号")
+    @Operation(summary = "更新目录", description = "更新目录名称、图标与排序号")
     @PutMapping("/categories/{id}")
     public ApiResponse<ResourceCategory> updateCategory(
             @Parameter(description = "目录 ID") @PathVariable Long id,
             @Valid @RequestBody CategoryRequest body) {
         return ApiResponse.success(
-                resourceService.updateCategory(id, body.getName(), body.getSortOrder()));
+                resourceService.updateCategory(id, body.getName(), body.getIcon(), body.getSortOrder()));
     }
 
     @Operation(summary = "删除目录", description = "删除一级目录时级联删除其下二级目录与资源")
@@ -81,22 +81,24 @@ public class ResourceAdminController {
         return ApiResponse.success(resourceService.listItems(categoryId));
     }
 
-    @Operation(summary = "创建资源", description = "名称、链接必填，图片/描述可选（图片空则前端展示默认图标）")
+    @Operation(summary = "创建资源", description = "名称、链接必填，图片/图标/标签/描述可选")
     @PostMapping("/items")
     public ApiResponse<ResourceItem> createItem(@Valid @RequestBody ResourceItemRequest body) {
         return ApiResponse.success(resourceService.createItem(
                 body.getCategoryId(), body.getName(), body.getUrl(),
-                body.getImage(), body.getDescription(), body.getSortOrder()));
+                body.getImage(), body.getIcon(), body.getTags(),
+                body.getDescription(), body.getSortOrder()));
     }
 
-    @Operation(summary = "更新资源", description = "更新资源名称 / 链接 / 图片 / 描述 / 排序号")
+    @Operation(summary = "更新资源", description = "更新资源名称 / 链接 / 图片 / 图标 / 标签 / 描述 / 排序号")
     @PutMapping("/items/{id}")
     public ApiResponse<ResourceItem> updateItem(
             @Parameter(description = "资源 ID") @PathVariable Long id,
             @Valid @RequestBody ResourceItemRequest body) {
         return ApiResponse.success(resourceService.updateItem(
                 id, body.getCategoryId(), body.getName(), body.getUrl(),
-                body.getImage(), body.getDescription(), body.getSortOrder()));
+                body.getImage(), body.getIcon(), body.getTags(),
+                body.getDescription(), body.getSortOrder()));
     }
 
     @Operation(summary = "删除资源")

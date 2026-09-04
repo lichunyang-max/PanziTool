@@ -3,6 +3,8 @@ package com.panzipool.api.web.resource.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 资源详情 DTO（前台 /resources/items/{id} 响应结构）。
  */
@@ -30,6 +32,12 @@ public class ResourceItemDetail {
 
     @Schema(description = "图标图片 URL，空表示使用默认图标")
     private String image;
+
+    @Schema(description = "资源图标（emoji），有值时优先于图片展示")
+    private String icon;
+
+    @Schema(description = "标签列表（最多 2 个）")
+    private List<String> tags;
 
     @Schema(description = "资源描述")
     private String description;

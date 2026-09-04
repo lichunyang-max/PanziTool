@@ -41,6 +41,10 @@ public class ResourceCategory {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
+    @Schema(description = "目录图标（emoji，展示在树节点与分类卡片）", example = "📚")
+    @Column(name = "icon", length = 32)
+    private String icon;
+
     @Schema(description = "父目录 ID，空表示一级目录", example = "1")
     @Column(name = "parent_id")
     private Long parentId;

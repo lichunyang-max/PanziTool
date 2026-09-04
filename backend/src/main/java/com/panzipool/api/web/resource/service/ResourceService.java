@@ -111,6 +111,7 @@ public class ResourceService {
         ResourceTreeNode node = new ResourceTreeNode();
         node.setId(category.getId());
         node.setName(category.getName());
+        node.setIcon(category.getIcon());
         node.setParentId(category.getParentId());
         node.setSortOrder(category.getSortOrder());
         List<ResourceItem> list = itemsByCategory.getOrDefault(category.getId(), List.of());
@@ -124,11 +125,25 @@ public class ResourceService {
         vo.setName(item.getName());
         vo.setUrl(item.getUrl());
         vo.setImage(item.getImage());
+        vo.setIcon(item.getIcon());
+        vo.setTags(parseTags(item.getTags()));
         vo.setDescription(item.getDescription());
         vo.setDownloadCount(item.getDownloadCount());
         vo.setLikeCount(item.getLikeCount());
         vo.setSortOrder(item.getSortOrder());
         return vo;
+    }
+
+    /** 解析逗号分隔标签为列表（最多 2 个，过滤空项） */
+    private List<String> parseTags(String tags) {
+        if (tags == null || tags.isBlank()) {
+            return List.of();
+        }
+        return java.util.Arrays.stream(tags.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .limit(2)
+                .collect(Collectors.toList());
     }
 
     /** 资源排序：下载次数降序 → sortOrder 升序 → id 升序 */
@@ -159,6 +174,8 @@ public class ResourceService {
         detail.setName(item.getName());
         detail.setUrl(item.getUrl());
         detail.setImage(item.getImage());
+        detail.setIcon(item.getIcon());
+        detail.setTags(parseTags(item.getTags()));
         detail.setDescription(item.getDescription());
         detail.setDownloadCount(item.getDownloadCount());
         detail.setLikeCount(item.getLikeCount());
@@ -237,7 +254,7 @@ public class ResourceService {
      * 创建目录。二级目录的父目录必须存在且自身是一级目录（层级固定两级）。
      */
     @Transactional
-    public ResourceCategory createCategory(String name, Long parentId, Integer sortOrder) {
+    public ResourceCategory createCategory(String name, String icon, Long parentId, Integer sortOrder) {
         if (parentId != null) {
             ResourceCategory parent = categoryRepository.findById(parentId)
                     .orElseThrow(() -> notFound("父目录不存在"));
@@ -247,20 +264,24 @@ public class ResourceService {
         }
         ResourceCategory category = new ResourceCategory();
         category.setName(name.trim());
+        category.setIcon(icon == null || icon.isBlank() ? null : icon.trim());
         category.setParentId(parentId);
         category.setSortOrder(sortOrder == null ? 0 : sortOrder);
         return categoryRepository.save(category);
     }
 
     /**
-     * 更新目录（名称 / 排序号）。
+     * 更新目录（名称 / 图标 / 排序号）。
      */
     @Transactional
-    public ResourceCategory updateCategory(Long id, String name, Integer sortOrder) {
+    public ResourceCategory updateCategory(Long id, String name, String icon, Integer sortOrder) {
         ResourceCategory category = categoryRepository.findById(id)
                 .orElseThrow(() -> notFound("目录不存在"));
         if (name != null && !name.isBlank()) {
             category.setName(name.trim());
+        }
+        if (icon != null) {
+            category.setIcon(icon.isBlank() ? null : icon.trim());
         }
         if (sortOrder != null) {
             category.setSortOrder(sortOrder);
@@ -305,8 +326,8 @@ public class ResourceService {
      * 创建资源。所属目录必须存在。
      */
     @Transactional
-    public ResourceItem createItem(Long categoryId, String name, String url,
-                                   String image, String description, Integer sortOrder) {
+    public ResourceItem createItem(Long categoryId, String name, String url, String image,
+                                   String icon, String tags, String description, Integer sortOrder) {
         ResourceCategory category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> notFound("所属目录不存在"));
         ResourceItem item = new ResourceItem();
@@ -314,17 +335,19 @@ public class ResourceService {
         item.setName(name.trim());
         item.setUrl(url.trim());
         item.setImage(image == null || image.isBlank() ? null : image.trim());
+        item.setIcon(icon == null || icon.isBlank() ? null : icon.trim());
+        item.setTags(normalizeTags(tags));
         item.setDescription(description == null || description.isBlank() ? null : description.trim());
         item.setSortOrder(sortOrder == null ? 0 : sortOrder);
         return itemRepository.save(item);
     }
 
     /**
-     * 更新资源（名称 / 链接 / 图片 / 描述 / 排序号）。
+     * 更新资源（名称 / 链接 / 图片 / 图标 / 标签 / 描述 / 排序号）。
      */
     @Transactional
-    public ResourceItem updateItem(Long id, Long categoryId, String name, String url,
-                                   String image, String description, Integer sortOrder) {
+    public ResourceItem updateItem(Long id, Long categoryId, String name, String url, String image,
+                                   String icon, String tags, String description, Integer sortOrder) {
         ResourceItem item = itemRepository.findById(id)
                 .orElseThrow(() -> notFound("资源不存在"));
         if (categoryId != null) {
@@ -341,6 +364,12 @@ public class ResourceService {
         if (image != null) {
             item.setImage(image.isBlank() ? null : image.trim());
         }
+        if (icon != null) {
+            item.setIcon(icon.isBlank() ? null : icon.trim());
+        }
+        if (tags != null) {
+            item.setTags(normalizeTags(tags));
+        }
         if (description != null) {
             item.setDescription(description.isBlank() ? null : description.trim());
         }
@@ -348,6 +377,19 @@ public class ResourceService {
             item.setSortOrder(sortOrder);
         }
         return itemRepository.save(item);
+    }
+
+    /** 规范化标签字符串：去空白项、最多 2 个、逗号连接 */
+    private String normalizeTags(String tags) {
+        if (tags == null || tags.isBlank()) {
+            return null;
+        }
+        List<String> parsed = java.util.Arrays.stream(tags.split("[,，]"))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .limit(2)
+                .collect(Collectors.toList());
+        return parsed.isEmpty() ? null : String.join(",", parsed);
     }
 
     /**

@@ -7,8 +7,12 @@ export interface ResourceItem {
   id: number
   name: string
   url: string
-  /** 图标图片 URL，null 时前端展示默认图标 */
+  /** 图标图片 URL（MinIO），null 时展示默认图标 */
   image: string | null
+  /** 资源图标（emoji），有值时优先于图片展示 */
+  icon: string | null
+  /** 标签列表（最多 2 个） */
+  tags: string[]
   /** 资源描述，悬停展示 */
   description: string | null
   /** 下载次数 */
@@ -22,6 +26,8 @@ export interface ResourceItem {
 export interface ResourceCategoryNode {
   id: number
   name: string
+  /** 目录图标（emoji），展示在树节点与分类卡片 */
+  icon: string | null
   parentId: number | null
   sortOrder: number
   children: ResourceCategoryNode[]
@@ -37,6 +43,8 @@ export interface ResourceItemDetail {
   name: string
   url: string
   image: string | null
+  icon: string | null
+  tags: string[]
   description: string | null
   downloadCount: number
   likeCount: number

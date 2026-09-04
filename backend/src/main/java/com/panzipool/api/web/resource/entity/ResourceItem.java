@@ -54,6 +54,14 @@ public class ResourceItem {
     @Column(name = "image", length = 500)
     private String image;
 
+    @Schema(description = "资源图标（emoji），有值时优先于图片展示", example = "🎯")
+    @Column(name = "icon", length = 32)
+    private String icon;
+
+    @Schema(description = "标签，逗号分隔，最多 2 个", example = "热门,中级")
+    @Column(name = "tags", length = 100)
+    private String tags;
+
     @Schema(description = "资源描述，鼠标悬停卡片时展示", example = "精选 20 套简历模板，涵盖各行业")
     @Column(name = "description", length = 500)
     private String description;

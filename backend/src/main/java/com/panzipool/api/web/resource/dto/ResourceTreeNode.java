@@ -21,6 +21,9 @@ public class ResourceTreeNode {
     @Schema(description = "目录名称", example = "word")
     private String name;
 
+    @Schema(description = "目录图标（emoji）", example = "📘")
+    private String icon;
+
     @Schema(description = "父目录 ID，一级目录为 null")
     private Long parentId;
 
@@ -50,6 +53,12 @@ public class ResourceTreeNode {
 
         @Schema(description = "图标 URL，空表示使用默认图标")
         private String image;
+
+        @Schema(description = "资源图标（emoji），有值时优先于图片展示")
+        private String icon;
+
+        @Schema(description = "标签列表（最多 2 个）")
+        private List<String> tags;
 
         @Schema(description = "资源描述")
         private String description;
