@@ -71,6 +71,64 @@ export const mobileToolRegistry: Record<string, () => Promise<Component>> = {
     import('~/components/mobile/tools/MobileImageConvert.vue').then(
       (m) => m.default || m,
     ),
+
+  // ===== 第二批：开发者工具扩展（移动端） =====
+  'hex-encode': () =>
+    import('~/components/mobile/tools/MobileHexEncode.vue').then(
+      (m) => m.default || m,
+    ),
+  'unicode-convert': () =>
+    import('~/components/mobile/tools/MobileUnicodeConvert.vue').then(
+      (m) => m.default || m,
+    ),
+  'base-convert': () =>
+    import('~/components/mobile/tools/MobileBaseConvert.vue').then(
+      (m) => m.default || m,
+    ),
+  'image-base64': () =>
+    import('~/components/mobile/tools/MobileImageBase64.vue').then(
+      (m) => m.default || m,
+    ),
+  'xml-formatter': () =>
+    import('~/components/mobile/tools/MobileXmlFormatter.vue').then(
+      (m) => m.default || m,
+    ),
+  'yaml-formatter': () =>
+    import('~/components/mobile/tools/MobileYamlFormatter.vue').then(
+      (m) => m.default || m,
+    ),
+  'csv-json-convert': () =>
+    import('~/components/mobile/tools/MobileCsvJsonConvert.vue').then(
+      (m) => m.default || m,
+    ),
+  'uuid-generator': () =>
+    import('~/components/mobile/tools/MobileUuidGenerator.vue').then(
+      (m) => m.default || m,
+    ),
+  'mock-data': () =>
+    import('~/components/mobile/tools/MobileMockData.vue').then(
+      (m) => m.default || m,
+    ),
+  'string-toolkit': () =>
+    import('~/components/mobile/tools/MobileStringToolkit.vue').then(
+      (m) => m.default || m,
+    ),
+  'color-converter': () =>
+    import('~/components/mobile/tools/MobileColorConverter.vue').then(
+      (m) => m.default || m,
+    ),
+  'html-escape': () =>
+    import('~/components/mobile/tools/MobileHtmlEscape.vue').then(
+      (m) => m.default || m,
+    ),
+  'js-css-beautify': () =>
+    import('~/components/mobile/tools/MobileJsCssBeautify.vue').then(
+      (m) => m.default || m,
+    ),
+  'timezone-calculator': () =>
+    import('~/components/mobile/tools/MobileTimezoneCalculator.vue').then(
+      (m) => m.default || m,
+    ),
 }
 
 /**

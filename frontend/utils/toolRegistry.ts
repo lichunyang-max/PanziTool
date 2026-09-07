@@ -73,6 +73,56 @@ export const toolRegistry: Record<string, () => Promise<Component>> = {
   // 二维码生成工具
   'qr-code': () =>
     import('~/components/tool/QrCodeTool.vue').then((m) => m.default || m),
+
+  // ===== 第二批：开发者工具扩展（纯前端本地运算） =====
+  'hex-encode': () =>
+    import('~/components/tool/HexEncodeTool.vue').then((m) => m.default || m),
+  'unicode-convert': () =>
+    import('~/components/tool/UnicodeConvertTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'base-convert': () =>
+    import('~/components/tool/BaseConvertTool.vue').then((m) => m.default || m),
+  'image-base64': () =>
+    import('~/components/tool/ImageBase64Tool.vue').then(
+      (m) => m.default || m,
+    ),
+  'xml-formatter': () =>
+    import('~/components/tool/XmlFormatterTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'yaml-formatter': () =>
+    import('~/components/tool/YamlFormatterTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'csv-json-convert': () =>
+    import('~/components/tool/CsvJsonConvertTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'uuid-generator': () =>
+    import('~/components/tool/UuidGeneratorTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'mock-data': () =>
+    import('~/components/tool/MockDataTool.vue').then((m) => m.default || m),
+  'string-toolkit': () =>
+    import('~/components/tool/StringToolkitTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'color-converter': () =>
+    import('~/components/tool/ColorConverterTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'html-escape': () =>
+    import('~/components/tool/HtmlEscapeTool.vue').then((m) => m.default || m),
+  'js-css-beautify': () =>
+    import('~/components/tool/JsCssBeautifyTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'timezone-calculator': () =>
+    import('~/components/tool/TimezoneCalculatorTool.vue').then(
+      (m) => m.default || m,
+    ),
 }
 
 /**
