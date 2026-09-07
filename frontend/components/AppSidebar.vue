@@ -24,6 +24,20 @@ const devToolsLinks: SidebarLink[] = [
   { label: 'JWT解析', to: '/tools/jwt-decoder' },
   { label: 'Base64编码', to: '/tools/base64' },
   { label: '哈希计算', to: '/tools/hash' },
+  { label: 'Hex十六进制编解码', to: '/tools/hex-encode', isNew: true },
+  { label: 'Unicode转中文', to: '/tools/unicode-convert', isNew: true },
+  { label: '进制转换器', to: '/tools/base-convert', isNew: true },
+  { label: '图片Base64互转', to: '/tools/image-base64', isNew: true },
+  { label: 'XML格式化校验', to: '/tools/xml-formatter', isNew: true },
+  { label: 'YAML格式化校验', to: '/tools/yaml-formatter', isNew: true },
+  { label: 'CSV ↔ JSON转换', to: '/tools/csv-json-convert', isNew: true },
+  { label: 'UUID/GUID生成器', to: '/tools/uuid-generator', isNew: true },
+  { label: 'Mock随机数据生成', to: '/tools/mock-data', isNew: true },
+  { label: '字符串工具箱', to: '/tools/string-toolkit', isNew: true },
+  { label: '颜色转换器', to: '/tools/color-converter', isNew: true },
+  { label: 'HTML转义反转义', to: '/tools/html-escape', isNew: true },
+  { label: 'JS/CSS美化压缩', to: '/tools/js-css-beautify', isNew: true },
+  { label: '时区时间计算器', to: '/tools/timezone-calculator', isNew: true },
 ]
 
 const imageToolsLinks: SidebarLink[] = [
