@@ -30,23 +30,23 @@ import {
 
 useHead({
   titleTemplate: null,
-  title: 'UUID生成 | 盘子工具站',
+  title: 'UUID/GUID生成器 | 盘子工具站',
   meta: [
     {
       name: 'description',
-      content: '免费在线UUID生成工具，支持UUID v4（纯随机）与v7（时间有序）双版本，可批量生成、自定义格式（去连字符/大写/大括号），免登录打开即用，本地生成保障安全。',
+      content: '免费在线UUID生成器，支持v4/v7版本批量生成，多种格式输出（去连字符/大写/大括号），测试主键、请求ID一键搞定，基于Web Crypto API密码学安全随机数，本地生成免登录即用。',
     },
     {
       name: 'keywords',
-      content: 'UUID生成,UUID v4,UUID v7,GUID,批量生成',
+      content: 'UUID生成,GUID生成,UUID v4,UUID v7,唯一标识,主键生成',
     },
     {
       property: 'og:title',
-      content: 'UUID生成 | 盘子工具站',
+      content: 'UUID/GUID生成器 | 盘子工具站',
     },
     {
       property: 'og:description',
-      content: '免费在线UUID生成工具，支持UUID v4（纯随机）与v7（时间有序）双版本，可批量生成、自定义格式，免登录打开即用，本地生成保障安全。',
+      content: '免费在线UUID生成器，支持v4/v7版本批量生成，多种格式输出（去连字符/大写/大括号），测试主键、请求ID一键搞定，基于Web Crypto API密码学安全随机数，本地生成免登录即用。',
     },
   ],
 })

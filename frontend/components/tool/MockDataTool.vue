@@ -31,23 +31,23 @@ import {
 
 useHead({
   titleTemplate: null,
-  title: 'Mock数据生成 | 盘子工具站',
+  title: 'Mock随机数据生成 | 盘子工具站',
   meta: [
     {
       name: 'description',
-      content: '免费在线Mock数据生成工具，批量生成手机号、姓名、地址、邮箱、身份证号等模拟数据，支持JSON/CSV/SQL输出，免登录打开即用，本地浏览器随机生成保障数据安全。',
+      content: '免费在线Mock数据生成工具，批量生成手机号、姓名、身份证号、地址、邮箱等模拟数据，支持JSON/CSV/SQL输出，身份证号通过校验位验证，本地生成不上传，免登录即用。',
     },
     {
       name: 'keywords',
-      content: 'Mock数据,随机数据生成,手机号生成,身份证生成,测试数据,假数据',
+      content: 'Mock数据,模拟数据生成,手机号生成,身份证号生成,测试数据,假数据',
     },
     {
       property: 'og:title',
-      content: 'Mock数据生成 | 盘子工具站',
+      content: 'Mock随机数据生成 | 盘子工具站',
     },
     {
       property: 'og:description',
-      content: '免费在线Mock数据生成工具，批量生成手机号、姓名、地址、邮箱、身份证号等模拟数据，支持JSON/CSV/SQL输出，免登录打开即用，本地浏览器随机生成保障数据安全。',
+      content: '免费在线Mock数据生成工具，批量生成手机号、姓名、身份证号、地址、邮箱等模拟数据，支持JSON/CSV/SQL输出，身份证号通过校验位验证，本地生成不上传，免登录即用。',
     },
   ],
 })

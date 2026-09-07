@@ -29,11 +29,11 @@ useHead({
   meta: [
     {
       name: 'description',
-      content: '免费在线Unicode编码转换工具，\\uXXXX转义与中文互转，支持\\u、\\u{}、&#x;格式，混合文本解析，快速还原日志乱码。'
+      content: '免费在线Unicode编码转换工具，\\uXXXX转义与中文互转，支持混合文本解析，快速还原日志乱码，本地浏览器处理免登录即用，保障数据安全。'
     },
     {
       name: 'keywords',
-      content: 'Unicode转中文,中文转Unicode,\\uXXXX转义,Unicode编码转换,日志乱码还原'
+      content: 'Unicode转中文,中文转Unicode,\\uXXXX转义,Unicode解码,日志乱码'
     },
     {
       property: 'og:title',
@@ -41,7 +41,7 @@ useHead({
     },
     {
       property: 'og:description',
-      content: '免费在线Unicode编码转换工具，\\uXXXX转义与中文互转，支持\\u、\\u{}、&#x;格式，混合文本解析，快速还原日志乱码。'
+      content: '免费在线Unicode编码转换工具，\\uXXXX转义与中文互转，支持混合文本解析，快速还原日志乱码，本地浏览器处理免登录即用，保障数据安全。'
     }
   ]
 })

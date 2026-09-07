@@ -33,11 +33,11 @@ useHead({
   meta: [
     {
       name: 'description',
-      content: '免费在线图片Base64转换工具，图片转Base64字符串、Base64还原图片预览，支持PNG/JPG/GIF/WebP/SVG，纯本地处理不上传。'
+      content: '免费在线图片Base64互转工具，图片转Base64字符串、Base64还原图片预览，支持PNG/JPG/GIF/WebP，输出Data URI可直接用于CSS/HTML，本地浏览器处理不上传，免登录即用。'
     },
     {
       name: 'keywords',
-      content: '图片Base64,图片转Base64,Base64转图片,Data URI,图片编码'
+      content: '图片转Base64,Base64转图片,图片Base64转换,Data URI,图片编码'
     },
     {
       property: 'og:title',
@@ -45,7 +45,7 @@ useHead({
     },
     {
       property: 'og:description',
-      content: '免费在线图片Base64转换工具，图片转Base64字符串、Base64还原图片预览，支持PNG/JPG/GIF/WebP/SVG，纯本地处理不上传。'
+      content: '免费在线图片Base64互转工具，图片转Base64字符串、Base64还原图片预览，支持PNG/JPG/GIF/WebP，输出Data URI可直接用于CSS/HTML，本地浏览器处理不上传，免登录即用。'
     }
   ]
 })

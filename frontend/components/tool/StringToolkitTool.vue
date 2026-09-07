@@ -26,11 +26,11 @@ useHead({
   meta: [
     {
       name: 'description',
-      content: '免费在线字符串工具箱，提供大小写转换、命名风格转换（camelCase/PascalCase/snake_case/kebab-case/CONSTANT_CASE）、行级处理（排序/去重/去空行/加行号）等功能，附实时字符统计，免登录打开即用，本地处理保障数据安全。',
+      content: '免费在线字符串处理工具箱，去空格、大小写转换、驼峰下划线互转、字符统计、行排序去重、反转等一站搞定，支持链式操作，本地浏览器处理免登录即用。',
     },
     {
       name: 'keywords',
-      content: '字符串工具,大小写转换,camelCase,snake_case,kebab-case,行排序,行去重',
+      content: '字符串处理,去空格,大小写转换,驼峰转下划线,字符统计,行排序去重',
     },
     {
       property: 'og:title',
@@ -38,7 +38,7 @@ useHead({
     },
     {
       property: 'og:description',
-      content: '免费在线字符串工具箱，提供大小写转换、命名风格转换、行级处理等功能，附实时字符统计，免登录打开即用，本地处理保障数据安全。',
+      content: '免费在线字符串处理工具箱，去空格、大小写转换、驼峰下划线互转、字符统计、行排序去重、反转等一站搞定，支持链式操作，本地浏览器处理免登录即用。',
     },
   ],
 })

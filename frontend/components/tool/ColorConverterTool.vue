@@ -31,23 +31,23 @@ import {
 
 useHead({
   titleTemplate: null,
-  title: '颜色格式转换 | 盘子工具站',
+  title: '颜色转换器 | 盘子工具站',
   meta: [
     {
       name: 'description',
-      content: '免费在线颜色格式转换工具，支持 HEX/RGB/RGBA/HSL/HSLA 互转，提供原生 color picker 与随机配色，多字段同步编辑实时预览，免登录打开即用，本地处理保障数据安全。',
+      content: '免费在线颜色格式转换工具，HEX/RGB/HSL色值互转，实时预览，配合取色器与随机色，前端样式调试、设计稿色值转换必备，本地浏览器处理免登录即用。',
     },
     {
       name: 'keywords',
-      content: '颜色转换,HEX,RGB,HSL,color picker,颜色值',
+      content: '颜色转换,HEX转RGB,RGB转HSL,色值转换,前端调试,取色器',
     },
     {
       property: 'og:title',
-      content: '颜色格式转换 | 盘子工具站',
+      content: '颜色转换器 | 盘子工具站',
     },
     {
       property: 'og:description',
-      content: '免费在线颜色格式转换工具，支持 HEX/RGB/RGBA/HSL/HSLA 互转，提供原生 color picker 与随机配色，多字段同步编辑实时预览，免登录打开即用，本地处理保障数据安全。',
+      content: '免费在线颜色格式转换工具，HEX/RGB/HSL色值互转，实时预览，配合取色器与随机色，前端样式调试、设计稿色值转换必备，本地浏览器处理免登录即用。',
     },
   ],
 })

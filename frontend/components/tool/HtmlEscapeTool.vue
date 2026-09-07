@@ -34,11 +34,11 @@ useHead({
   meta: [
     {
       name: 'description',
-      content: '免费在线HTML实体转义反转义工具，支持 basic/attributes/entities 三档模式，识别命名与数字实体，兼容 HTML 属性上下文，免登录打开即用，本地处理保障数据安全。',
+      content: '免费在线HTML转义工具，特殊字符（<>&"\'）转义与还原，正确处理替换顺序防二次转义，防止XSS，页面标签解析调试必备，本地浏览器处理免登录即用。',
     },
     {
       name: 'keywords',
-      content: 'HTML转义,HTML反转义,HTML实体,escapeHtml,unescapeHtml,XSS防护',
+      content: 'HTML转义,HTML反转义,XSS防护,HTML实体,特殊字符转义',
     },
     {
       property: 'og:title',
@@ -46,7 +46,7 @@ useHead({
     },
     {
       property: 'og:description',
-      content: '免费在线HTML实体转义反转义工具，支持 basic/attributes/entities 三档模式，识别命名与数字实体，兼容 HTML 属性上下文，免登录打开即用，本地处理保障数据安全。',
+      content: '免费在线HTML转义工具，特殊字符（<>&"\'）转义与还原，正确处理替换顺序防二次转义，防止XSS，页面标签解析调试必备，本地浏览器处理免登录即用。',
     },
   ],
 })
