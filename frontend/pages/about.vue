@@ -6,7 +6,7 @@
  * - 面包屑：首页 > 关于我们
  * - 站点介绍（渐变背景区）
  * - 特色亮点（3 列卡片）
- * - 统计数据（10+工具 / 50k+月活用户 / 100%免费）
+ * - 统计数据（20+工具 / 50k+月活用户 / 100%免费）
  * - 联系方式
  */
 
@@ -225,7 +225,7 @@ useHead({
         <span
           style="font-family: var(--pz-font-display); font-size: var(--pz-text-3xl); font-weight: var(--pz-weight-bold); color: var(--pz-color-primary); font-variant-numeric: tabular-nums; line-height: 1.2"
         >
-          10+
+          20+
         </span>
         <span
           style="font-family: var(--pz-font-sans); font-size: var(--pz-text-sm); color: var(--pz-color-text-secondary); margin-top: 0.5rem"

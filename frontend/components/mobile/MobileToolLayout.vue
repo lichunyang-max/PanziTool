@@ -48,13 +48,13 @@ const categoryLabel = computed(() => {
   }
 })
 
-/** 分类路由映射 */
+/** 分类路由映射（回到首页并选中对应分类 tab） */
 const categoryRoute = computed(() => {
   switch (props.tool.category) {
     case 'developer':
-      return '/category/developer'
+      return '/?cat=developer'
     case 'image':
-      return '/category/image'
+      return '/?cat=image'
     default:
       return '/'
   }

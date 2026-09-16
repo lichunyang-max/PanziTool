@@ -131,8 +131,20 @@ const categoryTabs: CategoryTab[] = [
 const selectedTab = ref('all')
 const sortBy = ref<'popular' | 'latest'>('popular')
 
+const route = useRoute()
+const router = useRouter()
+
+// 支持 ?cat=developer/image 直达对应分类 tab（工具详情页面包屑回跳使用）
+const VALID_TABS = new Set(categoryTabs.map((t) => t.key))
+if (typeof route.query.cat === 'string' && VALID_TABS.has(route.query.cat)) {
+  selectedTab.value = route.query.cat
+}
+
 function selectTab(key: string) {
   selectedTab.value = key
+  // 同步 URL query，便于刷新/分享保持分类状态（replace 不污染历史栈）
+  const query = key === 'all' ? {} : { cat: key }
+  router.replace({ path: '/', query })
 }
 
 // 当前排序对应的列表，再按分类筛选
