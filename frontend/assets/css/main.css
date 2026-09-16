@@ -703,6 +703,78 @@ body {
 }
 
 /* ==========================================================================
+   Home Category Tabs (首页顶部分类筛选胶囊标签)
+   ========================================================================== */
+
+.pz-home-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.pz-home-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1.1rem;
+  font-family: var(--pz-font-sans);
+  font-size: var(--pz-text-sm);
+  font-weight: var(--pz-weight-medium);
+  color: var(--pz-color-text-secondary);
+  background-color: var(--pz-card);
+  border: 1px solid var(--pz-color-border);
+  border-radius: var(--pz-radius-full);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.pz-home-tab:hover {
+  border-color: var(--pz-color-primary);
+  color: var(--pz-color-primary);
+}
+
+.pz-home-tab[data-active='true'] {
+  background-color: var(--pz-color-primary);
+  border-color: var(--pz-color-primary);
+  color: #fff;
+}
+
+.pz-home-tab:focus-visible {
+  outline: 2px solid var(--pz-color-primary);
+  outline-offset: 2px;
+}
+
+/* tab 上的工具数量徽标 */
+.pz-home-tab-count {
+  font-size: var(--pz-text-xs);
+  font-weight: var(--pz-weight-medium);
+  line-height: 1;
+  padding: 0.2rem 0.45rem;
+  border-radius: var(--pz-radius-full);
+  background-color: var(--pz-color-primary-light);
+  color: var(--pz-color-primary);
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.pz-home-tab[data-active='true'] .pz-home-tab-count {
+  background-color: rgb(255 255 255 / 0.25);
+  color: #fff;
+}
+
+/* 卡片右上角 HOT 徽标 */
+.pz-card-hot {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+}
+
+/* ==========================================================================
    Sidebar Styles (flex child, not fixed)
    ========================================================================== */
 

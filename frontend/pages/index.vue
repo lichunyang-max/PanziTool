@@ -2,13 +2,12 @@
 /**
  * pages/index.vue - 首页
  *
- * 严格参照 ui/pages/首页.html 的布局和样式
- * - 分类入口：开发者工具 / 图片工具
- * - 热门工具区块（4 列网格）
- * - 最新上架区块（3 列网格，带 NEW 标签）
+ * 布局与开发者工具分类页一致：
+ * - 工具栏：分类标签（全部 / 开发者工具 / 图片工具）+ 排序下拉（按热门 / 按最新）
+ * - 工具卡片网格（3 列），默认按热门，下拉切换按最新
  * - 广告位
  *
- * 数据来源：GET /api/v1/tools?sort=popular&limit=8
+ * 数据来源：GET /api/v1/tools?sort=popular&limit=100（前端筛选与排序）
  */
 
 useHead({
@@ -42,7 +41,6 @@ interface ToolItem {
   icon: string
   use_count: number
   like_count: number
-  created_at: string
 }
 
 interface AdItem {
@@ -81,90 +79,87 @@ const { data: adData } = await useAsyncData<AdItem | null>(
   },
 )
 
-// SSR 获取热门工具数据
-const { data: toolsData } = await useAsyncData<ToolItem[]>(
-  'home-tools',
+// SSR 并行获取热门/最新两份全量列表（后端排序，前端仅按分类筛选）
+const { data: toolsBySort } = await useAsyncData<{
+  popular: ToolItem[]
+  latest: ToolItem[]
+}>(
+  'home-all-tools',
   async () => {
     const config = useRuntimeConfig()
     const baseURL = import.meta.server
       ? (config.apiBase as string)
       : (config.public.apiBase as string)
 
-    try {
-      const response = await $fetch<{
-        code: number
-        data: { items: ToolItem[]; total: number }
-      }>('/api/v1/tools', {
+    const fetchTools = (sort: string) =>
+      $fetch<{ code: number; data: { items: ToolItem[] } }>('/api/v1/tools', {
         baseURL,
-        params: { sort: 'popular', limit: 8 },
+        params: { sort, limit: 100 },
       })
-      if (response.code === 0) return response.data?.items || []
-      return []
-    } catch {
-      return []
-    }
+        .then((r) => (r.code === 0 ? r.data?.items || [] : []))
+        .catch(() => [])
+
+    const [popular, latest] = await Promise.all([
+      fetchTools('popular'),
+      fetchTools('latest'),
+    ])
+    return { popular, latest }
   },
   {
+    default: () => ({ popular: [], latest: [] }),
+    // payload 中已有数据（SSR 传输）时直接使用，避免客户端水合阶段
+    // 强制重新请求导致卡片闪空
     getCachedData(key) {
       const nuxtApp = useNuxtApp()
-      const cached = nuxtApp.payload.data[key] || nuxtApp.static.data[key]
-      if (cached) {
-        const age = Date.now() - (cached._fetchedAt || 0)
-        if (age < 60000) return cached
-      }
-      return undefined
+      return nuxtApp.payload.data[key] || nuxtApp.static.data[key] || undefined
     },
   },
 )
 
-// SSR 获取最新上架工具数据（按创建时间倒序，独立请求）
-const { data: latestToolsData } = await useAsyncData<ToolItem[]>(
-  'home-latest-tools',
-  async () => {
-    const config = useRuntimeConfig()
-    const baseURL = import.meta.server
-      ? (config.apiBase as string)
-      : (config.public.apiBase as string)
+// 顶部分类筛选标签
+interface CategoryTab {
+  key: string
+  label: string
+}
 
-    try {
-      const response = await $fetch<{
-        code: number
-        data: { items: ToolItem[]; total: number }
-      }>('/api/v1/tools', {
-        baseURL,
-        params: { sort: 'latest', limit: 3 },
-      })
-      if (response.code === 0) return response.data?.items || []
-      return []
-    } catch {
-      return []
-    }
-  },
-  {
-    getCachedData(key) {
-      const nuxtApp = useNuxtApp()
-      const cached = nuxtApp.payload.data[key] || nuxtApp.static.data[key]
-      if (cached) {
-        const age = Date.now() - (cached._fetchedAt || 0)
-        if (age < 60000) return cached
-      }
-      return undefined
-    },
-  },
-)
+const categoryTabs: CategoryTab[] = [
+  { key: 'all', label: '全部' },
+  { key: 'developer', label: '开发者工具' },
+  { key: 'image', label: '图片工具' },
+]
 
-// 热门工具（前 8 个，按 use_count 排序）
-const popularTools = computed(() => {
-  const all = (toolsData.value || [])
-  return [...all].sort((a, b) => (b.use_count || 0) - (a.use_count || 0)).slice(0, 8)
+const selectedTab = ref('all')
+const sortBy = ref<'popular' | 'latest'>('popular')
+
+function selectTab(key: string) {
+  selectedTab.value = key
+}
+
+// 当前排序对应的列表，再按分类筛选
+const displayTools = computed(() => {
+  const source = toolsBySort.value?.[sortBy.value] || []
+  if (selectedTab.value === 'all') return source
+  return source.filter((t) => t.category === selectedTab.value)
 })
 
-// 最新上架工具（直接使用 sort=latest 独立请求的数据，按创建时间倒序取前 3 个）
-const latestTools = computed(() => {
-  return [...(latestToolsData.value || [])]
-    .sort((a, b) => new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime())
-    .slice(0, 3)
+// 各分类工具数量（以热门全量列表为准，按 slug 去重）
+const tabCounts = computed<Record<string, number>>(() => {
+  const all = toolsBySort.value?.popular || []
+  const slugs = new Set<string>()
+  let developer = 0
+  let image = 0
+  for (const t of all) {
+    if (slugs.has(t.slug)) continue
+    slugs.add(t.slug)
+    if (t.category === 'developer') developer++
+    else if (t.category === 'image') image++
+  }
+  return { all: slugs.size, developer, image }
 })
+
+function tabCount(key: string): number {
+  return tabCounts.value[key] || 0
+}
 
 function formatCount(count: number): string {
   if (count >= 1000) return (count / 1000).toFixed(1) + 'k'
@@ -173,93 +168,67 @@ function formatCount(count: number): string {
 </script>
 
 <template>
-  <!-- ============ 热门工具区块（4 列网格） ============ -->
-  <section aria-label="热门工具">
-    <div class="flex items-center justify-between mb-6">
-      <h2
-        style="
-          font-family: var(--pz-font-display);
-          font-size: var(--pz-text-2xl);
-          font-weight: var(--pz-weight-semibold);
-          line-height: var(--pz-leading-tight);
-          letter-spacing: -0.01em;
-          color: var(--pz-color-text-primary);
-          text-wrap: balance;
-          word-break: keep-all;
-        "
+  <!-- ============ 工具栏：分类标签 + 排序下拉 ============ -->
+  <section
+    class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6"
+    aria-label="工具筛选与排序"
+  >
+    <!-- 分类标签 -->
+    <div class="pz-home-tabs" role="tablist" aria-label="工具分类筛选">
+      <button
+        v-for="tab in categoryTabs"
+        :key="tab.key"
+        type="button"
+        role="tab"
+        class="pz-home-tab"
+        :data-active="selectedTab === tab.key"
+        :aria-selected="selectedTab === tab.key"
+        @click="selectTab(tab.key)"
       >
-        热门工具
-      </h2>
-      <NuxtLink to="/category/developer" class="pz-section-link">查看全部</NuxtLink>
+        {{ tab.label }}
+        <span class="pz-home-tab-count">{{ tabCount(tab.key) }}</span>
+      </button>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <NuxtLink
-        v-for="tool in popularTools"
-        :key="tool.slug"
-        :to="`/tools/${tool.slug}`"
-        class="block h-full"
-        style="text-decoration: none"
+    <!-- 排序下拉 -->
+    <div class="flex items-center gap-2 shrink-0">
+      <span
+        class="text-sm whitespace-nowrap"
+        style="color: var(--pz-color-text-secondary); font-family: var(--pz-font-sans)"
       >
-        <article class="pz-card pz-tool-card p-4 flex flex-col h-full">
-          <!-- 图标 -->
-          <div
-            class="w-8 h-8 flex items-center justify-center shrink-0"
-            style="background-color: var(--pz-color-primary-light); border-radius: var(--pz-radius-md)"
-          >
-            <ToolIcon :slug="tool.slug" />
-          </div>
-
-          <!-- 名称 -->
-          <h3
-            class="mt-3 truncate"
-            style="font-family: var(--pz-font-display); font-size: var(--pz-text-base); font-weight: var(--pz-weight-medium); line-height: var(--pz-leading-tight); color: var(--pz-color-text-primary)"
-          >
-            {{ tool.name }}
-          </h3>
-
-          <!-- 描述 -->
-          <p
-            class="mt-1 line-clamp-2"
-            style="font-family: var(--pz-font-sans); font-size: var(--pz-text-sm); line-height: 1.5; color: var(--pz-color-text-secondary)"
-          >
-            {{ tool.description }}
-          </p>
-
-          <!-- 统计 -->
-          <div
-            class="mt-auto pt-4 flex items-center justify-between text-xs"
-            style="color: var(--pz-color-text-tertiary); font-family: var(--pz-font-sans)"
-          >
-            <span class="whitespace-nowrap flex items-center gap-1">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
-                <circle cx="12" cy="12" r="3"/>
-              </svg>
-              {{ formatCount(tool.use_count) }} 次使用
-            </span>
-            <span class="whitespace-nowrap inline-flex items-center gap-1">
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                />
-              </svg>
-              <span>{{ tool.like_count }}</span>
-            </span>
-          </div>
-        </article>
-      </NuxtLink>
+        排序
+      </span>
+      <div class="relative">
+        <select
+          v-model="sortBy"
+          class="pz-input appearance-none pr-9"
+          aria-label="排序方式"
+          style="min-width: 7rem"
+        >
+          <option value="popular">按热门</option>
+          <option value="latest">按最新</option>
+        </select>
+        <svg
+          class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          style="color: var(--pz-color-text-tertiary)"
+          aria-hidden="true"
+        >
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </div>
     </div>
   </section>
 
-  <!-- ============ 首页中间广告位（热门工具和最新上架之间） ============ -->
-  <div v-if="adData" class="my-12">
+  <!-- ============ 广告位（工具栏与工具列表之间） ============ -->
+  <div v-if="adData" class="mb-6">
     <StaticAdCard
       id="homeMiddle"
       :title="adData.product_description"
@@ -268,78 +237,82 @@ function formatCount(count: number): string {
     />
   </div>
 
-  <!-- ============ 最新上架区块（3 列网格 + NEW 标签） ============ -->
-  <section v-if="latestTools.length > 0" class="pb-12" aria-label="最新上架">
-    <div class="flex items-center justify-between mb-6">
-      <h2
-        style="font-family: var(--pz-font-display); font-size: var(--pz-text-2xl); font-weight: var(--pz-weight-semibold); line-height: var(--pz-leading-tight); letter-spacing: -0.01em; color: var(--pz-color-text-primary); text-wrap: balance; word-break: keep-all;"
-      >
-        最新上架
-      </h2>
-      <NuxtLink to="/category/developer" class="pz-section-link">查看全部</NuxtLink>
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <NuxtLink
-        v-for="tool in latestTools"
-        :key="tool.slug"
-        :to="`/tools/${tool.slug}`"
-        class="block h-full"
-        style="text-decoration: none"
-      >
-        <article class="pz-card pz-tool-card p-4 flex flex-col h-full">
-          <div class="flex items-start justify-between">
-            <div
-              class="w-8 h-8 flex items-center justify-center shrink-0"
-              style="background-color: var(--pz-color-primary-light); border-radius: var(--pz-radius-md)"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--pz-color-primary)" aria-hidden="true">
-                <circle cx="12" cy="12" r="10"/>
-              </svg>
-            </div>
-            <span class="pz-badge pz-badge-primary whitespace-nowrap">NEW</span>
+  <!-- ============ 工具卡片网格（3 列） ============ -->
+  <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" aria-label="工具列表">
+    <NuxtLink
+      v-for="(tool, index) in displayTools"
+      :key="tool.slug"
+      :to="`/tools/${tool.slug}`"
+      class="pz-tool-link block h-full"
+      style="text-decoration: none"
+    >
+      <article class="pz-card pz-tool-card p-5 flex flex-col h-full relative">
+        <!-- 热门前三 HOT 徽标（右上角，仅按热门排序时） -->
+        <span
+          v-if="sortBy === 'popular' && index < 3"
+          class="pz-badge pz-badge-primary pz-card-hot"
+        >
+          HOT
+        </span>
+        <!-- 图标 + 名称 -->
+        <div class="flex items-start gap-3" :class="sortBy === 'popular' && index < 3 ? 'pr-12' : ''">
+          <div
+            class="w-7 h-7 flex items-center justify-center shrink-0"
+            style="background-color: var(--pz-color-primary-light); border-radius: var(--pz-radius-md)"
+          >
+            <ToolIcon :slug="tool.slug" />
           </div>
           <h3
-            class="mt-3 truncate"
-            style="font-family: var(--pz-font-display); font-size: var(--pz-text-base); font-weight: var(--pz-weight-medium); line-height: var(--pz-leading-tight); color: var(--pz-color-text-primary)"
+            class="text-base font-semibold truncate min-w-0"
+            style="color: var(--pz-color-text-primary); font-family: var(--pz-font-display)"
           >
             {{ tool.name }}
           </h3>
-          <p
-            class="mt-1 line-clamp-2"
-            style="font-family: var(--pz-font-sans); font-size: var(--pz-text-sm); line-height: 1.5; color: var(--pz-color-text-secondary)"
-          >
-            {{ tool.description }}
-          </p>
-          <div
-            class="mt-auto pt-4 flex items-center justify-between text-xs"
-            style="color: var(--pz-color-text-tertiary); font-family: var(--pz-font-sans)"
-          >
-            <span class="whitespace-nowrap flex items-center gap-1">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
-                <circle cx="12" cy="12" r="3"/>
-              </svg>
-              {{ formatCount(tool.use_count) }} 次使用
-            </span>
-            <span class="whitespace-nowrap inline-flex items-center gap-1">
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                />
-              </svg>
-              <span>{{ tool.like_count }}</span>
-            </span>
-          </div>
-        </article>
-      </NuxtLink>
+        </div>
+
+        <!-- 分类徽标 -->
+        <span class="pz-badge pz-badge-neutral mt-3 self-start whitespace-nowrap">
+          {{ tool.category === 'image' ? '图片工具' : '开发工具' }}
+        </span>
+
+        <!-- 描述 -->
+        <p
+          class="text-sm mt-2 line-clamp-2"
+          style="color: var(--pz-color-text-secondary); font-family: var(--pz-font-sans); line-height: 1.5"
+        >
+          {{ tool.description }}
+        </p>
+
+        <!-- 统计 -->
+        <div
+          class="mt-auto pt-4 flex items-center justify-between text-xs"
+          style="color: var(--pz-color-text-tertiary); font-family: var(--pz-font-sans)"
+        >
+          <span class="whitespace-nowrap flex items-center gap-1">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            {{ formatCount(tool.use_count) }} 次使用
+          </span>
+          <span class="whitespace-nowrap inline-flex items-center gap-1">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+            <span>{{ tool.like_count }}</span>
+          </span>
+        </div>
+      </article>
+    </NuxtLink>
+
+    <!-- 无数据提示 -->
+    <div
+      v-if="displayTools.length === 0"
+      class="col-span-full text-center py-12"
+    >
+      <p style="color: var(--pz-color-text-tertiary); font-size: var(--pz-text-sm)">
+        暂无工具数据
+      </p>
     </div>
   </section>
-
 </template>
