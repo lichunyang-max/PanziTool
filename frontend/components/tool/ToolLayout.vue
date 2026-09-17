@@ -90,9 +90,9 @@ const categoryLabel = computed(() => {
 const categoryRoute = computed(() => {
   switch (props.tool.category) {
     case 'developer':
-      return '/category/developer'
+      return '/?cat=developer'
     case 'image':
-      return '/category/image'
+      return '/?cat=image'
     default:
       return '/'
   }

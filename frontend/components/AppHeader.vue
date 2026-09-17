@@ -16,13 +16,12 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: '首页', to: '/', key: 'home' },
-  { label: '开发者工具', to: '/category/developer', key: 'dev-tools' },
   { label: '关于我们', to: '/about', key: 'about' },
   { label: '意见反馈', to: '/feedback', key: 'feedback', isNew: true },
   { label: '隐私政策', to: '/privacy', key: 'privacy' },
 ]
 
-// 导航激活状态：首页精确匹配，其余前缀匹配（工具页也高亮"开发者工具"）
+// 导航激活状态：首页精确匹配，其余前缀匹配
 function isActive(to: string): boolean {
   if (to === '/') return route.path === '/'
   return route.path === to || route.path.startsWith(to + '/') || route.path.startsWith(to)

@@ -356,6 +356,322 @@ export const toolStaticMeta: Record<string, ToolStaticMeta> = {
       { question: 'AI抠图效果不理想怎么办？', answer: '抠图效果取决于原图背景复杂度和光线条件。建议使用纯色背景拍摄的正面照片，光线均匀无阴影。复杂背景下抠图可能需要多次尝试。' },
     ],
   },
+
+  // ===== 第二批：开发者工具扩展（静态元数据） =====
+  'hex-encode': {
+    slug: 'hex-encode',
+    name: 'Hex十六进制编解码',
+    description: '免费在线Hex十六进制编解码工具，支持字符串与十六进制互转、多种分隔符格式（空格/0x/\\x前缀）、字节调试，本地浏览器运算不上传，免登录打开即用，保障数据安全。',
+    keywords: 'Hex编码,十六进制转换,Hex转字符串,字符串转Hex,字节调试',
+    category: 'developer',
+    faq: [
+      {
+        question: 'Hex工具支持哪些分隔符格式？',
+        answer: '支持四种分隔格式：无分隔（连续，适合哈希值展示）、空格分隔（适合人工阅读字节流）、0x前缀（C/Java等语言中十六进制字面量写法）、\\x前缀（Python字节串、正则表达式及转义场景）。可根据目标场景灵活切换。',
+      },
+      {
+        question: '中文编码后的Hex为什么特别长？',
+        answer: '英文字母、数字等ASCII字符通常只占1个字节，而一个中文字符在UTF-8编码下占3个字节，对应6个十六进制字符。所以中文转换结果明显更长，这是正常现象。',
+      },
+      {
+        question: '解码时提示"非法的十六进制字符"怎么办？',
+        answer: '请检查输入是否包含非十六进制字符（合法字符为0-9、A-F、a-f）。本工具会自动清理常见的空格、逗号及0x/\\x前缀，但其他非法字符会导致解析失败。同时需确保字符数量为偶数，因为每两个十六进制字符表示一个字节。',
+      },
+      {
+        question: '数据会被上传到服务器吗？',
+        answer: '不会。本工具的编码与解码逻辑完全运行在浏览器中（基于TextEncoder/TextDecoder），所有数据只在本地内存中处理，关闭页面后即消失，可放心处理敏感内容。',
+      },
+    ],
+  },
+  'unicode-convert': {
+    slug: 'unicode-convert',
+    name: 'Unicode转中文',
+    description: '免费在线Unicode编码转换工具，\\uXXXX转义与中文互转，支持混合文本解析，快速还原日志乱码，本地浏览器处理免登录即用，保障数据安全。',
+    keywords: 'Unicode转中文,中文转Unicode,\\uXXXX转义,Unicode解码,日志乱码',
+    category: 'developer',
+    faq: [
+      {
+        question: '日志里的中文变成了\\uXXXX是乱码吗？',
+        answer: '不是乱码，是Unicode转义。很多日志框架和序列化库（如Log4j、fastjson、Jackson默认配置）为保证ASCII兼容性，会把非ASCII字符转成\\uXXXX形式输出。把内容粘贴到本工具即可一键还原为中文。',
+      },
+      {
+        question: '输入里同时有中文和\\uXXXX转义能处理吗？',
+        answer: '可以。Unicode→中文模式只替换文本中的\\uXXXX转义序列，其余字符（包括已是中文的部分）原样保留，混合内容也能正确解析。',
+      },
+      {
+        question: '转换成Unicode后英文字母也会变成\\uXXXX吗？',
+        answer: '不会。中文→Unicode模式下，可打印的ASCII字符（字母、数字、常见英文符号）会保留原样，只有中文及其他非ASCII字符才会被转成\\uXXXX，保证结果可读，也符合JSON等格式的常见输出习惯。',
+      },
+      {
+        question: '支持emoji和生僻字吗？',
+        answer: '\\uXXXX四位转义仅覆盖基本多文种平面（BMP）内的字符。大部分常用汉字都在该范围内，可以正常转换；但emoji等增补平面的字符码点超过U+FFFF，在JS中需要用代理对（两个连续的\\u转义）表示，超出本工具的转换范围。',
+      },
+    ],
+  },
+  'base-convert': {
+    slug: 'base-convert',
+    name: '进制转换器',
+    description: '免费在线进制转换工具，支持2/8/10/16进制互转，基于BigInt大数支持，位运算、颜色值、权限掩码调试好帮手，本地浏览器运算免登录打开即用。',
+    keywords: '进制转换,二进制转十进制,十六进制转换,八进制转换,BigInt',
+    category: 'developer',
+    faq: [
+      {
+        question: '支持多大的数字？',
+        answer: '本工具使用BigInt进行解析与转换，理论上没有位数上限，输入几百位的超长数值也能得到精确结果，不会出现JavaScript普通数值类型的精度丢失问题。',
+      },
+      {
+        question: '十六进制输入需要带0x前缀吗？',
+        answer: '不需要。选择「十六进制」作为源进制后，直接输入FFFF即可。本工具也兼容带0x/0X前缀的输入，前缀会被自动忽略。',
+      },
+      {
+        question: '支持负数和小数吗？',
+        answer: '目前仅支持非负整数。进制转换中小数的处理方式不唯一（存在舍入误差），为避免歧义，本工具聚焦整数转换场景；位运算、颜色值、权限掩码等常见需求均为整数。',
+      },
+      {
+        question: '为什么二进制结果很长？',
+        answer: '一个十六进制字符对应4位二进制，一个十进制位大约对应3.3位二进制。数值越大，二进制表示越长，这是进制的固有特性。例如255的十六进制是FF（2位），二进制则是11111111（8位）。',
+      },
+    ],
+  },
+  'image-base64': {
+    slug: 'image-base64',
+    name: '图片Base64互转',
+    description: '免费在线图片Base64互转工具，图片转Base64字符串、Base64还原图片预览，支持PNG/JPG/GIF/WebP，输出Data URI可直接用于CSS/HTML，本地浏览器处理不上传，免登录即用。',
+    keywords: '图片转Base64,Base64转图片,图片Base64转换,Data URI,图片编码',
+    category: 'developer',
+    faq: [
+      {
+        question: '支持哪些图片格式？有大小限制吗？',
+        answer: '支持PNG、JPG、GIF、WebP、SVG、BMP等主流格式，单张图片最大5MB。由于编码结果约为原文件的1.33倍，过大的图片生成的字符串会非常长，复制和使用都不方便，因此设置了上限。',
+      },
+      {
+        question: '输出的Base64可以直接用在CSS或HTML里吗？',
+        answer: '可以。工具输出的是完整的Data URI（以data:image/xxx;base64,开头），可直接用于CSS的url()、HTML的src属性，或在Markdown等支持Data URI的场景中使用。',
+      },
+      {
+        question: 'Base64转图片时必须带data:image/...前缀吗？',
+        answer: '不是必须。粘贴完整的Data URI可以直接预览；粘贴纯Base64字符串时，工具会自动补上默认的PNG前缀进行解析。如果预览异常，可以尝试手动补充正确的MIME类型前缀。',
+      },
+      {
+        question: '图片会被上传到服务器吗？',
+        answer: '不会。整个编码与解码过程均通过浏览器本地API（FileReader、Image对象）完成，图片数据始终留在你的设备上，适合处理截图、设计稿等隐私内容。',
+      },
+    ],
+  },
+  'xml-formatter': {
+    slug: 'xml-formatter',
+    name: 'XML格式化校验',
+    description: '免费在线XML格式化校验工具，支持美化、压缩、语法校验、错误行号定位，CDATA原样保留，适配SOAP接口报文调试，本地浏览器处理不上传，免登录即用。',
+    keywords: 'XML格式化,XML美化,XML校验,XML压缩,SOAP报文',
+    category: 'developer',
+    faq: [
+      {
+        question: '格式化后XML声明会变成两行吗？',
+        answer: '不会。本工具会把XML声明（<?xml version="1.0"?>）、注释、DOCTYPE单独成行输出，标签内容按层级缩进，声明始终保持在第一行。如果声明前出现了空行或BOM字符，部分严格的解析器会报错，建议粘贴前先去掉。',
+      },
+      {
+        question: 'CDATA里的内容会被格式化破坏吗？',
+        answer: '不会。CDATA（<![CDATA[...]]>）中的内容是纯文本，格式化时原样保留，不做缩进和转义处理，其中的换行、空格都会与输入保持一致。',
+      },
+      {
+        question: '校验通过但接口仍报错是什么原因？',
+        answer: '语法校验只能保证XML结构合法，接口报错常见原因还有：缺少命名空间声明、必填字段缺失、字段顺序不符合XSD约束、编码声明与实际编码不一致等。建议对照接口文档的Schema（XSD/WSDL）逐项核对。',
+      },
+    ],
+  },
+  'yaml-formatter': {
+    slug: 'yaml-formatter',
+    name: 'YAML格式化校验',
+    description: '免费在线YAML格式化校验工具，支持美化、语法校验、缩进错误行号定位，适配K8s、docker-compose多文档配置调试，本地浏览器处理不上传，免登录即用。',
+    keywords: 'YAML格式化,YAML校验,YAML美化,docker-compose,K8s配置',
+    category: 'developer',
+    faq: [
+      {
+        question: '格式化后键的顺序和注释变了？',
+        answer: '本工具的原理是「解析为对象再输出」，因此键会按内部顺序重新排列，注释和锚点（&anchor/*alias）信息会丢失。如果需要保留注释，建议使用编辑器的格式化功能；本工具更适合做语法校验和缩进修复。',
+      },
+      {
+        question: '为什么报错提示的行号和实际内容对不上？',
+        answer: 'js-yaml的报错行号通常指向「发现问题的位置」，而问题根源可能在上一行，例如上一行缩进多了空格、缺少冒号等。排查时建议连同报错行的上一行一起检查。',
+      },
+      {
+        question: '支持K8s多文档（---分隔）格式吗？',
+        answer: '支持。输入中包含---分隔的多个文档时，会逐个校验并合并格式化输出，每个文档之间保留---分隔符，方便直接粘贴回K8s的单个YAML文件。',
+      },
+    ],
+  },
+  'csv-json-convert': {
+    slug: 'csv-json-convert',
+    name: 'CSV ↔ JSON转换',
+    description: '免费在线CSV与JSON互转工具，表格数据与JSON数组互转，支持逗号/分号/Tab分隔符，正确处理引号内转义，测试数据导入导出利器，本地浏览器处理免登录即用。',
+    keywords: 'CSV转JSON,JSON转CSV,CSV转换,表格数据转换,Excel导入导出',
+    category: 'developer',
+    faq: [
+      {
+        question: '为什么Excel打开导出的CSV中文乱码？',
+        answer: 'Excel在Windows下默认按ANSI（GBK）编码读取CSV，而本工具导出的文件是UTF-8。解决办法：用「数据→从文本/CSV导入」并选择UTF-8编码，或直接把文件后缀改成.txt再导入。macOS版Excel一般能直接识别UTF-8。',
+      },
+      {
+        question: 'JSON转CSV时各行对象的键不一致怎么办？',
+        answer: '工具会扫描整个数组，把所有出现过的键合并为表头。某个对象缺少的键对应单元格留空。注意：仅支持对象数组（如[{"a":1}]），嵌套对象和数组会被序列化为JSON字符串放入单元格。',
+      },
+      {
+        question: 'CSV转JSON时数字会被自动转为数字类型吗？',
+        answer: '会。纯数字（含小数、负数）会转为Number，"true"/"false"转为Boolean，空字符串转为空串保持文本。如果需要全部保留为字符串（例如手机号、以0开头的编号），转换后请自行处理，或使用带引号的字段。',
+      },
+    ],
+  },
+  'uuid-generator': {
+    slug: 'uuid-generator',
+    name: 'UUID/GUID生成器',
+    description: '免费在线UUID生成器，支持v4/v7版本批量生成，多种格式输出（去连字符/大写/大括号），测试主键、请求ID一键搞定，基于Web Crypto API密码学安全随机数，本地生成免登录即用。',
+    keywords: 'UUID生成,GUID生成,UUID v4,UUID v7,唯一标识,主键生成',
+    category: 'developer',
+    faq: [
+      {
+        question: 'UUID真的不会重复吗？重复概率有多大？',
+        answer: '理论上存在重复可能，但概率小到可以忽略。以v4为例，可用随机位有122个，总组合数约5.3×10^36。如果每秒生成10亿个UUID，连续生成100年，出现至少一次重复的概率仍不足十亿分之一。工程实践中可以直接认为"不会重复"。',
+      },
+      {
+        question: 'v4和v7应该选哪个？',
+        answer: '需要作为数据库主键、需要按时间排序、关心写入性能的场景选v7；纯粹的随机标识（请求ID、会话令牌、去重键）选v4即可，生态兼容性最好。注意v7的前48位含毫秒时间戳，如果不希望ID泄露生成时间（例如对外暴露的单号），应避免使用v7或做二次转换。',
+      },
+      {
+        question: '生成的UUID安全吗？能当密码或密钥用吗？',
+        answer: '本工具使用Web Crypto API的密码学安全随机数生成器，UUID本身不可预测，作为标识符是安全的。但不建议直接当密码用：v4 UUID只有122位熵且格式固定，而专用密码生成器可以控制字符集和长度。作为API密钥时，建议配合过期时间和权限控制使用。',
+      },
+      {
+        question: '大括号、大写这些格式变体分别用在什么场景？',
+        answer: '标准形式是小写带连字符（如550e8400-e29b-41d4-a716-446655440000）。大括号包裹（{550e8400-...}）是微软GUID的传统显示格式，常见于Windows注册表、COM组件；大写形式常见于.NET/一些老系统；去除连字符的32位连续形式常见于数据库CHAR(32)存储、HTML的id属性等。',
+      },
+    ],
+  },
+  'mock-data': {
+    slug: 'mock-data',
+    name: 'Mock随机数据生成',
+    description: '免费在线Mock数据生成工具，批量生成手机号、姓名、身份证号、地址、邮箱等模拟数据，支持JSON/CSV/SQL输出，身份证号通过校验位验证，本地生成不上传，免登录即用。',
+    keywords: 'Mock数据,模拟数据生成,手机号生成,身份证号生成,测试数据,假数据',
+    category: 'developer',
+    faq: [
+      {
+        question: '生成的身份证号是真实的吗？能通过校验吗？',
+        answer: '不是真实的。工具按国家标准GB 11643的规则随机生成：6位地区码+8位随机出生日期+3位顺序码+按ISO 7064 MOD 11-2算法计算的校验位。因此它能通过前端和大多数后端的格式校验（便于测试校验逻辑），但对应的地址、生日均为随机虚构，查询人口库会无此号码。',
+      },
+      {
+        question: 'SQL输出的INSERT语句怎么用？',
+        answer: '生成结果形如INSERT INTO mock_data (name, phone, ...) VALUES (...);，可以直接复制到MySQL、PostgreSQL等数据库客户端执行。默认表名是mock_data，如需插入自己的表，把语句中的表名和字段名替换为目标表结构即可；如果字段类型不同（例如日期列需要DATE类型而非字符串），注意对应调整引号。',
+      },
+      {
+        question: '生成的手机号会打到真实用户吗？',
+        answer: '手机号按大陆号段规则随机生成（1开头、第二位3-9），理论上可能与真实号码撞号。测试发送短信、拨打电话等会触达真实用户的功能时，请务必使用13000000000这类约定的测试号或运营商提供的测试通道，不要把Mock手机号用于真实外呼、真实下发。',
+      },
+    ],
+  },
+  'string-toolkit': {
+    slug: 'string-toolkit',
+    name: '字符串工具箱',
+    description: '免费在线字符串处理工具箱，去空格、大小写转换、驼峰下划线互转、字符统计、行排序去重、反转等一站搞定，支持链式操作，本地浏览器处理免登录即用。',
+    keywords: '字符串处理,去空格,大小写转换,驼峰转下划线,字符统计,行排序去重',
+    category: 'developer',
+    faq: [
+      {
+        question: '怎么连续执行多个操作？',
+        answer: '本工具支持链式操作：执行一次处理后，点击结果区的"应用到输入"按钮，结果会回填到输入框，统计信息同步刷新，然后就可以继续执行下一个操作。例如先把多行文本"去空行"，再"行排序"，最后"去重"，三步即可得到干净的列表。',
+      },
+      {
+        question: '中文排序是按拼音排的吗？',
+        answer: '不是。本工具的行排序按字符的Unicode码点比较，中文会按码点顺序排列，同姓的名字看起来接近拼音序但并不严格等于拼音排序。如果需要严格拼音排序，可以在代码中使用 localeCompare 方法并指定 "zh-Hans-CN" 区域参数（依赖运行环境的ICU数据）。',
+      },
+      {
+        question: '驼峰转下划线时数字会被处理吗？',
+        answer: '不会。转换只处理大写字母边界，例如userName1会转换为user_name1，HTTPResponse会转换为h_t_t_p_response——如果原本想得到http_response，这种连续大写的缩写词（如HTTP、URL、ID）本身就不适合直接用正则转换，建议先手动把缩写改为首字母大写（HttpResponse）再转换。',
+      },
+    ],
+  },
+  'color-converter': {
+    slug: 'color-converter',
+    name: '颜色转换器',
+    description: '免费在线颜色格式转换工具，HEX/RGB/HSL色值互转，实时预览，配合取色器与随机色，前端样式调试、设计稿色值转换必备，本地浏览器处理免登录即用。',
+    keywords: '颜色转换,HEX转RGB,RGB转HSL,色值转换,前端调试,取色器',
+    category: 'developer',
+    faq: [
+      {
+        question: 'HEX的三位简写（如#F53）和六位（#FF5533）有什么关系？',
+        answer: '三位简写是六位的压缩形式，每一位重复一次即可展开：#F53等价于#FF5533。只有R、G、B三组各自两位相同时才能简写。',
+      },
+      {
+        question: 'HSL中的色相（H）为什么是0-360？',
+        answer: '色相表示颜色在色环上的角度位置：0°是红色，120°是绿色，240°是蓝色，360°回到红色。饱和度和亮度则是百分比。',
+      },
+      {
+        question: '怎么快速生成同一色系的不同深浅？',
+        answer: '使用HSL格式，保持色相（H）和饱和度（S）不变，调整亮度（L）即可。例如hsl(244, 75%, 40%)与hsl(244, 75%, 70%)是同一色系的深浅两个层级，常用于主题色和hover态。',
+      },
+    ],
+  },
+  'html-escape': {
+    slug: 'html-escape',
+    name: 'HTML转义反转义',
+    description: '免费在线HTML转义工具，特殊字符（<>&"\'）转义与还原，正确处理替换顺序防二次转义，防止XSS，页面标签解析调试必备，本地浏览器处理免登录即用。',
+    keywords: 'HTML转义,HTML反转义,XSS防护,HTML实体,特殊字符转义',
+    category: 'developer',
+    faq: [
+      {
+        question: '为什么转义后&amp;出现在最前面被替换？',
+        answer: '因为&是实体的引导字符，如果先替换其他字符，已生成的实体中的&会被再次转义。所以标准做法是先替换&为&amp;，再处理其他字符。',
+      },
+      {
+        question: '反转义时遇到未知实体怎么办？',
+        answer: '本工具只还原常见的预定义实体（&amp;lt;gt;quot;#39;以及部分命名实体如&amp;nbsp;）。未知实体会保持原样输出，不会报错。',
+      },
+      {
+        question: '前端框架里还需要手动转义吗？',
+        answer: 'React、Vue等现代框架默认对插值内容做转义，一般无需手动处理。但在使用v-html、dangerouslySetInnerHTML或服务端模板直接拼接HTML时，仍必须对用户输入做转义以防XSS。',
+      },
+    ],
+  },
+  'js-css-beautify': {
+    slug: 'js-css-beautify',
+    name: 'JS/CSS美化压缩',
+    description: '免费在线JS/CSS美化压缩工具，还原压缩混淆代码为可读格式，支持2/4空格缩进，正确处理字符串与正则字面量，阅读线上资源更轻松，本地浏览器处理免登录即用。',
+    keywords: 'JS美化,CSS美化,JS压缩,CSS压缩,代码格式化,代码还原',
+    category: 'developer',
+    faq: [
+      {
+        question: '美化后的代码能完全还原成原始代码吗？',
+        answer: '不能。压缩过程中注释和原始换行已被丢弃，美化只能根据语法结构重新排版。如果压缩时还混淆了变量名（如webpack生产构建），变量名也无法还原。',
+      },
+      {
+        question: '压缩JavaScript会不会破坏代码功能？',
+        answer: '本工具采用逐字符扫描并跟踪字符串/正则/注释状态的方案，对常规代码安全。但极端情况（如正则字面量中包含//、字符串中包含换行）可能误判，压缩后建议自行验证功能。生产环境建议使用terser、esbuild等成熟工具。',
+      },
+      {
+        question: '为什么CSS压缩后体积没有明显减小？',
+        answer: '如果原始CSS本身已经比较紧凑（没有注释和多余空格），压缩空间有限。CSS压缩的主要收益来自去除注释、换行和规则间空白，进一步缩减需要合并选择器、缩短颜色值等优化，本工具不涉及。',
+      },
+    ],
+  },
+  'timezone-calculator': {
+    slug: 'timezone-calculator',
+    name: '时区时间计算器',
+    description: '免费在线时区换算工具，多时区时间对照、时间差计算，基于Intl API自动处理夏令时，排查跨时区业务bug，本地浏览器运算免登录即用。',
+    keywords: '时区转换,时区计算,时间差计算,夏令时,UTC,IANA时区',
+    category: 'developer',
+    faq: [
+      {
+        question: '为什么纽约和北京的时差有时是12小时，有时是13小时？',
+        answer: '纽约实行夏令时：夏季为UTC-4（EDT），与北京时间（UTC+8）相差12小时；冬季为UTC-5（EST），相差13小时。本工具按具体日期自动计算正确偏移。',
+      },
+      {
+        question: '时区缩写（CST、EST）为什么不建议使用？',
+        answer: '时区缩写有歧义。例如CST同时代表中国标准时间（UTC+8）、美国中部时间（UTC-6）和古巴标准时间（UTC-5）。开发中应使用IANA时区标识（如Asia/Shanghai、America/New_York）。',
+      },
+      {
+        question: 'Unix时间戳有时区吗？',
+        answer: '没有。Unix时间戳表示自1970-01-01 00:00:00 UTC以来的秒数（或毫秒数），是全球同一的绝对时刻，不随时区变化。不同时区展示同一时间戳，得到的"墙上时间"不同，但对应的瞬间相同。',
+      },
+    ],
+  },
 }
 
 /**
