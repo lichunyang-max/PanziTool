@@ -267,7 +267,7 @@ async function handleLike() {
         <component :is="toolComponent" :slug="slug" />
 
         <template #error>
-          <!-- 工具内部错误由 ErrorBoundary 捕获 -->
+          <!-- 工具加载失败时的降级展示区 -->
         </template>
 
         <template #faq>

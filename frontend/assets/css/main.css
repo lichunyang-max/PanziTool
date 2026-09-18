@@ -220,65 +220,10 @@ body {
   color: var(--pz-color-text-primary);
 }
 
-.pz-h2 {
-  font-family: var(--pz-font-display);
-  font-size: var(--pz-text-3xl);
-  font-weight: var(--pz-weight-semibold);
-  line-height: var(--pz-leading-tight);
-  letter-spacing: -0.01em;
-  color: var(--pz-color-text-primary);
-}
-
-.pz-h3 {
-  font-family: var(--pz-font-display);
-  font-size: var(--pz-text-xl);
-  font-weight: var(--pz-weight-semibold);
-  line-height: var(--pz-leading-tight);
-  color: var(--pz-color-text-primary);
-}
-
-.pz-h4 {
-  font-family: var(--pz-font-display);
-  font-size: var(--pz-text-lg);
-  font-weight: var(--pz-weight-semibold);
-  line-height: var(--pz-leading-normal);
-  color: var(--pz-color-text-primary);
-}
-
-.pz-body {
-  font-family: var(--pz-font-sans);
-  font-size: var(--pz-text-base);
-  font-weight: var(--pz-weight-normal);
-  line-height: var(--pz-leading-relaxed);
-  color: var(--pz-color-text-primary);
-}
-
-.pz-body-sm {
-  font-family: var(--pz-font-sans);
-  font-size: var(--pz-text-sm);
-  font-weight: var(--pz-weight-normal);
-  line-height: var(--pz-leading-normal);
-  color: var(--pz-color-text-secondary);
-}
-
-.pz-caption {
-  font-family: var(--pz-font-sans);
-  font-size: var(--pz-text-xs);
-  font-weight: var(--pz-weight-normal);
-  line-height: var(--pz-leading-normal);
-  color: var(--pz-color-text-tertiary);
-}
-
 .pz-mono {
   font-family: var(--pz-font-mono);
   font-size: var(--pz-text-sm);
   line-height: var(--pz-leading-normal);
-}
-
-.pz-mono-lg {
-  font-family: var(--pz-font-mono);
-  font-size: var(--pz-text-base);
-  line-height: var(--pz-leading-relaxed);
 }
 
 /* ==========================================================================
@@ -346,11 +291,6 @@ body {
   transition:
     border-color 0.15s ease,
     box-shadow 0.15s ease;
-}
-
-.pz-card-hover:hover {
-  border-color: var(--pz-color-primary-border);
-  box-shadow: var(--pz-shadow-md);
 }
 
 /* ==========================================================================
@@ -676,30 +616,6 @@ body {
 .pz-footer-link:focus-visible {
   outline: 2px solid var(--pz-color-primary);
   outline-offset: 2px;
-}
-
-/* ==========================================================================
-   Section Heading Link (首页"查看全部"等)
-   ========================================================================== */
-
-.pz-section-link {
-  font-family: var(--pz-font-sans);
-  font-size: var(--pz-text-sm);
-  font-weight: var(--pz-weight-medium);
-  color: var(--pz-color-text-secondary);
-  text-decoration: none;
-  white-space: nowrap;
-  transition: color 0.15s ease;
-}
-
-.pz-section-link:hover {
-  color: var(--pz-color-primary);
-}
-
-.pz-section-link:focus-visible {
-  outline: 2px solid var(--pz-color-primary);
-  outline-offset: 2px;
-  border-radius: var(--pz-radius-sm);
 }
 
 /* ==========================================================================
@@ -1130,14 +1046,6 @@ body {
 .pz-text-link:focus-visible {
   outline: 2px solid var(--pz-color-primary);
   outline-offset: 2px;
-}
-
-.pz-text-link-secondary {
-  color: var(--pz-color-text-secondary);
-}
-
-.pz-text-link-secondary:hover {
-  color: var(--pz-color-primary);
 }
 
 /* ==========================================================================
