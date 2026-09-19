@@ -80,7 +80,7 @@ const { data: adData } = await useAsyncData<AdItem | null>(
 )
 
 // SSR 并行获取热门/最新两份全量列表（后端排序，前端仅按分类筛选）
-const { data: toolsBySort } = await useAsyncData<{
+const { data: toolsBySort, refresh: refreshTools } = await useAsyncData<{
   popular: ToolItem[]
   latest: ToolItem[]
 }>(
@@ -108,13 +108,22 @@ const { data: toolsBySort } = await useAsyncData<{
   {
     default: () => ({ popular: [], latest: [] }),
     // payload 中已有数据（SSR 传输）时直接使用，避免客户端水合阶段
-    // 强制重新请求导致卡片闪空
-    getCachedData(key) {
-      const nuxtApp = useNuxtApp()
+    // 强制重新请求导致卡片闪空。
+    // 注意：仅在初始水合（cause=initial）时使用缓存；主动 refresh 时
+    // 返回 undefined 强制走网络，否则会一直拿到预渲染固化的旧数据。
+    getCachedData(key, nuxtApp, opts?: { cause?: string }) {
+      if (opts?.cause && opts.cause !== 'initial') return undefined
       return nuxtApp.payload.data[key] || nuxtApp.static.data[key] || undefined
     },
   },
 )
+
+// 首页为构建时静态预渲染产物，use_count / like_count 被固化在构建时刻
+// （生产构建环境拿到的往往是 0），客户端挂载后强制重新拉取一次，
+// 保证使用次数与点赞次数与线上数据库一致
+onMounted(() => {
+  refreshTools()
+})
 
 // 顶部分类筛选标签
 interface CategoryTab {

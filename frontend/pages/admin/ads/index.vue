@@ -413,7 +413,7 @@ async function handleFileChange(event: Event) {
     showToast('图片上传成功')
   } catch (err) {
     if (!handleAuthError(err)) {
-      showToast(err instanceof Error ? err.message : '图片上传失败，请检查 MinIO 服务', 'error')
+      showToast(err instanceof Error ? err.message : '图片上传失败，请稍后重试', 'error')
     }
   } finally {
     uploading.value = false

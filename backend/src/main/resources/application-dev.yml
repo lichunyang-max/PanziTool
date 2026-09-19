@@ -39,6 +39,10 @@ panzipool:
     secret-key: ${MINIO_SECRET_KEY:DYGdyg123}
     bucket: ${MINIO_BUCKET:panzipool}
     public-url: ${MINIO_PUBLIC_URL:http://localhost:9000/panzipool}
+  upload:
+    # 开发环境直接写入前端静态目录，Nuxt 即以 /images 路径即时提供访问；
+    # 生产环境通过环境变量 UPLOAD_DIR 覆盖为 Nginx 站点目录
+    dir: ${UPLOAD_DIR:../frontend/public}
 
 logging:
   level:
