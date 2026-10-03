@@ -43,6 +43,8 @@ const categoryLabel = computed(() => {
       return '开发者工具'
     case 'image':
       return '图片工具'
+    case 'text':
+      return '文本工具'
     default:
       return props.tool.category
   }
@@ -55,6 +57,8 @@ const categoryRoute = computed(() => {
       return '/?cat=developer'
     case 'image':
       return '/?cat=image'
+    case 'text':
+      return '/?cat=text'
     default:
       return '/'
   }

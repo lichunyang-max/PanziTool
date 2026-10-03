@@ -132,12 +132,6 @@ const popularTools = computed(() => {
   const all = (toolsData.value || [])
   return [...all].sort((a, b) => (b.use_count || 0) - (a.use_count || 0)).slice(0, 8)
 })
-
-// 格式化计数
-function formatCount(count: number): string {
-  if (count >= 1000) return (count / 1000).toFixed(1) + 'k'
-  return String(count)
-}
 </script>
 
 <template>
@@ -231,6 +225,46 @@ function formatCount(count: number): string {
         <div class="mobile-cat-card__info">
           <span class="mobile-cat-card__title">图片工具</span>
           <span class="mobile-cat-card__subtitle">压缩 / 裁剪 / 转换</span>
+        </div>
+        <svg
+          class="mobile-cat-card__arrow"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </NuxtLink>
+
+      <NuxtLink
+        to="/mobile/text-tools"
+        class="mobile-cat-card mobile-cat-card--text"
+      >
+        <div class="mobile-cat-card__icon" aria-hidden="true">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="4 7 4 4 20 4 20 7" />
+            <line x1="9" x2="15" y1="20" y2="20" />
+            <line x1="12" x2="12" y1="4" y2="20" />
+          </svg>
+        </div>
+        <div class="mobile-cat-card__info">
+          <span class="mobile-cat-card__title">文本工具</span>
+          <span class="mobile-cat-card__subtitle">大小写 / 去重 / 字数统计</span>
         </div>
         <svg
           class="mobile-cat-card__arrow"
@@ -390,6 +424,11 @@ function formatCount(count: number): string {
   background: linear-gradient(135deg, #fef3c7, #fffbeb);
 }
 
+.mobile-cat-card--text {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, #d1fae5, #ecfdf5);
+}
+
 .mobile-cat-card__icon {
   width: 40px;
   height: 40px;
@@ -407,6 +446,11 @@ function formatCount(count: number): string {
 
 .mobile-cat-card--image .mobile-cat-card__icon {
   background: #f59e0b;
+  color: #fff;
+}
+
+.mobile-cat-card--text .mobile-cat-card__icon {
+  background: #10b981;
   color: #fff;
 }
 

@@ -163,7 +163,12 @@ useHead({
       '@type': 'WebApplication',
       name: toolMeta.value.name,
       description: toolMeta.value.description,
-      applicationCategory: toolMeta.value.category === 'image' ? 'MultimediaApplication' : 'DeveloperApplication',
+      applicationCategory:
+        toolMeta.value.category === 'image'
+          ? 'MultimediaApplication'
+          : toolMeta.value.category === 'text'
+            ? 'UtilitiesApplication'
+            : 'DeveloperApplication',
       url: `https://tool.panzipool.com/tools/${slug.value}`,
       operatingSystem: 'Any',
       offers: {

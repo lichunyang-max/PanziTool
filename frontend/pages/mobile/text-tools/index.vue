@@ -1,15 +1,15 @@
 <script setup lang="ts">
 /**
- * pages/mobile/image-tools.vue - 移动端图片工具列表
+ * pages/mobile/text-tools/index.vue - 移动端文本工具列表
  *
- * 类似开发者工具列表，但 category=image
- * - 面包屑：首页 > 图片工具
+ * category=text，结构与图片工具列表一致
+ * - 面包屑：首页 > 文本工具
  * - 分类标题 + 描述
  * - 工具卡片网格（使用 MobileToolCard grid 模式）
- * - 分类筛选（Tab：开发者工具 / 图片工具）
+ * - 分类筛选（Tab：开发者工具 / 图片工具 / 文本工具）
  * - 排序筛选（按热门 / 按最新）
  *
- * 数据来源：GET /api/v1/tools?category=image&sort={sort}
+ * 数据来源：GET /api/v1/tools?category=text&sort={sort}
  */
 
 definePageMeta({
@@ -18,23 +18,23 @@ definePageMeta({
 
 useHead({
   titleTemplate: null,
-  title: '图片工具 | 盘子工具站',
+  title: '文本工具 | 盘子工具站',
   meta: [
     {
       name: 'description',
-      content: '免费在线图片处理工具合集，涵盖图片压缩、裁剪、格式转换等常用功能，免登录即用，本地处理不上传服务器，保护隐私安全。',
+      content: '免费在线文本处理工具合集，涵盖大小写转换、文本去重、查找替换、字数统计、词频分析等常用功能，免登录即用，本地处理不上传服务器，保护隐私安全。',
     },
     {
       name: 'keywords',
-      content: '图片工具,在线图片处理,图片压缩,图片裁剪,格式转换',
+      content: '文本工具,在线文本处理,大小写转换,文本去重,查找替换,字数统计,词频分析',
     },
     {
       property: 'og:title',
-      content: '图片工具 | 盘子工具站',
+      content: '文本工具 | 盘子工具站',
     },
     {
       property: 'og:description',
-      content: '免费在线图片处理工具合集，涵盖图片压缩、裁剪、格式转换等常用功能，免登录即用，本地处理不上传服务器，保护隐私安全。',
+      content: '免费在线文本处理工具合集，涵盖大小写转换、文本去重、查找替换、字数统计、词频分析等常用功能，免登录即用，本地处理保护隐私安全。',
     },
   ],
 })
@@ -49,15 +49,15 @@ interface ToolItem {
   created_at: string
 }
 
-// 分类筛选（当前分类：image）
-const activeCategory = ref<'developer' | 'image' | 'text'>('image')
+// 分类筛选（当前分类：text）
+const activeCategory = ref<'developer' | 'image' | 'text'>('text')
 
 // 排序状态
 const sortBy = ref<'popular' | 'latest'>('popular')
 
-// SSR 获取图片工具数据
+// SSR 获取文本工具数据
 const { data: toolsData, refresh } = await useAsyncData<ToolItem[]>(
-  'mobile-category-image-tools',
+  'mobile-category-text-tools',
   async () => {
     const config = useRuntimeConfig()
     const baseURL = import.meta.server
@@ -70,7 +70,7 @@ const { data: toolsData, refresh } = await useAsyncData<ToolItem[]>(
         data: { items: ToolItem[]; total: number }
       }>('/api/v1/tools', {
         baseURL,
-        params: { category: 'image', sort: sortBy.value },
+        params: { category: 'text', sort: sortBy.value },
       })
       if (response.code === 0) return response.data?.items || []
       return []
@@ -99,13 +99,12 @@ async function changeSort(value: string) {
 
 // 切换分类（跳转对应页面）
 function switchCategory(cat: 'developer' | 'image' | 'text') {
-  if (cat === 'image') {
-    activeCategory.value = 'image'
+  if (cat === 'text') {
+    activeCategory.value = 'text'
     return
   }
-  // 跳转对应分类页
   if (import.meta.client) {
-    navigateTo(cat === 'text' ? '/mobile/text-tools' : '/mobile/tools')
+    navigateTo(cat === 'image' ? '/mobile/image-tools' : '/mobile/tools')
   }
 }
 </script>
@@ -128,14 +127,14 @@ function switchCategory(cat: 'developer' | 'image' | 'text') {
       >
         <polyline points="9 18 15 12 9 6" />
       </svg>
-      <span class="mobile-breadcrumb__current">图片工具</span>
+      <span class="mobile-breadcrumb__current">文本工具</span>
     </nav>
 
     <!-- ============ 页面标题 ============ -->
     <section class="mobile-header-section">
-      <h1 class="mobile-header-section__title">图片工具</h1>
+      <h1 class="mobile-header-section__title">文本工具</h1>
       <p class="mobile-header-section__desc">
-        压缩、裁剪、格式转换等常用图片处理工具，本地处理不上传
+        大小写转换、去重、查找替换、字数统计、词频分析等常用文本处理工具，本地处理不上传
       </p>
     </section>
 
@@ -148,7 +147,7 @@ function switchCategory(cat: 'developer' | 'image' | 'text') {
           class="mobile-tab"
           :data-active="activeCategory === 'developer'"
           role="tab"
-          aria-selected="activeCategory === 'developer'"
+          :aria-selected="activeCategory === 'developer'"
           @click="switchCategory('developer')"
         >
           开发者工具
@@ -158,7 +157,7 @@ function switchCategory(cat: 'developer' | 'image' | 'text') {
           class="mobile-tab"
           :data-active="activeCategory === 'image'"
           role="tab"
-          aria-selected="activeCategory === 'image'"
+          :aria-selected="activeCategory === 'image'"
           @click="switchCategory('image')"
         >
           图片工具
@@ -168,7 +167,7 @@ function switchCategory(cat: 'developer' | 'image' | 'text') {
           class="mobile-tab"
           :data-active="activeCategory === 'text'"
           role="tab"
-          aria-selected="activeCategory === 'text'"
+          :aria-selected="activeCategory === 'text'"
           @click="switchCategory('text')"
         >
           文本工具
@@ -305,7 +304,7 @@ function switchCategory(cat: 'developer' | 'image' | 'text') {
 .mobile-tab {
   flex: 1;
   min-height: 36px;
-  padding: 0 14px;
+  padding: 0 12px;
   font-size: 13px;
   font-weight: 500;
   color: var(--m-color-text-secondary);

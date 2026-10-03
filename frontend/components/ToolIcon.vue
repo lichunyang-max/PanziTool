@@ -37,6 +37,21 @@ const toolIconMap: Record<string, string> = {
   'html-escape': 'code',
   'js-css-beautify': 'wand',
   'timezone-calculator': 'clock',
+  // 第三批文本工具
+  'case-converter': 'type',
+  'text-workflow': 'workflow',
+  'text-dedupe': 'list',
+  'text-replace': 'repeat',
+  'text-reverse': 'shuffle',
+  'text-numbering': 'listordered',
+  'text-to-html': 'code',
+  'special-symbols': 'star',
+  'emoji-picker': 'smile',
+  'fancy-text': 'sparkle',
+  'word-count': 'calculator',
+  'text-similarity': 'scale',
+  'text-typesetting': 'pilcrow',
+  'word-frequency': 'barchart',
 }
 </script>
 
@@ -219,6 +234,130 @@ const toolIconMap: Record<string, string> = {
     style="color: var(--pz-color-primary)" aria-hidden="true"
   >
     <path d="M15 4V2M15 16v-2M8 9h2M20 9h2M17.8 11.8 19 13M15 9h0M17.8 6.2 19 5M3 21l9-9M12.2 6.2 11 5"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'workflow'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <line x1="6" x2="6" y1="3" y2="15"/>
+    <circle cx="18" cy="6" r="3"/>
+    <circle cx="6" cy="18" r="3"/>
+    <path d="M18 9a9 9 0 0 1-9 9"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'list'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <line x1="8" x2="21" y1="6" y2="6"/>
+    <line x1="8" x2="21" y1="12" y2="12"/>
+    <line x1="8" x2="21" y1="18" y2="18"/>
+    <line x1="3" x2="3.01" y1="6" y2="6"/>
+    <line x1="3" x2="3.01" y1="12" y2="12"/>
+    <line x1="3" x2="3.01" y1="18" y2="18"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'repeat'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <path d="m17 2 4 4-4 4"/>
+    <path d="M3 11v-1a4 4 0 0 1 4-4h14"/>
+    <path d="m7 22-4-4 4-4"/>
+    <path d="M21 13v1a4 4 0 0 1-4 4H3"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'shuffle'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/>
+    <path d="m18 2 4 4-4 4"/>
+    <path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"/>
+    <path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/>
+    <path d="m18 14 4 4-4 4"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'listordered'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <line x1="10" x2="21" y1="6" y2="6"/>
+    <line x1="10" x2="21" y1="12" y2="12"/>
+    <line x1="10" x2="21" y1="18" y2="18"/>
+    <path d="M4 6h1v4"/>
+    <path d="M4 10h2"/>
+    <path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'star'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'smile'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <circle cx="12" cy="12" r="10"/>
+    <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+    <line x1="9" x2="9.01" y1="9" y2="9"/>
+    <line x1="15" x2="15.01" y1="9" y2="9"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'sparkle'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+    <path d="M5 3v4"/>
+    <path d="M19 17v4"/>
+    <path d="M3 5h4"/>
+    <path d="M17 19h4"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'scale'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+    <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+    <path d="M7 21h10"/>
+    <path d="M12 3v18"/>
+    <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'pilcrow'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <path d="M13 4v16"/>
+    <path d="M17 4v16"/>
+    <path d="M19 4H9a4 4 0 0 0-4 4a4 4 0 0 0 4 4h8"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'barchart'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <path d="M3 3v18h18"/>
+    <path d="M18 17V9"/>
+    <path d="M13 17V5"/>
+    <path d="M8 17v-3"/>
   </svg>
   <svg
     v-else

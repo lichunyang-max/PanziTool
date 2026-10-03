@@ -1,37 +1,37 @@
 <script setup lang="ts">
 /**
- * pages/category/developer.vue - 开发者工具分类页
+ * pages/category/text.vue - 文本工具分类页
  *
- * 严格参照 ui/pages/开发者工具.html 的布局
- * - 面包屑：首页 > 开发者工具
+ * 布局与图片工具分类页保持一致
+ * - 面包屑：首页 > 文本工具
  * - 标题与描述
- * - 分类标签：全部 / 开发者工具 / 图片工具
+ * - 分类标签：全部 / 开发者工具 / 图片工具 / 文本工具
  * - 排序下拉框：按热门 / 按最新
  * - 工具卡片网格（3 列，hover 上移效果）
  * - 广告位
  *
- * 数据来源：GET /api/v1/tools?category=developer&sort=popular
+ * 数据来源：GET /api/v1/tools?category=text&sort=popular
  */
 
 useHead({
   titleTemplate: null,
-  title: '开发者工具 | 盘子工具站',
+  title: '文本工具合集 | 盘子工具站',
   meta: [
     {
       name: 'description',
-      content: '免费在线开发者工具合集，涵盖JSON格式化、正则测试、编码解码、时间戳转换等常用编程工具，免登录即用，本地处理保障数据安全。'
+      content: '免费在线文本工具合集，涵盖大小写转换、文本去重、查找替换、字数统计、词频分析、文本对比等实用功能，全部浏览器本地处理不上传服务器，免登录即用，保护用户隐私安全。'
     },
     {
       name: 'keywords',
-      content: '开发者工具,在线开发工具,编程工具,前端开发工具'
+      content: '文本工具,在线文本处理,大小写转换,文本去重,查找替换,字数统计,词频分析'
     },
     {
       property: 'og:title',
-      content: '开发者工具 | 盘子工具站'
+      content: '文本工具合集 | 盘子工具站'
     },
     {
       property: 'og:description',
-      content: '免费在线开发者工具合集，涵盖JSON格式化、正则测试、编码解码、时间戳转换等常用编程工具，免登录即用，本地处理保障数据安全。'
+      content: '免费在线文本工具合集，涵盖大小写转换、文本去重、查找替换、字数统计、词频分析、文本对比等实用功能，全部浏览器本地处理不上传服务器，免登录即用，保护用户隐私安全。'
     }
   ]
 })
@@ -54,7 +54,7 @@ interface AdItem {
 
 // SSR 获取分类页底部广告数据
 const { data: adData } = await useAsyncData<AdItem | null>(
-  'category-footer-ad',
+  'category-footer-ad-text',
   async () => {
     const config = useRuntimeConfig()
     const baseURL = import.meta.server
@@ -85,7 +85,7 @@ const sortBy = ref<'popular' | 'latest'>('popular')
 
 // SSR 获取工具数据
 const { data: toolsData, refresh } = await useAsyncData<ToolItem[]>(
-  'category-developer-tools',
+  'category-text-tools',
   async () => {
     const config = useRuntimeConfig()
     const baseURL = import.meta.server
@@ -98,7 +98,7 @@ const { data: toolsData, refresh } = await useAsyncData<ToolItem[]>(
         data: { items: ToolItem[]; total: number }
       }>('/api/v1/tools', {
         baseURL,
-        params: { category: 'developer', sort: sortBy.value },
+        params: { category: 'text', sort: sortBy.value },
       })
       if (response.code === 0) return response.data?.items || []
       return []
@@ -147,7 +147,7 @@ function formatCount(count: number): string {
         style="color: var(--pz-color-text-primary); font-weight: var(--pz-weight-medium)"
         aria-current="page"
       >
-        开发者工具
+        文本工具
       </li>
     </ol>
   </nav>
@@ -158,13 +158,13 @@ function formatCount(count: number): string {
       class="text-3xl font-bold"
       style="color: var(--pz-color-text-primary); font-family: var(--pz-font-display); letter-spacing: -0.02em; line-height: var(--pz-leading-tight); text-wrap: balance; word-break: keep-all; overflow-wrap: break-word"
     >
-      开发者工具
+      文本工具
     </h1>
     <p
       class="mt-2 text-base"
       style="color: var(--pz-color-text-secondary); font-family: var(--pz-font-sans); line-height: var(--pz-leading-relaxed)"
     >
-      格式化、编码解码、正则测试、时间转换等常用开发工具
+      大小写转换、去重、查找替换、字数统计、词频分析，全部在浏览器本地处理，不上传服务器
     </p>
   </section>
 
@@ -182,8 +182,7 @@ function formatCount(count: number): string {
       <NuxtLink
         to="/category/developer"
         class="pz-tab shrink-0"
-        data-active="true"
-        aria-selected="true"
+        aria-selected="false"
         role="tab"
       >
         全部
@@ -207,7 +206,8 @@ function formatCount(count: number): string {
       <NuxtLink
         to="/category/text"
         class="pz-tab shrink-0"
-        aria-selected="false"
+        data-active="true"
+        aria-selected="true"
         role="tab"
       >
         文本工具
@@ -269,7 +269,22 @@ function formatCount(count: number): string {
             class="w-7 h-7 flex items-center justify-center shrink-0"
             style="background-color: var(--pz-color-primary-light); border-radius: var(--pz-radius-md)"
           >
-            <ToolIcon :slug="tool.slug" />
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="color: var(--pz-color-primary)"
+              aria-hidden="true"
+            >
+              <polyline points="4 7 4 4 20 4 20 7" />
+              <line x1="9" x2="15" y1="20" y2="20" />
+              <line x1="12" x2="12" y1="4" y2="20" />
+            </svg>
           </div>
           <h3
             class="text-base font-semibold truncate min-w-0"
@@ -279,7 +294,7 @@ function formatCount(count: number): string {
           </h3>
         </div>
         <span class="pz-badge pz-badge-neutral mt-3 self-start whitespace-nowrap">
-          {{ tool.category === 'image' ? '图片工具' : '开发工具' }}
+          文本工具
         </span>
         <p
           class="text-sm mt-2 line-clamp-2"
@@ -322,7 +337,7 @@ function formatCount(count: number): string {
       class="col-span-full text-center py-12"
     >
       <p style="color: var(--pz-color-text-tertiary); font-size: var(--pz-text-sm)">
-        暂无工具数据
+        暂无文本工具数据
       </p>
     </div>
   </section>

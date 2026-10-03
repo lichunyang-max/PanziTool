@@ -15,6 +15,7 @@ definePageMeta({
 })
 
 import { hasMobileTool, mobileToolRegistry } from '~/utils/mobileToolRegistry'
+import { hasTool, toolRegistry } from '~/utils/toolRegistry'
 import { getToolStaticMeta, type ToolFaqItem } from '~/utils/toolMeta'
 import type { MobileToolMeta } from '~/components/mobile/MobileToolLayout.vue'
 
@@ -175,13 +176,14 @@ const categoryRoute = computed(() => {
   return '/mobile/tools'
 })
 
-// 工具交互组件懒加载（使用移动端专用注册表）
-const hasToolComponent = computed(() => hasMobileTool(slug.value))
+// 工具交互组件懒加载：优先移动端专用注册表，未注册时回退到 PC 端注册表
+// （文本工具等基于响应式 Tailwind 的组件可直接在移动端布局内复用）
+const hasToolComponent = computed(
+  () => hasMobileTool(slug.value) || hasTool(slug.value),
+)
 const toolComponent = computed(() => {
-  if (hasToolComponent.value && mobileToolRegistry[slug.value]) {
-    return defineAsyncComponent(mobileToolRegistry[slug.value])
-  }
-  return null
+  const loader = mobileToolRegistry[slug.value] || toolRegistry[slug.value]
+  return loader ? defineAsyncComponent(loader) : null
 })
 
 // FAQ 数据
