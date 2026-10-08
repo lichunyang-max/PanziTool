@@ -402,9 +402,12 @@ body {
   color: var(--pz-color-text-primary);
 }
 
-.pz-mode-btn[data-active='true'] {
+.pz-mode-btn[data-active='true'],
+.pz-mode-btn.is-active {
   background-color: var(--pz-color-primary);
   color: var(--pz-color-text-inverse);
+  font-weight: var(--pz-weight-semibold);
+  box-shadow: var(--pz-shadow-md);
 }
 
 /* === URL / mono Textarea (可调整高度) === */

@@ -1,15 +1,6 @@
 <script setup lang="ts">
 /**
- * pages/mobile/tools.vue - 移动端开发者工具列表
- *
- * 参考 panzi-tools-mobile/pages/developer.html 设计：
- * - 面包屑：首页 > 开发者工具
- * - 分类标题 + 描述
- * - 工具卡片网格（使用 MobileToolCard grid 模式）
- * - 分类筛选（Tab：开发者工具 / 图片工具）
- * - 排序筛选（按热门 / 按最新）
- *
- * 数据来源：GET /api/v1/tools?category=developer&sort={sort}
+ * pages/mobile/finance-tools/index.vue - 移动端财务工具列表
  */
 
 definePageMeta({
@@ -18,23 +9,23 @@ definePageMeta({
 
 useHead({
   titleTemplate: null,
-  title: '开发者工具 | 盘子工具站',
+  title: '财务工具 | 盘子工具站',
   meta: [
     {
       name: 'description',
-      content: '免费在线开发者工具合集，涵盖JSON格式化、正则测试、编码解码、时间戳转换等常用编程工具，免登录即用，本地处理保障数据安全。',
+      content: '免费在线财务工具合集，涵盖人民币大写转换、个税计算、贷款计算、汇率换算、税金计算、合同款项、联行号查询等常用功能，免登录即用，本地处理不上传服务器，保护隐私安全。',
     },
     {
       name: 'keywords',
-      content: '开发者工具,在线开发工具,编程工具,前端开发工具',
+      content: '财务工具,人民币大写,个税计算器,贷款计算器,汇率换算,税金计算,合同款项,联行号查询',
     },
     {
       property: 'og:title',
-      content: '开发者工具 | 盘子工具站',
+      content: '财务工具 | 盘子工具站',
     },
     {
       property: 'og:description',
-      content: '免费在线开发者工具合集，涵盖JSON格式化、正则测试、编码解码、时间戳转换等常用编程工具，免登录即用，本地处理保障数据安全。',
+      content: '免费在线财务工具合集，涵盖人民币大写转换、个税计算、贷款计算、汇率换算等常用功能，免登录即用，本地处理保护隐私安全。',
     },
   ],
 })
@@ -49,15 +40,11 @@ interface ToolItem {
   created_at: string
 }
 
-// 分类筛选（当前分类：developer）
-const activeCategory = ref<'developer' | 'image' | 'text' | 'finance'>('developer')
-
-// 排序状态
+const activeCategory = ref<'developer' | 'image' | 'text' | 'finance'>('finance')
 const sortBy = ref<'popular' | 'latest'>('popular')
 
-// SSR 获取工具数据
 const { data: toolsData, refresh } = await useAsyncData<ToolItem[]>(
-  'mobile-category-developer-tools',
+  'mobile-category-finance-tools',
   async () => {
     const config = useRuntimeConfig()
     const baseURL = import.meta.server
@@ -70,7 +57,7 @@ const { data: toolsData, refresh } = await useAsyncData<ToolItem[]>(
         data: { items: ToolItem[]; total: number }
       }>('/api/v1/tools', {
         baseURL,
-        params: { category: 'developer', sort: sortBy.value },
+        params: { category: 'finance', sort: sortBy.value },
       })
       if (response.code === 0) return response.data?.items || []
       return []
@@ -91,23 +78,21 @@ const { data: toolsData, refresh } = await useAsyncData<ToolItem[]>(
   },
 )
 
-// 切换排序（CSR）
 async function changeSort(value: string) {
   sortBy.value = value as 'popular' | 'latest'
   await refresh()
 }
 
-// 切换分类（跳转对应页面）
 function switchCategory(cat: 'developer' | 'image' | 'text' | 'finance') {
-  if (cat === 'developer') {
-    activeCategory.value = 'developer'
+  if (cat === 'finance') {
+    activeCategory.value = 'finance'
     return
   }
   if (import.meta.client) {
     const routes: Record<string, string> = {
+      developer: '/mobile/tools',
       image: '/mobile/image-tools',
       text: '/mobile/text-tools',
-      finance: '/mobile/finance-tools',
     }
     navigateTo(routes[cat])
   }
@@ -116,95 +101,38 @@ function switchCategory(cat: 'developer' | 'image' | 'text' | 'finance') {
 
 <template>
   <div class="mobile-page">
-    <!-- ============ 面包屑 ============ -->
     <nav class="mobile-breadcrumb" aria-label="面包屑">
       <NuxtLink to="/mobile" class="mobile-breadcrumb__link">首页</NuxtLink>
-      <svg
-        width="12"
-        height="12"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <polyline points="9 18 15 12 9 6" />
       </svg>
-      <span class="mobile-breadcrumb__current">开发者工具</span>
+      <span class="mobile-breadcrumb__current">财务工具</span>
     </nav>
 
-    <!-- ============ 页面标题 ============ -->
     <section class="mobile-header-section">
-      <h1 class="mobile-header-section__title">开发者工具</h1>
+      <h1 class="mobile-header-section__title">财务工具</h1>
       <p class="mobile-header-section__desc">
-        格式化、编码解码、正则测试、时间转换等常用开发工具
+        人民币大写、个税计算、贷款计算、汇率换算、税金计算、合同款项、联行号查询，本地处理不上传
       </p>
     </section>
 
-    <!-- ============ 分类 Tab + 排序 ============ -->
     <section class="mobile-filter-bar">
-      <!-- 分类 Tab -->
       <div class="mobile-tabs" role="tablist" aria-label="工具分类">
-        <button
-          type="button"
-          class="mobile-tab"
-          :data-active="activeCategory === 'developer'"
-          role="tab"
-          aria-selected="activeCategory === 'developer'"
-          @click="switchCategory('developer')"
-        >
-          开发者工具
-        </button>
-        <button
-          type="button"
-          class="mobile-tab"
-          :data-active="activeCategory === 'image'"
-          role="tab"
-          aria-selected="activeCategory === 'image'"
-          @click="switchCategory('image')"
-        >
-          图片工具
-        </button>
-        <button
-          type="button"
-          class="mobile-tab"
-          :data-active="activeCategory === 'text'"
-          role="tab"
-          aria-selected="activeCategory === 'text'"
-          @click="switchCategory('text')"
-        >
-          文本工具
-        </button>
-        <button
-          type="button"
-          class="mobile-tab"
-          :data-active="activeCategory === 'finance'"
-          role="tab"
-          aria-selected="activeCategory === 'finance'"
-          @click="switchCategory('finance')"
-        >
-          财务工具
-        </button>
+        <button type="button" class="mobile-tab" :data-active="activeCategory === 'developer'" role="tab" :aria-selected="activeCategory === 'developer'" @click="switchCategory('developer')">开发者工具</button>
+        <button type="button" class="mobile-tab" :data-active="activeCategory === 'image'" role="tab" :aria-selected="activeCategory === 'image'" @click="switchCategory('image')">图片工具</button>
+        <button type="button" class="mobile-tab" :data-active="activeCategory === 'text'" role="tab" :aria-selected="activeCategory === 'text'" @click="switchCategory('text')">文本工具</button>
+        <button type="button" class="mobile-tab" :data-active="activeCategory === 'finance'" role="tab" :aria-selected="activeCategory === 'finance'" @click="switchCategory('finance')">财务工具</button>
       </div>
 
-      <!-- 排序 -->
       <div class="mobile-sort">
         <span class="mobile-sort__label">排序</span>
-        <select
-          v-model="sortBy"
-          class="mobile-sort__select"
-          aria-label="排序方式"
-          @change="changeSort(sortBy)"
-        >
+        <select v-model="sortBy" class="mobile-sort__select" aria-label="排序方式" @change="changeSort(sortBy)">
           <option value="popular">按热门</option>
           <option value="latest">按最新</option>
         </select>
       </div>
     </section>
 
-    <!-- ============ 工具卡片网格 ============ -->
     <section class="mobile-tool-grid" aria-label="工具列表">
       <MobileToolCard
         v-for="tool in toolsData"
@@ -219,10 +147,7 @@ function switchCategory(cat: 'developer' | 'image' | 'text' | 'finance') {
         variant="grid"
       />
 
-      <div
-        v-if="!toolsData || toolsData.length === 0"
-        class="mobile-empty"
-      >
+      <div v-if="!toolsData || toolsData.length === 0" class="mobile-empty">
         <p>暂无工具数据</p>
       </div>
     </section>
@@ -247,7 +172,6 @@ function switchCategory(cat: 'developer' | 'image' | 'text' | 'finance') {
   padding: 8px 0 16px;
 }
 
-/* --- 面包屑 --- */
 .mobile-breadcrumb {
   display: flex;
   align-items: center;
@@ -276,7 +200,6 @@ function switchCategory(cat: 'developer' | 'image' | 'text' | 'finance') {
   font-weight: 500;
 }
 
-/* --- 标题区 --- */
 .mobile-header-section {
   display: flex;
   flex-direction: column;
@@ -298,7 +221,6 @@ function switchCategory(cat: 'developer' | 'image' | 'text' | 'finance') {
   line-height: 1.5;
 }
 
-/* --- 筛选栏 --- */
 .mobile-filter-bar {
   display: flex;
   align-items: center;
@@ -306,7 +228,6 @@ function switchCategory(cat: 'developer' | 'image' | 'text' | 'finance') {
   gap: 12px;
 }
 
-/* Tab */
 .mobile-tabs {
   display: flex;
   gap: 4px;
@@ -319,7 +240,7 @@ function switchCategory(cat: 'developer' | 'image' | 'text' | 'finance') {
 .mobile-tab {
   flex: 1;
   min-height: 36px;
-  padding: 0 14px;
+  padding: 0 12px;
   font-size: 13px;
   font-weight: 500;
   color: var(--m-color-text-secondary);
@@ -338,7 +259,6 @@ function switchCategory(cat: 'developer' | 'image' | 'text' | 'finance') {
   font-weight: 600;
 }
 
-/* 排序 */
 .mobile-sort {
   display: flex;
   align-items: center;
@@ -368,14 +288,12 @@ function switchCategory(cat: 'developer' | 'image' | 'text' | 'finance') {
   cursor: pointer;
 }
 
-/* --- 工具网格 --- */
 .mobile-tool-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
 
-/* --- 空状态 --- */
 .mobile-empty {
   grid-column: 1 / -1;
   text-align: center;

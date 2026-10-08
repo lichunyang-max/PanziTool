@@ -136,6 +136,7 @@ const categoryTabs: CategoryTab[] = [
   { key: 'developer', label: '开发者工具' },
   { key: 'image', label: '图片工具' },
   { key: 'text', label: '文本工具' },
+  { key: 'finance', label: '财务工具' },
 ]
 
 const selectedTab = ref('all')
@@ -171,14 +172,16 @@ const tabCounts = computed<Record<string, number>>(() => {
   let developer = 0
   let image = 0
   let text = 0
+  let finance = 0
   for (const t of all) {
     if (slugs.has(t.slug)) continue
     slugs.add(t.slug)
     if (t.category === 'developer') developer++
     else if (t.category === 'image') image++
     else if (t.category === 'text') text++
+    else if (t.category === 'finance') finance++
   }
-  return { all: slugs.size, developer, image, text }
+  return { all: slugs.size, developer, image, text, finance }
 })
 
 function tabCount(key: string): number {
@@ -296,7 +299,7 @@ function formatCount(count: number): string {
 
         <!-- 分类徽标 -->
         <span class="pz-badge pz-badge-neutral mt-3 self-start whitespace-nowrap">
-          {{ tool.category === 'image' ? '图片工具' : tool.category === 'text' ? '文本工具' : '开发工具' }}
+          {{ tool.category === 'image' ? '图片工具' : tool.category === 'text' ? '文本工具' : tool.category === 'finance' ? '财务工具' : '开发工具' }}
         </span>
 
         <!-- 描述 -->

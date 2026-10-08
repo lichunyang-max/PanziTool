@@ -16,6 +16,7 @@ export default defineEventHandler(async () => {
     { loc: `${baseUrl}/category/developer`, priority: '0.9', changefreq: 'weekly', lastmod: today },
     { loc: `${baseUrl}/category/image`, priority: '0.9', changefreq: 'weekly', lastmod: today },
     { loc: `${baseUrl}/category/text`, priority: '0.9', changefreq: 'weekly', lastmod: today },
+    { loc: `${baseUrl}/category/finance`, priority: '0.9', changefreq: 'weekly', lastmod: today },
     { loc: `${baseUrl}/about`, priority: '0.5', changefreq: 'monthly', lastmod: today },
     { loc: `${baseUrl}/privacy`, priority: '0.3', changefreq: 'monthly', lastmod: today },
   ]

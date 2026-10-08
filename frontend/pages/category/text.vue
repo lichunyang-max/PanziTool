@@ -212,6 +212,14 @@ function formatCount(count: number): string {
       >
         文本工具
       </NuxtLink>
+      <NuxtLink
+        to="/category/finance"
+        class="pz-tab shrink-0"
+        aria-selected="false"
+        role="tab"
+      >
+        财务工具
+      </NuxtLink>
     </div>
 
     <!-- 排序下拉 -->

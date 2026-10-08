@@ -281,6 +281,46 @@ const popularTools = computed(() => {
           <polyline points="9 18 15 12 9 6" />
         </svg>
       </NuxtLink>
+
+      <NuxtLink
+        to="/mobile/finance-tools"
+        class="mobile-cat-card mobile-cat-card--finance"
+      >
+        <div class="mobile-cat-card__icon" aria-hidden="true">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="12" x2="12" y1="3" y2="21" />
+            <path d="M5 8l7 7 7-7" />
+            <path d="M5 14h14" />
+          </svg>
+        </div>
+        <div class="mobile-cat-card__info">
+          <span class="mobile-cat-card__title">财务工具</span>
+          <span class="mobile-cat-card__subtitle">人民币大写 / 个税 / 贷款 / 汇率</span>
+        </div>
+        <svg
+          class="mobile-cat-card__arrow"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </NuxtLink>
     </section>
 
     <!-- ============ 热门推荐区 ============ -->
@@ -429,6 +469,11 @@ const popularTools = computed(() => {
   background: linear-gradient(135deg, #d1fae5, #ecfdf5);
 }
 
+.mobile-cat-card--finance {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, #dbeafe, #eff6ff);
+}
+
 .mobile-cat-card__icon {
   width: 40px;
   height: 40px;
@@ -451,6 +496,11 @@ const popularTools = computed(() => {
 
 .mobile-cat-card--text .mobile-cat-card__icon {
   background: #10b981;
+  color: #fff;
+}
+
+.mobile-cat-card--finance .mobile-cat-card__icon {
+  background: #3b82f6;
   color: #fff;
 }
 

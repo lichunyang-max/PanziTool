@@ -38,6 +38,11 @@ interface ApiToolResponse {
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 
+// 未在工具注册表中登记的 slug 直接 404（防止已下线工具仍被访问）
+if (!hasTool(slug.value)) {
+  throw createError({ statusCode: 404, statusMessage: '工具不存在', fatal: true })
+}
+
 // SSR 数据获取
 const { data: toolData } = await useAsyncData<ToolData | null>(
   `tool-${slug.value}`,
@@ -166,7 +171,7 @@ useHead({
       applicationCategory:
         toolMeta.value.category === 'image'
           ? 'MultimediaApplication'
-          : toolMeta.value.category === 'text'
+          : toolMeta.value.category === 'text' || toolMeta.value.category === 'finance'
             ? 'UtilitiesApplication'
             : 'DeveloperApplication',
       url: `https://tool.panzipool.com/tools/${slug.value}`,

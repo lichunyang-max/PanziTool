@@ -173,6 +173,9 @@ const categoryRoute = computed(() => {
   if (toolMeta.value.category === 'image') {
     return '/mobile/image-tools'
   }
+  if (toolMeta.value.category === 'finance') {
+    return '/mobile/finance-tools'
+  }
   return '/mobile/tools'
 })
 

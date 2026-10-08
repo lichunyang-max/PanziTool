@@ -181,6 +181,52 @@ export const toolRegistry: Record<string, () => Promise<Component>> = {
     import('~/components/tool/WordFrequencyTool.vue').then(
       (m) => m.default || m,
     ),
+
+  // ===== 财务工具（纯前端本地运算） =====
+  'rmb-uppercase': () =>
+    import('~/components/tool/RmbUppercaseTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'check-date-uppercase': () =>
+    import('~/components/tool/CheckDateUppercaseTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'english-amount-uppercase': () =>
+    import('~/components/tool/EnglishAmountUppercaseTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'tax-calculator': () =>
+    import('~/components/tool/TaxCalculatorTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'income-tax-calculator': () =>
+    import('~/components/tool/IncomeTaxCalculatorTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'labor-income-tax': () =>
+    import('~/components/tool/LaborIncomeTaxTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'currency-exchange': () =>
+    import('~/components/tool/CurrencyExchangeTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'world-currencies': () =>
+    import('~/components/tool/WorldCurrenciesTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'number-sum': () =>
+    import('~/components/tool/NumberSumTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'contract-payment': () =>
+    import('~/components/tool/ContractPaymentTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'loan-calculator': () =>
+    import('~/components/tool/LoanCalculatorTool.vue').then(
+      (m) => m.default || m,
+    ),
 }
 
 /**

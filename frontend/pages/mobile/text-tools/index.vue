@@ -50,7 +50,7 @@ interface ToolItem {
 }
 
 // 分类筛选（当前分类：text）
-const activeCategory = ref<'developer' | 'image' | 'text'>('text')
+const activeCategory = ref<'developer' | 'image' | 'text' | 'finance'>('text')
 
 // 排序状态
 const sortBy = ref<'popular' | 'latest'>('popular')
@@ -98,13 +98,18 @@ async function changeSort(value: string) {
 }
 
 // 切换分类（跳转对应页面）
-function switchCategory(cat: 'developer' | 'image' | 'text') {
+function switchCategory(cat: 'developer' | 'image' | 'text' | 'finance') {
   if (cat === 'text') {
     activeCategory.value = 'text'
     return
   }
   if (import.meta.client) {
-    navigateTo(cat === 'image' ? '/mobile/image-tools' : '/mobile/tools')
+    const routes: Record<string, string> = {
+      developer: '/mobile/tools',
+      image: '/mobile/image-tools',
+      finance: '/mobile/finance-tools',
+    }
+    navigateTo(routes[cat])
   }
 }
 </script>
@@ -171,6 +176,16 @@ function switchCategory(cat: 'developer' | 'image' | 'text') {
           @click="switchCategory('text')"
         >
           文本工具
+        </button>
+        <button
+          type="button"
+          class="mobile-tab"
+          :data-active="activeCategory === 'finance'"
+          role="tab"
+          :aria-selected="activeCategory === 'finance'"
+          @click="switchCategory('finance')"
+        >
+          财务工具
         </button>
       </div>
 

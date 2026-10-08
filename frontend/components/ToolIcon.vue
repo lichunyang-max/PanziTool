@@ -52,6 +52,18 @@ const toolIconMap: Record<string, string> = {
   'text-similarity': 'scale',
   'text-typesetting': 'pilcrow',
   'word-frequency': 'barchart',
+  // 财务工具
+  'rmb-uppercase': 'yuan',
+  'check-date-uppercase': 'datecheck',
+  'english-amount-uppercase': 'banknote',
+  'tax-calculator': 'percent',
+  'income-tax-calculator': 'briefcase',
+  'labor-income-tax': 'receipt',
+  'currency-exchange': 'swap',
+  'world-currencies': 'globe',
+  'number-sum': 'sum',
+  'contract-payment': 'contract',
+  'loan-calculator': 'homeloan',
 }
 </script>
 
@@ -358,6 +370,126 @@ const toolIconMap: Record<string, string> = {
     <path d="M18 17V9"/>
     <path d="M13 17V5"/>
     <path d="M8 17v-3"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'yuan'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <path d="M12 3v18"/>
+    <path d="M5 8l7 7 7-7"/>
+    <path d="M5 14h14"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'datecheck'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <rect width="18" height="18" x="3" y="4" rx="2"/>
+    <path d="M16 2v4M8 2v4M3 10h18"/>
+    <path d="m9 16 2 2 4-4"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'banknote'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <rect width="20" height="12" x="2" y="6" rx="2"/>
+    <circle cx="12" cy="12" r="2"/>
+    <path d="M6 12h.01M18 12h.01"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'percent'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <line x1="19" x2="5" y1="5" y2="19"/>
+    <circle cx="6.5" cy="6.5" r="2.5"/>
+    <circle cx="17.5" cy="17.5" r="2.5"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'briefcase'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <rect width="20" height="14" x="2" y="7" rx="2"/>
+    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'receipt'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/>
+    <path d="M8 7h8M8 11h8M8 15h5"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'swap'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <path d="m16 3 4 4-4 4"/>
+    <path d="M20 7H4"/>
+    <path d="m8 21-4-4 4-4"/>
+    <path d="M4 17h16"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'globe'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <circle cx="12" cy="12" r="10"/>
+    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
+    <path d="M2 12h20"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'sum'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <path d="M3 6h18"/>
+    <path d="M6 6l6 12 6-12"/>
+    <path d="M3 21h18"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'contract'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+    <path d="M14 2v6h6"/>
+    <path d="M9 13h6M9 17h6"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'homeloan'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <path d="M3 10.5 12 3l9 7.5"/>
+    <path d="M5 10v10h14V10"/>
+    <path d="M10 20v-6h4v6"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'bank'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <path d="M3 21h18"/>
+    <path d="M3 10h18"/>
+    <path d="M5 6l7-3 7 3"/>
+    <path d="M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/>
   </svg>
   <svg
     v-else
