@@ -680,3 +680,45 @@ export const toolStaticMeta: Record<string, ToolStaticMeta> = {
 export function getToolStaticMeta(slug: string): ToolStaticMeta | null {
   return toolStaticMeta[slug] || null
 }
+
+/**
+ * 静态工具列表项（与首页/分类页 API 返回的 ToolItem 结构兼容）
+ */
+export interface ToolListItem {
+  slug: string
+  name: string
+  description: string
+  category: string
+  icon: string
+  use_count: number
+  like_count: number
+  created_at: string
+}
+
+/**
+ * 获取静态工具列表（预渲染降级数据源）
+ *
+ * 用途：首页 / 分类页在 API 不可用（如 nuxt generate 预渲染阶段）时，
+ * 使用该列表渲染工具卡片，保证爬虫能看到全部工具入口和文字内容。
+ * 客户端水合后 API 数据会覆盖（use_count / like_count 实时值）。
+ *
+ * @param category 可选分类过滤：'developer' | 'image'，不传返回全部
+ */
+export function getStaticToolList(
+  category?: 'developer' | 'image',
+): ToolListItem[] {
+  const list: ToolListItem[] = Object.values(toolStaticMeta).map((meta) => ({
+    slug: meta.slug,
+    name: meta.name,
+    description: meta.description,
+    category: meta.category,
+    icon: '',
+    use_count: 0,
+    like_count: 0,
+    created_at: '',
+  }))
+  if (category) {
+    return list.filter((t) => t.category === category)
+  }
+  return list
+}

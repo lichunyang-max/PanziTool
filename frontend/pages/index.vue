@@ -9,6 +9,7 @@
  *
  * 数据来源：GET /api/v1/tools?sort=popular&limit=100（前端筛选与排序）
  */
+import { getStaticToolList } from '~/utils/toolMeta'
 
 useHead({
   titleTemplate: null,
@@ -80,7 +81,7 @@ const { data: adData } = await useAsyncData<AdItem | null>(
 )
 
 // SSR 并行获取热门/最新两份全量列表（后端排序，前端仅按分类筛选）
-const { data: toolsBySort } = await useAsyncData<{
+const { data: toolsBySort, refresh: refreshTools } = await useAsyncData<{
   popular: ToolItem[]
   latest: ToolItem[]
 }>(
@@ -97,7 +98,8 @@ const { data: toolsBySort } = await useAsyncData<{
         params: { sort, limit: 100 },
       })
         .then((r) => (r.code === 0 ? r.data?.items || [] : []))
-        .catch(() => [])
+        // 预渲染降级：API 不可用时使用静态工具列表，保证首页卡片有内容
+        .catch(() => getStaticToolList())
 
     const [popular, latest] = await Promise.all([
       fetchTools('popular'),
@@ -107,14 +109,20 @@ const { data: toolsBySort } = await useAsyncData<{
   },
   {
     default: () => ({ popular: [], latest: [] }),
-    // payload 中已有数据（SSR 传输）时直接使用，避免客户端水合阶段
-    // 强制重新请求导致卡片闪空
+    // 水合阶段直接复用预渲染 payload：保证首屏立即渲染全部卡片（绝不闪空）。
+    // 代价：payload 是构建时数据，统计数为 0 —— 由下方 onMounted 后台刷新补齐。
     getCachedData(key) {
       const nuxtApp = useNuxtApp()
       return nuxtApp.payload.data[key] || nuxtApp.static.data[key] || undefined
     },
   },
 )
+
+// 挂载后后台刷新一次，获取实时 use_count / like_count。
+// （预渲染时 API 不可用，payload 中的统计数是 0；接口响应后卡片数字自动更新）
+onMounted(() => {
+  refreshTools()
+})
 
 // 顶部分类筛选标签
 interface CategoryTab {
