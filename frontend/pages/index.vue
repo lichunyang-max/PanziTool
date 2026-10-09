@@ -9,7 +9,6 @@
  *
  * 数据来源：GET /api/v1/tools?sort=popular&limit=100（前端筛选与排序）
  */
-import { getStaticToolList } from '~/utils/toolMeta'
 
 useHead({
   titleTemplate: null,
@@ -98,8 +97,7 @@ const { data: toolsBySort, refresh: refreshTools } = await useAsyncData<{
         params: { sort, limit: 100 },
       })
         .then((r) => (r.code === 0 ? r.data?.items || [] : []))
-        // 预渲染降级：API 不可用时使用静态工具列表，保证首页卡片有内容
-        .catch(() => getStaticToolList())
+        .catch(() => [])
 
     const [popular, latest] = await Promise.all([
       fetchTools('popular'),
@@ -109,17 +107,20 @@ const { data: toolsBySort, refresh: refreshTools } = await useAsyncData<{
   },
   {
     default: () => ({ popular: [], latest: [] }),
-    // 水合阶段直接复用预渲染 payload：保证首屏立即渲染全部卡片（绝不闪空）。
-    // 代价：payload 是构建时数据，统计数为 0 —— 由下方 onMounted 后台刷新补齐。
-    getCachedData(key) {
-      const nuxtApp = useNuxtApp()
+    // payload 中已有数据（SSR 传输）时直接使用，避免客户端水合阶段
+    // 强制重新请求导致卡片闪空。
+    // 注意：仅在初始水合（cause=initial）时使用缓存；主动 refresh 时
+    // 返回 undefined 强制走网络，否则会一直拿到预渲染固化的旧数据。
+    getCachedData(key, nuxtApp, opts?: { cause?: string }) {
+      if (opts?.cause && opts.cause !== 'initial') return undefined
       return nuxtApp.payload.data[key] || nuxtApp.static.data[key] || undefined
     },
   },
 )
 
-// 挂载后后台刷新一次，获取实时 use_count / like_count。
-// （预渲染时 API 不可用，payload 中的统计数是 0；接口响应后卡片数字自动更新）
+// 首页为构建时静态预渲染产物，use_count / like_count 被固化在构建时刻
+// （生产构建环境拿到的往往是 0），客户端挂载后强制重新拉取一次，
+// 保证使用次数与点赞次数与线上数据库一致
 onMounted(() => {
   refreshTools()
 })
@@ -134,6 +135,8 @@ const categoryTabs: CategoryTab[] = [
   { key: 'all', label: '全部' },
   { key: 'developer', label: '开发者工具' },
   { key: 'image', label: '图片工具' },
+  { key: 'text', label: '文本工具' },
+  { key: 'finance', label: '财务工具' },
 ]
 
 const selectedTab = ref('all')
@@ -168,13 +171,17 @@ const tabCounts = computed<Record<string, number>>(() => {
   const slugs = new Set<string>()
   let developer = 0
   let image = 0
+  let text = 0
+  let finance = 0
   for (const t of all) {
     if (slugs.has(t.slug)) continue
     slugs.add(t.slug)
     if (t.category === 'developer') developer++
     else if (t.category === 'image') image++
+    else if (t.category === 'text') text++
+    else if (t.category === 'finance') finance++
   }
-  return { all: slugs.size, developer, image }
+  return { all: slugs.size, developer, image, text, finance }
 })
 
 function tabCount(key: string): number {
@@ -292,7 +299,7 @@ function formatCount(count: number): string {
 
         <!-- 分类徽标 -->
         <span class="pz-badge pz-badge-neutral mt-3 self-start whitespace-nowrap">
-          {{ tool.category === 'image' ? '图片工具' : '开发工具' }}
+          {{ tool.category === 'image' ? '图片工具' : tool.category === 'text' ? '文本工具' : tool.category === 'finance' ? '财务工具' : '开发工具' }}
         </span>
 
         <!-- 描述 -->

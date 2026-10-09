@@ -27,7 +27,21 @@ const FLUSH_INTERVAL = 5000
 const SENT_PAGE_VIEWS = new Set<string>()
 
 let flushTimer: ReturnType<typeof setInterval> | null = null
+let actionFlushTimer: ReturnType<typeof setTimeout> | null = null
 let beaconSent = false
+
+/**
+ * 使用类事件（tool_use / copy / download）近实时上报：
+ * 短防抖合并连续动作后立即发送，避免用户很快返回首页时
+ * 计数因 5 秒批量队列尚未 flush 而仍显示旧值。
+ */
+function scheduleActionFlush(): void {
+  if (actionFlushTimer) return
+  actionFlushTimer = setTimeout(() => {
+    actionFlushTimer = null
+    void flushEvents()
+  }, 300)
+}
 
 function getAnonId(): string {
   if (import.meta.server) return ''
@@ -130,6 +144,8 @@ export function useAnalytics() {
       anon_id: getAnonId(),
       timestamp: Date.now(),
     })
+
+    if (type !== 'page_view') scheduleActionFlush()
   }
 
   function reportPageView(path: string): void {

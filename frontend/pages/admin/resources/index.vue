@@ -451,6 +451,7 @@ async function handleFileChange(event: Event) {
   try {
     const formData = new FormData()
     formData.append('file', file)
+    formData.append('folder', 'resources')
     const res = await $fetch<ApiResponse<{ url: string }>>('/api/v1/admin/upload', {
       baseURL,
       method: 'POST',
@@ -464,7 +465,7 @@ async function handleFileChange(event: Event) {
     showToast('图片上传成功')
   } catch (err) {
     const message =
-      err instanceof Error ? err.message : '图片上传失败，请检查 MinIO 服务'
+      err instanceof Error ? err.message : '图片上传失败，请稍后重试'
     showToast(message, 'error')
   } finally {
     uploading.value = false

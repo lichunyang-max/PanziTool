@@ -123,6 +123,110 @@ export const toolRegistry: Record<string, () => Promise<Component>> = {
     import('~/components/tool/TimezoneCalculatorTool.vue').then(
       (m) => m.default || m,
     ),
+
+  // ===== 第三批：文本工具（纯前端本地运算） =====
+  'case-converter': () =>
+    import('~/components/tool/CaseConverterTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'text-workflow': () =>
+    import('~/components/tool/TextWorkflowTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'text-dedupe': () =>
+    import('~/components/tool/TextDedupeTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'text-replace': () =>
+    import('~/components/tool/TextReplaceTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'text-reverse': () =>
+    import('~/components/tool/TextReverseTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'text-numbering': () =>
+    import('~/components/tool/TextNumberingTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'text-to-html': () =>
+    import('~/components/tool/TextToHtmlTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'special-symbols': () =>
+    import('~/components/tool/SpecialSymbolsTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'emoji-picker': () =>
+    import('~/components/tool/EmojiPickerTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'fancy-text': () =>
+    import('~/components/tool/FancyTextTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'word-count': () =>
+    import('~/components/tool/WordCountTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'text-similarity': () =>
+    import('~/components/tool/TextSimilarityTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'text-typesetting': () =>
+    import('~/components/tool/TextTypesettingTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'word-frequency': () =>
+    import('~/components/tool/WordFrequencyTool.vue').then(
+      (m) => m.default || m,
+    ),
+
+  // ===== 财务工具（纯前端本地运算） =====
+  'rmb-uppercase': () =>
+    import('~/components/tool/RmbUppercaseTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'check-date-uppercase': () =>
+    import('~/components/tool/CheckDateUppercaseTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'english-amount-uppercase': () =>
+    import('~/components/tool/EnglishAmountUppercaseTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'tax-calculator': () =>
+    import('~/components/tool/TaxCalculatorTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'income-tax-calculator': () =>
+    import('~/components/tool/IncomeTaxCalculatorTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'labor-income-tax': () =>
+    import('~/components/tool/LaborIncomeTaxTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'currency-exchange': () =>
+    import('~/components/tool/CurrencyExchangeTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'world-currencies': () =>
+    import('~/components/tool/WorldCurrenciesTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'number-sum': () =>
+    import('~/components/tool/NumberSumTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'contract-payment': () =>
+    import('~/components/tool/ContractPaymentTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'loan-calculator': () =>
+    import('~/components/tool/LoanCalculatorTool.vue').then(
+      (m) => m.default || m,
+    ),
 }
 
 /**

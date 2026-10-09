@@ -91,6 +91,12 @@ panzipool:
     secret-key: ${MINIO_SECRET_KEY:DYGdyg123}
     bucket: ${MINIO_BUCKET:panzipool}
     public-url: ${MINIO_PUBLIC_URL:http://localhost:9000/panzipool}
+  upload:
+    # 管理后台图片本地磁盘存储
+    # dir：物理存储根目录（生产环境通过 UPLOAD_DIR 指向 Nginx 站点目录，如 /var/www/panzitool）
+    # url-prefix：对外访问 URL 前缀（由前端静态服务或 Nginx 映射到 dir）
+    dir: ${UPLOAD_DIR:./uploads}
+    url-prefix: ${UPLOAD_URL_PREFIX:/images}
 
 # 管理员后台配置
 # ----------------------------------------------------------------------------
