@@ -227,6 +227,56 @@ export const toolRegistry: Record<string, () => Promise<Component>> = {
     import('~/components/tool/LoanCalculatorTool.vue').then(
       (m) => m.default || m,
     ),
+
+  // ===== 换算工具（纯前端本地运算） =====
+  'length-converter': () =>
+    import('~/components/tool/LengthConverterTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'area-converter': () =>
+    import('~/components/tool/AreaConverterTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'volume-converter': () =>
+    import('~/components/tool/VolumeConverterTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'weight-converter': () =>
+    import('~/components/tool/WeightConverterTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'density-converter': () =>
+    import('~/components/tool/DensityConverterTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'temperature-converter': () =>
+    import('~/components/tool/TemperatureConverterTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'pressure-converter': () =>
+    import('~/components/tool/PressureConverterTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'byte-converter': () =>
+    import('~/components/tool/ByteConverterTool.vue').then((m) => m.default || m),
+  'time-converter': () =>
+    import('~/components/tool/TimeConverterTool.vue').then((m) => m.default || m),
+  'counting-unit-converter': () =>
+    import('~/components/tool/CountingUnitConverterTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'battery-capacity-converter': () =>
+    import('~/components/tool/BatteryCapacityConverterTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'geo-coordinate-converter': () =>
+    import('~/components/tool/GeoCoordinateConverterTool.vue').then(
+      (m) => m.default || m,
+    ),
+  'cuboid-calculator': () =>
+    import('~/components/tool/CuboidCalculatorTool.vue').then(
+      (m) => m.default || m,
+    ),
 }
 
 /**

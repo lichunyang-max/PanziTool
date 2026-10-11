@@ -137,6 +137,7 @@ const categoryTabs: CategoryTab[] = [
   { key: 'image', label: '图片工具' },
   { key: 'text', label: '文本工具' },
   { key: 'finance', label: '财务工具' },
+  { key: 'convert', label: '换算工具' },
 ]
 
 const selectedTab = ref('all')
@@ -173,6 +174,7 @@ const tabCounts = computed<Record<string, number>>(() => {
   let image = 0
   let text = 0
   let finance = 0
+  let convert = 0
   for (const t of all) {
     if (slugs.has(t.slug)) continue
     slugs.add(t.slug)
@@ -180,8 +182,9 @@ const tabCounts = computed<Record<string, number>>(() => {
     else if (t.category === 'image') image++
     else if (t.category === 'text') text++
     else if (t.category === 'finance') finance++
+    else if (t.category === 'convert') convert++
   }
-  return { all: slugs.size, developer, image, text, finance }
+  return { all: slugs.size, developer, image, text, finance, convert }
 })
 
 function tabCount(key: string): number {
@@ -277,7 +280,7 @@ function formatCount(count: number): string {
         <!-- 热门前三 HOT 徽标（右上角，仅按热门排序时） -->
         <span
           v-if="sortBy === 'popular' && index < 3"
-          class="pz-badge pz-badge-primary pz-card-hot"
+          class="pz-card-hot"
         >
           HOT
         </span>
@@ -299,7 +302,7 @@ function formatCount(count: number): string {
 
         <!-- 分类徽标 -->
         <span class="pz-badge pz-badge-neutral mt-3 self-start whitespace-nowrap">
-          {{ tool.category === 'image' ? '图片工具' : tool.category === 'text' ? '文本工具' : tool.category === 'finance' ? '财务工具' : '开发工具' }}
+          {{ tool.category === 'image' ? '图片工具' : tool.category === 'text' ? '文本工具' : tool.category === 'finance' ? '财务工具' : tool.category === 'convert' ? '换算工具' : '开发工具' }}
         </span>
 
         <!-- 描述 -->

@@ -6,7 +6,7 @@
  * - 面包屑：首页 > 关于我们
  * - 站点介绍（渐变背景区）
  * - 特色亮点（3 列卡片）
- * - 统计数据（20+工具 / 50k+月活用户 / 100%免费）
+ * - 统计数据（动态工具总数 / 50k+月活用户 / 100%免费）
  * - 联系方式
  */
 
@@ -16,11 +16,11 @@ useHead({
   meta: [
     {
       name: 'description',
-      content: '盘子工具站是面向中文开发者的免费在线工具聚合站，提供开发者工具与图片处理工具，所有工具免登录、本地处理、保护隐私，本页介绍站点特色与联系方式。'
+      content: '盘子工具站是面向中文用户的免费在线工具聚合站，提供开发者工具、图片处理、文本处理、财务计算、单位换算五大类 60 余款工具，所有工具免登录、打开即用，本页介绍站点特色与联系方式。'
     },
     {
       name: 'keywords',
-      content: '盘子工具站,关于我们,在线工具站介绍'
+      content: '盘子工具站,关于我们,在线工具站介绍,开发者工具,图片工具,文本工具,财务工具,换算工具'
     },
     {
       property: 'og:title',
@@ -28,10 +28,31 @@ useHead({
     },
     {
       property: 'og:description',
-      content: '盘子工具站是面向中文开发者的免费在线工具聚合站，提供开发者工具与图片处理工具，所有工具免登录、本地处理、保护隐私，本页介绍站点特色与联系方式。'
+      content: '盘子工具站是面向中文用户的免费在线工具聚合站，提供开发者工具、图片处理、文本处理、财务计算、单位换算五大类 60 余款工具，所有工具免登录、打开即用，本页介绍站点特色与联系方式。'
     }
   ]
 })
+
+// SSR 获取工具总数（用于统计展示，接口失败时回退静态值）
+const { data: toolTotal } = await useAsyncData<number>(
+  'about-tool-total',
+  async () => {
+    const config = useRuntimeConfig()
+    const baseURL = import.meta.server
+      ? (config.apiBase as string)
+      : (config.public.apiBase as string)
+    try {
+      const res = await $fetch<{ code: number; data: { total: number } }>(
+        '/api/v1/tools',
+        { baseURL, params: { size: 1 } },
+      )
+      return res.code === 0 ? res.data?.total || 0 : 0
+    } catch {
+      return 0
+    }
+  },
+  { default: () => 65 },
+)
 </script>
 
 <template>
@@ -79,13 +100,16 @@ useHead({
       <p
         style="font-family: var(--pz-font-sans); font-size: var(--pz-text-lg); color: var(--pz-color-text-secondary); line-height: var(--pz-leading-normal); margin-top: 1rem; text-wrap: balance; word-break: keep-all"
       >
-        面向中文开发者的在线工具聚合站
+        免登录、打开即用的中文在线工具聚合站
       </p>
       <p
         style="font-family: var(--pz-font-sans); font-size: var(--pz-text-base); color: var(--pz-color-text-secondary); line-height: var(--pz-leading-relaxed); margin-top: 1.5rem"
       >
         盘子工具站
-        致力于为中文开发者提供便捷的在线工具集合。我们聚焦开发者日常工作中的格式化、编码解码、正则测试、时间转换等高频需求，同时提供图片压缩、格式转换等轻量图片处理工具。所有工具无需安装，打开即用。
+        致力于为中文用户提供便捷的在线工具集合。目前已在开发者工具、图片处理、文本处理、财务计算、单位换算五大方向上线
+        60
+        余款工具，覆盖
+        JSON 格式化、正则测试、时间戳转换、图片压缩裁剪、证件照制作、个人所得税计算、人民币大写转换、长度面积换算、地理坐标转换等高频场景。所有工具无需安装，打开即用。
       </p>
     </div>
   </section>
@@ -225,7 +249,7 @@ useHead({
         <span
           style="font-family: var(--pz-font-display); font-size: var(--pz-text-3xl); font-weight: var(--pz-weight-bold); color: var(--pz-color-primary); font-variant-numeric: tabular-nums; line-height: 1.2"
         >
-          20+
+          {{ toolTotal || 65 }}+
         </span>
         <span
           style="font-family: var(--pz-font-sans); font-size: var(--pz-text-sm); color: var(--pz-color-text-secondary); margin-top: 0.5rem"

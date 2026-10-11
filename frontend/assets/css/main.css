@@ -686,11 +686,22 @@ body {
   color: #fff;
 }
 
-/* 卡片右上角 HOT 徽标 */
+/* 卡片右上角 HOT 徽标（橙底白字圆角矩形） */
 .pz-card-hot {
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  font-family: var(--pz-font-sans);
+  font-size: 0.7rem;
+  font-weight: var(--pz-weight-bold);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  background-color: #f97316;
+  border-radius: 6px;
 }
 
 /* ==========================================================================
@@ -1118,4 +1129,177 @@ body {
   .pz-tool-card:hover {
     transform: none;
   }
+}
+
+/* ============================================================
+ * 换算工具类专属组件（convert category）
+ * 变量全部沿用 --pz-* token，不新增色值
+ * ============================================================ */
+
+/* ---------- 提示条 ---------- */
+.pz-tip {
+  display: flex; align-items: flex-start; gap: .5rem;
+  border: 1px solid var(--pz-color-border); border-radius: var(--pz-radius-md);
+  background: var(--pz-color-bg-secondary); padding: .625rem .875rem;
+}
+
+/* ---------- 单位换算网格 ---------- */
+.pz-ugrid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+@media (min-width: 768px) { .pz-ugrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.pz-usec { display: flex; flex-direction: column; gap: .5rem; }
+.pz-usec-title {
+  display: flex; align-items: center; gap: .5rem;
+  font-size: var(--pz-text-xs); font-weight: var(--pz-weight-semibold);
+  color: var(--pz-color-text-secondary);
+}
+.pz-usec-title::after {
+  content: ''; flex: 1; height: 1px; background: var(--pz-color-border-light);
+}
+.pz-usec-count { font-family: var(--pz-font-mono); font-size: 11px; color: var(--pz-color-text-tertiary); }
+
+/* 单行：单位标签 + 输入框 + 动作 */
+.pz-urow {
+  display: flex; align-items: center; gap: .5rem;
+  border: 1px solid var(--pz-color-border); border-radius: var(--pz-radius-md);
+  background: var(--pz-color-surface); padding: .375rem .5rem .375rem .625rem;
+  transition: border-color .15s, background-color .15s;
+}
+.pz-urow:hover { border-color: var(--pz-color-primary-border); }
+.pz-urow[data-src='true'] {
+  border-color: var(--pz-color-primary); background: var(--pz-color-primary-lightest);
+}
+.pz-ulab { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.25; }
+.pz-ulab .n { font-size: var(--pz-text-xs); color: var(--pz-color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pz-ulab .s { font-family: var(--pz-font-mono); font-size: 10px; color: var(--pz-color-text-tertiary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pz-urow input.pz-uinput {
+  flex: 0 0 9.5rem; width: 9.5rem; text-align: right;
+  font-family: var(--pz-font-mono); font-size: var(--pz-text-sm);
+  border: 1px solid var(--pz-color-border); border-radius: var(--pz-radius-md);
+  background-color: var(--pz-color-surface); color: var(--pz-color-text-primary);
+  padding: .375rem .5rem; outline: none; transition: border-color .15s, box-shadow .15s;
+}
+.pz-urow input.pz-uinput:focus {
+  border-color: var(--pz-color-primary); box-shadow: 0 0 0 3px var(--pz-color-primary-lighter);
+}
+.pz-urow[data-src='true'] input.pz-uinput { font-weight: var(--pz-weight-semibold); color: var(--pz-color-primary); }
+.pz-uact { flex: 0 0 auto; display: flex; align-items: center; gap: .25rem; }
+.pz-uact button {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; padding: 0;
+  border: 1px solid var(--pz-color-border); border-radius: var(--pz-radius-md);
+  background: var(--pz-color-surface); color: var(--pz-color-text-tertiary); cursor: pointer;
+  transition: all .15s;
+}
+.pz-uact button:hover { border-color: var(--pz-color-primary); color: var(--pz-color-primary); }
+.pz-usrc-tag {
+  flex: 0 0 auto; font-size: 10px; font-weight: var(--pz-weight-semibold);
+  color: var(--pz-color-primary); background: var(--pz-color-primary-light);
+  border-radius: var(--pz-radius-full); padding: .125rem .375rem; white-space: nowrap;
+}
+
+/* ---------- 大数值结果 ---------- */
+.pz-bignum {
+  display: flex; align-items: baseline; gap: .5rem; flex-wrap: wrap;
+  border: 1px solid var(--pz-color-primary-border); border-radius: var(--pz-radius-lg);
+  background: var(--pz-color-primary-lightest); padding: 1rem 1.25rem;
+}
+.pz-bignum-val {
+  font-family: var(--pz-font-mono); font-size: 1.75rem; font-weight: 700;
+  color: var(--pz-color-primary); line-height: 1.2; word-break: break-all;
+}
+.pz-bignum-unit { font-size: var(--pz-text-sm); color: var(--pz-color-text-secondary); }
+.pz-bignum-eq { font-family: var(--pz-font-mono); font-size: var(--pz-text-xs); color: var(--pz-color-text-secondary); margin-top: .375rem; width: 100%; word-break: break-all; }
+
+/* ---------- 等式清单 ---------- */
+.pz-eq { display: flex; flex-direction: column; }
+.pz-eq-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: .5rem .875rem; border-top: 1px solid var(--pz-color-border-light);
+  font-size: var(--pz-text-sm);
+}
+.pz-eq-row:first-child { border-top: 0; }
+.pz-eq-row[data-hl='true'] { background: var(--pz-color-primary-lightest); }
+.pz-eq-k { color: var(--pz-color-text-secondary); white-space: nowrap; }
+.pz-eq-v {
+  font-family: var(--pz-font-mono); font-weight: var(--pz-weight-semibold);
+  color: var(--pz-color-text-primary); text-align: right; word-break: break-all;
+}
+.pz-eq-row[data-hl='true'] .pz-eq-v { color: var(--pz-color-primary); }
+
+/* ---------- 结果卡头部 ---------- */
+.pz-card-head { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: .75rem; }
+
+/* ---------- 预设 chip ---------- */
+.pz-chip {
+  border: 1px solid var(--pz-color-border); border-radius: var(--pz-radius-full);
+  background: var(--pz-color-surface); color: var(--pz-color-text-secondary);
+  font-family: var(--pz-font-mono); font-size: var(--pz-text-xs);
+  padding: .25rem .625rem; cursor: pointer; transition: all .15s;
+}
+.pz-chip:hover { border-color: var(--pz-color-primary-border); color: var(--pz-color-primary); }
+.pz-chip[data-active='true'] { background: var(--pz-color-primary); border-color: var(--pz-color-primary); color: #fff; }
+
+/* ---------- 结果键值行 ---------- */
+.pz-kv { display: flex; flex-direction: column; border: 1px solid var(--pz-color-border); border-radius: var(--pz-radius-md); overflow: hidden; }
+.pz-kv-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .625rem .875rem; border-top: 1px solid var(--pz-color-border-light); background: var(--pz-color-surface); }
+.pz-kv-row:first-child { border-top: 0; }
+.pz-kv-k { font-size: var(--pz-text-sm); color: var(--pz-color-text-secondary); }
+.pz-kv-v { font-family: var(--pz-font-mono); font-size: var(--pz-text-sm); font-weight: var(--pz-weight-semibold); color: var(--pz-color-text-primary); }
+.pz-kv-row[data-hl='true'] { background: var(--pz-color-primary-lightest); }
+.pz-kv-row[data-hl='true'] .pz-kv-v { color: var(--pz-color-primary); }
+
+/* ---------- 地理坐标系转换 ---------- */
+.pz-crs-opt { display: flex; flex-direction: column; gap: .25rem; }
+.pz-crs-opt .d { font-size: 11px; color: var(--pz-color-text-tertiary); padding-left: 1.5rem; line-height: 1.4; }
+.pz-crs-opt .t { font-size: var(--pz-text-sm); }
+.pz-crs-opt[data-active='true'] .d { color: var(--pz-color-primary); }
+
+.pz-coord-tb { overflow-x: auto; }
+.pz-coord-tb table { width: 100%; min-width: 640px; }
+.pz-coord-tb td, .pz-coord-tb th { padding: .5rem .75rem; font-size: var(--pz-text-xs); }
+.pz-coord-tb td.coord { font-family: var(--pz-font-mono); color: var(--pz-color-text-primary); white-space: nowrap; }
+.pz-coord-tb td.idx { color: var(--pz-color-text-tertiary); font-family: var(--pz-font-mono); }
+.pz-coord-tb tr:hover td { background: var(--pz-color-bg-secondary); }
+.pz-coord-tb td.col-src { background: var(--pz-color-primary-lightest); color: var(--pz-color-primary); font-weight: 500; }
+.pz-coord-tb th.col-src { color: var(--pz-color-primary); }
+.pz-coord-copy { opacity: 0; transition: opacity .15s; color: var(--pz-color-text-tertiary); background: none; border: 0; cursor: pointer; display: inline-flex; padding: .125rem; }
+.pz-coord-tb tr:hover .pz-coord-copy { opacity: 1; }
+.pz-coord-copy:hover { color: var(--pz-color-primary); }
+
+.pz-pick { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.pz-pick-lab { font-size: var(--pz-text-xs); color: var(--pz-color-text-secondary); }
+
+/* ---------- 矩形方体计算 ---------- */
+.pz-axes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; }
+.pz-figure { display: flex; align-items: center; justify-content: center; padding: 1rem; border-radius: var(--pz-radius-md); background: var(--pz-color-bg-secondary); border: 1px solid var(--pz-color-border); }
+.pz-figure svg { max-width: 100%; height: auto; }
+.pz-fig-dim { font-family: var(--pz-font-mono); font-size: 11px; fill: var(--pz-color-primary); }
+.pz-fig-lab { font-family: var(--pz-font-mono); font-size: 10px; fill: var(--pz-color-text-tertiary); }
+.pz-fig-edge { fill: none; stroke: var(--pz-color-text-tertiary); stroke-width: 1.5; stroke-linejoin: round; }
+.pz-fig-edge-hl { fill: none; stroke: var(--pz-color-primary); stroke-width: 2.5; stroke-linejoin: round; }
+.pz-fig-face { fill: var(--pz-color-primary-lightest); opacity: .55; }
+.pz-fig-tick { stroke: var(--pz-color-primary); stroke-width: 1; stroke-dasharray: 3 3; }
+
+.pz-metric3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; }
+.pz-metric-cell { display: flex; flex-direction: column; gap: .125rem; border: 1px solid var(--pz-color-border); border-radius: var(--pz-radius-md); padding: .75rem .875rem; background: var(--pz-color-bg-secondary); }
+.pz-metric-cell[data-hl='true'] { border-color: var(--pz-color-primary-border); background: var(--pz-color-primary-lightest); }
+.pz-metric-lab { font-size: 11px; color: var(--pz-color-text-tertiary); letter-spacing: .04em; }
+.pz-metric-val { font-family: var(--pz-font-mono); font-size: var(--pz-text-lg); font-weight: var(--pz-weight-bold); color: var(--pz-color-text-primary); line-height: 1.3; word-break: break-all; }
+.pz-metric-cell[data-hl='true'] .pz-metric-val { color: var(--pz-color-primary); }
+.pz-metric-unit { font-size: 11px; color: var(--pz-color-text-tertiary); font-family: var(--pz-font-mono); }
+
+.pz-formula { display: flex; flex-direction: column; border: 1px solid var(--pz-color-border); border-radius: var(--pz-radius-md); overflow: hidden; }
+.pz-formula-row { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: .5rem .875rem; border-top: 1px solid var(--pz-color-border-light); background: var(--pz-color-surface); }
+.pz-formula-row:first-child { border-top: 0; }
+.pz-formula-k { font-size: var(--pz-text-sm); color: var(--pz-color-text-secondary); white-space: nowrap; }
+.pz-formula-v { font-family: var(--pz-font-mono); font-size: var(--pz-text-sm); color: var(--pz-color-text-primary); text-align: right; }
+.pz-formula-r { font-family: var(--pz-font-mono); font-size: 11px; color: var(--pz-color-text-tertiary); text-align: right; }
+
+@media (max-width: 640px) {
+  .pz-bignum-val { font-size: 1.375rem; }
+  .pz-urow input.pz-uinput { flex-basis: 7rem; width: 7rem; }
+  .pz-axes { grid-template-columns: 1fr; }
+  .pz-metric3 { grid-template-columns: 1fr; }
+  .pz-metric-val { font-size: var(--pz-text-base); }
 }

@@ -64,6 +64,20 @@ const toolIconMap: Record<string, string> = {
   'number-sum': 'sum',
   'contract-payment': 'contract',
   'loan-calculator': 'homeloan',
+  // 换算工具
+  'length-converter': 'ruler',
+  'area-converter': 'area',
+  'volume-converter': 'box',
+  'weight-converter': 'scale',
+  'density-converter': 'droplet',
+  'temperature-converter': 'thermo',
+  'pressure-converter': 'gauge',
+  'byte-converter': 'database',
+  'time-converter': 'clock',
+  'counting-unit-converter': 'hash',
+  'battery-capacity-converter': 'battery',
+  'geo-coordinate-converter': 'mappin',
+  'cuboid-calculator': 'box',
 }
 </script>
 
@@ -490,6 +504,86 @@ const toolIconMap: Record<string, string> = {
     <path d="M3 10h18"/>
     <path d="M5 6l7-3 7 3"/>
     <path d="M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'ruler'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <rect x="2" y="8" width="20" height="8" rx="1"/>
+    <path d="M6 8v3M10 8v4M14 8v4M18 8v3"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'area'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <path d="M5 3a2 2 0 0 0-2 2"/>
+    <path d="M9 3h1M14 3h1"/>
+    <path d="M19 3a2 2 0 0 1 2 2"/>
+    <path d="M21 9v1M21 14v1"/>
+    <path d="M21 19a2 2 0 0 1-2 2"/>
+    <path d="M14 21h1M9 21h1"/>
+    <path d="M5 21a2 2 0 0 1-2-2"/>
+    <path d="M3 14v1M3 9v1"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'box'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
+    <path d="m3.3 7 8.7 5 8.7-5"/>
+    <path d="M12 22V12"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'droplet'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'thermo'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'gauge'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <path d="m12 14 4-4"/>
+    <path d="M3.34 19a10 10 0 1 1 17.32 0"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'battery'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <rect x="2" y="7" width="16" height="10" rx="2"/>
+    <line x1="22" y1="11" x2="22" y2="13"/>
+    <line x1="6" y1="11" x2="6" y2="13"/>
+    <line x1="10" y1="11" x2="10" y2="13"/>
+    <line x1="14" y1="11" x2="14" y2="13"/>
+  </svg>
+  <svg
+    v-else-if="toolIconMap[slug] === 'mappin'"
+    width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    style="color: var(--pz-color-primary)" aria-hidden="true"
+  >
+    <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/>
+    <circle cx="12" cy="10" r="3"/>
   </svg>
   <svg
     v-else

@@ -86,6 +86,8 @@ const categoryLabel = computed(() => {
       return '文本工具'
     case 'finance':
       return '财务工具'
+    case 'convert':
+      return '换算工具'
     default:
       return props.tool.category
   }
@@ -101,6 +103,8 @@ const categoryRoute = computed(() => {
       return '/?cat=text'
     case 'finance':
       return '/?cat=finance'
+    case 'convert':
+      return '/?cat=convert'
     default:
       return '/'
   }
