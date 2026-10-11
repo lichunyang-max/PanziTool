@@ -12,6 +12,7 @@
  *
  * 数据来源：GET /api/v1/tools?category=image&sort=popular
  */
+import { getStaticToolList } from '~/utils/toolMeta'
 
 useHead({
   titleTemplate: null,
@@ -103,7 +104,8 @@ const { data: toolsData, refresh } = await useAsyncData<ToolItem[]>(
       if (response.code === 0) return response.data?.items || []
       return []
     } catch {
-      return []
+      // 预渲染降级：API 不可用时使用静态工具列表，保证卡片有内容
+      return getStaticToolList('image')
     }
   },
   {
